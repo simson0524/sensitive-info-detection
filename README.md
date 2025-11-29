@@ -6,11 +6,12 @@
 - [Database Schema](#-database-schema-erd)
 - [Installation](#-installation)
 
---- ## 🧐 Project Overview
+## 🧐 Project Overview
+
 이 프로젝트는 텍스트 내에 포함된 개인정보(PII)와 기업 기밀정보를 탐지하여...
 (설명 내용)
 
-<br> ## 🗂️ Database Schema (ERD)
-프로젝트에서 사용된 데이터베이스 구조는 아래와 같습니다.
+## 🗂️ Database Schema (ERD)
+> 프로젝트에서 사용된 데이터베이스 구조는 아래와 같습니다.
 
 ![ER Diagram](./assets/ERD_251129.jpg)
