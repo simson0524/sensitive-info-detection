@@ -49,28 +49,22 @@ sensitive-info-detector/
 │           └── {experiment_code}_experiment_log.txt                                      # 실험 파이프라인 실행 중 발생하는 모든 print log
 │   
 ├── src/                         # 소스 코드 (Package)
-│   ├── __init__.py
-│   │
 │   ├── database/                # DB 관련 로직 (ERD 기반)
-│   │   ├── __init__.py
 │   │   ├── init_db.py           # DB 초기화 로직 (동일 config DB가 있는 경우에도 안전하게 실행 가능)
 │   │   ├── config.py            # DB 접속 정보 및 URL 설정 관리
 │   │   ├── connection.py        # DB 세션(Session) 생명주기 및 연결 관리
 │   │   ├── models.py            # ORM 모델 클래스 및 테이블 스키마 정의
 │   │   └── crud.py              # 데이터 IO(CRUD) 로직 및 타입 변환 (ORM↔Dict)
 │   │
-│   ├── models/                  # 모델 아키텍처 (classifier 폴더 대체)
-│   │   ├── __init__.py
+│   ├── models/                  # 모델 아키텍처
 │   │   └── ner_roberta.py
 │   │
 │   ├── modules/                 # 각 탐지 로직의 핵심 모듈
-│   │   ├── __init__.py
 │   │   ├── dictionary_matcher.py # (dictionary_matching)
 │   │   ├── ner_matcher.py        # (ner_regex_matching/ner_logics)
 │   │   └── regex_matcher.py      # (ner_regex_matching/regex_logics)
 │   │
 │   ├── pipelines/               # 실행 프로세스 로직 (Process 1~6 대체) -> 여기부터는 내가 좀 진행하면서 수정할수도 있을 것 같으다.
-│   │   ├── __init__.py
 │   │   ├── preprocessor.py       # 데이터 전처리 및 로드
 │   │   ├── trainer.py            # (process_1) 학습 루프
 │   │   ├── validator.py          # (process_2, 5) 검증 로직 통합  ----> trainer와 validator를 run_mode에 따라서 분기해서 실행하도록 설정 
