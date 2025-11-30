@@ -53,10 +53,11 @@ sensitive-info-detector/
 │   │
 │   ├── database/                # DB 관련 로직 (ERD 기반)
 │   │   ├── __init__.py
+│   │   ├── init_db.py           # DB 초기화 로직 (동일 config DB가 있는 경우에도 안전하게 실행 가능)
 │   │   ├── config.py            # DB 접속 정보 및 URL 설정 관리
 │   │   ├── connection.py        # DB 세션(Session) 생명주기 및 연결 관리
 │   │   ├── models.py            # ORM 모델 클래스 및 테이블 스키마 정의
-│   │   └── crud.py              # 데이터 IO(CRUD) 로직 및 타입 변환(ORM↔Dict)
+│   │   └── crud.py              # 데이터 IO(CRUD) 로직 및 타입 변환 (ORM↔Dict)
 │   │
 │   ├── models/                  # 모델 아키텍처 (classifier 폴더 대체)
 │   │   ├── __init__.py
