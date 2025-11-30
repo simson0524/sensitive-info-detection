@@ -129,7 +129,8 @@ class Evaluator:
         recall = recall_score(targets_flat, preds_flat, average="macro", zero_division=0)
         f1 = f1_score(targets_flat, preds_flat, average="macro", zero_division=0)
         
-        duration = (datetime.now() - start_time).total_seconds()
+        end_time = datetime.now()
+        duration = (end_time - start_time).total_seconds()
 
         return {
             'metrics': {
@@ -137,9 +138,11 @@ class Evaluator:
                 'precision': precision,
                 'recall': recall,
                 'f1': f1,
-                'duration': duration,
                 'confusion_matrix': conf_matrix
             },
+            'start_time': start_time,
+            'end_time': end_time,
+            'duration': duration,
             'logs': inference_logs
         }
 

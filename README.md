@@ -38,7 +38,8 @@ sensitive-info-detector/
 │
 ├── outputs/  # 실험 결과 및 로그 ✅
 │   ├── checkpoints/  # 학습 모델 가중치
-│   │   └── {experiment_code}_{process_epoch}.pt
+│   │   └── {experiment_code}/
+│   │       └── epoch_{process_epoch}.pt
 │   │
 │   └── logs/  # 실험단위로 관리되는 실험 로그
 │       └── {experiment_code}/
@@ -46,7 +47,7 @@ sensitive-info-detector/
 │           ├── {experiment_code}_all_process_results.txt                                 # 실험 + 모든 프로세스의 결과를 순서대로 작성한 txt
 │           ├── {experiment_code}_loss_graph.png                                          # 모델 학습 중 train & valid loss 추이를 나타낸 그래프
 │           ├── {experiment_code}_label_count_graph.png                                   # 모델 학습 중 정탐오탐미탐 샘플 수 추이를 나타낸 그래프
-│           └── {experiment_code}_experiment_log.txt                                      # 실험 파이프라인 실행 중 발생하는 모든 print log
+│           └── {experiment_code}_experiment_log.txt                                      # 실험 파이프라인 실행 중 발생하는 모든 print log ✅
 │   
 ├── src/  # 소스 코드 (Package)
 │   ├── database/  # DB 관련 로직 (ERD 기반) ✅
@@ -69,6 +70,7 @@ sensitive-info-detector/
 │   │   └── regex_logics/          # 정규표현식 매칭 모듈에서 사용하는 로직 ✅
 │   │
 │   ├── processes/  # 실행 프로세스 
+│   │   ├── process_0.py  # Model초기화, Dataset, Dataloader 준비 프로세스    
 │   │   ├── process_1.py  # 모델학습 및 검증 프로세스        
 │   │   ├── process_2.py  # 사전 매칭 검증 프로세스
 │   │   ├── process_3.py  # 정규표현식 매칭 검증 프로세스         
@@ -76,8 +78,8 @@ sensitive-info-detector/
 │   │
 │   └── utils/  # 유틸리티
 │       ├── common.py      # YAML 로드, 시드 고정, 디렉토리 생성 등 공통 함수
-│       ├── metrics.py     # 평가 지표 계산
-│       └── visualizer.py  # 그래프그리는 친구
+│       ├── logger.py      # 로깅
+│       └── visualizer.py  # 그래프 그리는 친구
 │
 ├── tools/  # 실행과 별개인 도구들 (labeling_tools)
 │   ├── candidate_labeler.py
