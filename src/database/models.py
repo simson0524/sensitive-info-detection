@@ -42,7 +42,6 @@ class ExperimentProcessResult(Base):
     process_start_time = Column(DateTime(timezone=True))
     process_end_time = Column(DateTime(timezone=True))
     process_duration = Column(Float)
-    process_info = Column(JSONB)
     process_results = Column(JSONB)
 
     # 관계 설정
@@ -62,8 +61,7 @@ class ExperimentProcessInferenceSentence(Base):
     experiment_code = Column(Text, nullable=False)
     process_code = Column(Text, nullable=False)
     process_epoch = Column(Integer, nullable=False)
-
-    sentence_info = Column(JSONB)
+    sentence_id = Column(Text, nullable=False)
     sentence_inference_result = Column(JSONB)
     create_dtm = Column(DateTime(timezone=True), default=func.now())
 
