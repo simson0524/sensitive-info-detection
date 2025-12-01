@@ -42,12 +42,7 @@ def run_process_1(config: dict, context: dict):
 
     # --- [Step 2] Worker 모듈 초기화 ---
     trainer = Trainer(model, optimizer, scheduler, device)
-    evaluator = Evaluator(
-        model, 
-        device, 
-        preprocessor.tokenizer, 
-        preprocessor.ner_id2label 
-    )
+    evaluator = Evaluator(model, device, preprocessor.tokenizer, preprocessor.ner_id2label)
 
     # --- [Step 3] 학습 루프 (Training Loop) ---
     best_f1 = 0.0
