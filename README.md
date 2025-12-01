@@ -1,8 +1,12 @@
 # 🛡️ Sensitive Info Detector
 > **BERT 기반 민감정보(개인정보/기밀정보) 탐지 프로젝트**
+![GPU](https://img.shields.io/badge/GPU-2x%20RTX%203090-76B900?style=flat&logo=nvidia&logoColor=white)
+![CUDA](https://img.shields.io/badge/CUDA-12.1-76B900?style=flat&logo=nvidia&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat&logo=python&logoColor=white)
 
 ## 📋 Table of Contents
 - [Project Overview](#-project-overview)
+- [Development Environment](#-development-environment)
 - [Database Schema](#-database-schema-erd)
 - [Installation](#-installation)
 
@@ -10,6 +14,18 @@
 
 이 프로젝트는 텍스트 내에 포함된 개인정보(PI Information) & 기업 기밀정보(Confidential Information)를 탐지하여...
 (설명 내용)
+
+## ⚙️ Development Environment
+
+본 프로젝트는 아래와 같은 **Multi-GPU 환경**에서 학습 및 테스트되었습니다.
+대규모 언어 모델(RoBERTa-Large)의 원활한 학습을 위해 **48GB VRAM (24GB x 2)** 환경을 권장합니다.
+
+| Component | Specification | Description |
+| :--- | :--- | :--- |
+| **GPU** | **2ea** x NVIDIA GeForce RTX 3090 | 24GB VRAM per GPU (Total 48GB) |
+| **CUDA** | Version 12.1 | |
+| **Driver** | Version 530.30.02 | |
+| **OS** | Linux (Ubuntu 등) | *사용 중인 OS 기재 (선택)* |
 
 ## 🗂️ Database Schema (ERD)
 > 프로젝트에서 사용된 데이터베이스 구조는 아래와 같습니다.
