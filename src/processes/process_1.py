@@ -14,8 +14,8 @@ from src.database.connection import db_manager
 from src.database import crud
 
 # 3. Utils: 시각화 및 파일 시스템 관련 도구
-from src.utils.visualizer import plot_loss_graph
-from src.utils.common import ensure_dir, save_logs_to_csv 
+from src.utils.visualizer import plot_loss_graph, plot_confusion_matrix_trends 
+from src.utils.common import ensure_dir, save_logs_to_csv
 
 def run_process_1(config: dict, context: dict):
     """
@@ -73,10 +73,12 @@ def run_process_1(config: dict, context: dict):
 
     train_losses = []
     valid_losses = []
+
+    cm_history = [] # Graph를 위한 confusion_matrix history
     
     # 저장 경로 준비
     ckpt_save_dir = os.path.join(path_conf['checkpoint_dir'], experiment_code)
-    log_save_dir = os.path.join(path_conf['log_dir'], experiment_code) # [NEW] CSV/Graph 저장 경로
+    log_save_dir = os.path.join(path_conf['log_dir'], experiment_code) 
     ensure_dir(ckpt_save_dir)
     ensure_dir(log_save_dir)
 
@@ -99,6 +101,9 @@ def run_process_1(config: dict, context: dict):
             valid_metrics = valid_result['metrics']
             valid_logs = valid_result['logs']
             valid_losses.append(valid_metrics['loss'])
+
+            if 'confusion_matrix' in valid_metrics:
+                cm_history.append(valid_metrics['confusion_matrix'])
             
             # -----------------------------------------------------------
             # 3-3. 결과 통합 및 DB 저장 (Epoch 단위 요약)
@@ -196,6 +201,15 @@ def run_process_1(config: dict, context: dict):
     plot_loss_graph(
         train_losses, 
         valid_losses, 
+        log_save_dir, 
+        experiment_code
+    )
+
+    # 2. [NEW] Label Distribution Graph (Confusion Matrix Trend)
+    # preprocessor.ner_id2label을 넘겨줘서 ID를 라벨명(B-PER 등)으로 변환
+    plot_confusion_matrix_trends(
+        cm_history, 
+        preprocessor.ner_id2label, 
         log_save_dir, 
         experiment_code
     )
