@@ -80,6 +80,7 @@ sensitive-info-detector/
 │   │   ├── z_score_calculator.py           # Z-score 계산 모듈 ❌
 │   │   ├── confidence_score_calculator.py  # Confidence-score 계산 모듈 ❌
 │   │   ├── data_generator.py               # 신도메인 데이터 생성 모듈 ❌
+│   │   ├── result_aggregator.py            # 정탐/오탐/미팀 데이터 수집 & 통계 & 포맷팅 모듈 ✅
 │   │   ├── ner_preprocessor.py             # [NER모델]데이터 전처리 및 로드 모듈 ✅
 │   │   ├── ner_trainer.py                  # [NER모델]학습 모듈 ✅
 │   │   ├── ner_evaluator.py                # [NER모델]검증 모듈 ✅
@@ -91,9 +92,9 @@ sensitive-info-detector/
 │   ├── processes/  # 실행 프로세스 
 │   │   ├── process_0.py  # Model초기화, Dataset, Dataloader 준비 프로세스 ✅    
 │   │   ├── process_1.py  # 모델학습 및 검증 프로세스 ✅        
-│   │   ├── process_2.py  # 사전 매칭 검증 프로세스 ❌
-│   │   ├── process_3.py  # 정규표현식 매칭 검증 프로세스 ❌     
-│   │   ├── process_4.py  # 모델 검증 프로세스 ❌
+│   │   ├── process_2.py  # 사전 매칭 검증 프로세스 ✅
+│   │   ├── process_3.py  # 정규표현식 매칭 검증 프로세스 ✅    
+│   │   ├── process_4.py  # 모델 검증 프로세스(process_2, process_3에서 정탐된 word들과 비교) ✅
 │   │   └── process_5.py  # 신도메인 데이터 생성 및 ZIP 저장 프로세스(근데 이거도 module로 가야 할 것 같은데..) ❌
 │   │
 │   └── utils/  # 유틸리티

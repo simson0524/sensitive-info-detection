@@ -459,6 +459,25 @@ def delete_dictionary_item(session: Session, annotated_word: str, data_category:
     ).delete()
     return deleted_count > 0
 
+def invalidate_dictionary_item(session: Session, annotated_word: str, data_category: str, domain_id: str):
+    """
+    사전에서 특정 단어를 즉시 무효화합니다. (오탐 발생 시)
+    Logic: deletion_counts를 insertion_counts와 동일하게 설정하여, 
+           (insertion > deletion) 조건을 만족하지 못하게 만듭니다.
+    """
+    updated_count = session.query(InfoDictionary).filter(
+        and_(
+            InfoDictionary.annotated_word == annotated_word,
+            InfoDictionary.data_category == data_category,
+            InfoDictionary.domain_id == domain_id
+        )
+    ).update(
+        # [핵심 변경] +1이 아니라, insertion_counts 값 그대로 복사
+        {InfoDictionary.deletion_counts: InfoDictionary.insertion_counts},
+        synchronize_session=False
+    )
+    return updated_count > 0
+
 
 # ==============================================================================
 # 5. 사전에 등재된 단어가 포함된 문장 (InfoDictionarySentence)

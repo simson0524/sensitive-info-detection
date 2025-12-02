@@ -9,7 +9,7 @@ from transformers import PreTrainedTokenizerFast
 from tqdm import tqdm
 
 # ==============================================================================
-# 1. NerDataset (data_category 적용)
+# 1. NerDataset
 # ==============================================================================
 class NerDataset(Dataset):
     """
@@ -21,15 +21,27 @@ class NerDataset(Dataset):
         annotations: Dict, 
         tokenizer, 
         ner_label2id: Dict, 
+        ner_id2label: Dict, # [NEW] 디버깅 및 복원을 위해 추가
         max_length: int = 256, 
         data_category: str = "personal_data" # "personal_data" or "confidential_data"
     ):
+        """
+        Args:
+            samples (Dict): {sentence_id: sentence_data} 형태의 샘플 데이터
+            annotations (Dict): {sentence_id: annotation_list} 형태의 라벨 데이터
+            tokenizer: HuggingFace Tokenizer
+            ner_label2id (Dict): BIO 태그 -> ID 매핑
+            ner_id2label (Dict): ID -> BIO 태그 매핑
+            max_length (int): 시퀀스 최대 길이
+            data_category (str): 데이터 카테고리 ("personal_data" 또는 "confidential_data")
+        """
         self.samples = samples
         self.annotations = annotations
         self.tokenizer = tokenizer
         self.max_length = max_length
         self.ner_label2id = ner_label2id
-        self.data_category = data_category 
+        self.ner_id2label = ner_id2label
+        self.data_category = data_category
         self.instances = []
         
         # 유효성 검사
@@ -42,11 +54,15 @@ class NerDataset(Dataset):
     def _create_instances(self):
         """
         JSON 데이터를 순회하며 문장당 1개의 NER 인스턴스를 생성합니다.
+        - 토큰화 (Tokenization)
+        - BIO 라벨링 (Label Alignment)
+        - 필터링 (data_category 기준)
         """
         for id, sample_data in tqdm(self.samples.items(), desc="Create NER instances"):
             sentence = sample_data['sentence']
             sentence_id = sample_data['id']
-            # domain_id 파싱
+            
+            # domain_id 파싱 (예: doc_01_005 -> 1)
             try:
                 domain_id = str(int(sentence_id.split('_')[1]))
             except:
@@ -82,11 +98,11 @@ class NerDataset(Dataset):
 
                 # [수정] data_category에 따른 필터링 로직
                 if self.data_category == "personal_data":
-                    # 개인정보 데이터셋: '기밀정보'는 제외하고 '개인정보', '준식별자'는 포함
+                    # 개인정보 데이터셋: '기밀정보'는 제외
                     if ann_label == "기밀정보":
                         continue
                 elif self.data_category == "confidential_data":
-                    # 기밀정보 데이터셋: '개인정보', '준식별자'는 제외하고 '기밀정보'는 포함
+                    # 기밀정보 데이터셋: '개인정보', '준식별자'는 제외
                     if ann_label in ["준식별자", "개인정보"]:
                         continue
                 
@@ -109,7 +125,7 @@ class NerDataset(Dataset):
                 token_end = None
 
                 for i, (offset_start, offset_end) in enumerate(offset_mapping):
-                    if offset_start == 0 and offset_end == 0: continue
+                    if offset_start == 0 and offset_end == 0: continue # Special Token
                     
                     if (token_start is None) and (offset_start <= char_start < offset_end):
                         token_start = i
@@ -126,7 +142,7 @@ class NerDataset(Dataset):
                     if i < len(labels):
                         labels[i] = i_label_id
             
-            # 6. 스페셜 토큰 위치에 -100 할당
+            # 6. 스페셜 토큰 위치에 -100 할당 (Loss 계산 제외용)
             for i, (offset_start, offset_end) in enumerate(offset_mapping):
                 if offset_start == 0 and offset_end == 0:
                     labels[i] = -100
@@ -167,7 +183,7 @@ class NerDataset(Dataset):
 
 
 # ==============================================================================
-# 2. NerPreprocessor (data_category 파라미터 전달)
+# 2. NerPreprocessor (데이터 로드 및 라벨 관리)
 # ==============================================================================
 class NerPreprocessor:
     """
@@ -259,6 +275,7 @@ class NerPreprocessor:
             annotations=annotations,
             tokenizer=self.tokenizer,
             ner_label2id=self.ner_label2id,
+            ner_id2label=self.ner_id2label, # [NEW] id2label 전달
             max_length=self.max_len,
-            data_category=data_category # 변경된 파라미터 전달
+            data_category=data_category
         )
