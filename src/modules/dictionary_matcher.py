@@ -70,6 +70,29 @@ class DictionaryMatcher:
             
         # 단어가 사전에 있는지 확인 (O(1) Lookup)
         return token in self._dictionaries[domain_id]
+    
+    def match_sentence(self, sentence: str, domain_id: str) -> list:
+        """
+        문장 내에서 사전에 등재된 단어들을 모두 찾아 반환합니다.
+        
+        Args:
+            sentence (str): 검색할 원본 문장
+            domain_id (str): 도메인 ID
+            
+        Returns:
+            list: 매칭된 단어 리스트 (예: ['삼성전자', '비밀'])
+        """
+        if domain_id not in self._dictionaries:
+            return []
+            
+        matched_words = []
+        # 해당 도메인의 모든 유효 단어를 순회하며 문장에 있는지 확인
+        # (딕셔너리의 키(단어)만 가져옴)
+        for word in self._dictionaries[domain_id].keys():
+            if word in sentence:
+                matched_words.append(word)
+                
+        return matched_words
 
     def get_stats(self) -> dict:
         """
