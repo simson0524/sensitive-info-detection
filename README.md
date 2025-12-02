@@ -8,33 +8,46 @@
 - [Project Overview](#-project-overview)
 - [Development Environment](#-development-environment)
 - [Database Schema](#-database-schema-erd)
-- [Installation](#-installation)
+- [Project Structure](#-project-structure)
+- [Installation & Setup](#-installation--setup)
+- [Configuration](#-configuration)
+- [Usage (Pipeline)](#-usage-pipeline)
+- [Outputs](#-outputs)
+
+---
 
 ## 🧐 Project Overview
+이 프로젝트는 비정형 텍스트 내에 포함된 **개인정보(PII)** 및 **기업 기밀정보(Confidential Info)**를 탐지하기 위해 **Deep Learning(BERT)**과 **Rule-based(Dictionary, Regex)** 방식을 결합한 하이브리드 시스템입니다.
 
-이 프로젝트는 텍스트 내에 포함된 개인정보(PI Information) & 기업 기밀정보(Confidential Information)를 탐지하여...
-(설명 내용)
+* **이원화된 탐지:** 데이터 성격에 따라 `Personal Data` 모드와 `Confidential Data` 모드로 분리하여 동작합니다.
+* **하이브리드 검증:** 규칙 기반 탐지 결과와 모델 추론 결과를 교차 검증하여 **Double Check(신뢰도 향상)** 및 **Complement(누락 방지)**를 수행합니다.
+* **실험 관리:** 모든 실험 과정과 결과는 데이터베이스(PostgreSQL)에 기록되며, 상세 로그는 CSV 및 TXT 리포트로 자동 생성됩니다.
+
+<br>
 
 ## ⚙️ Development Environment
-
-본 프로젝트는 아래와 같은 **Multi-GPU 환경**에서 학습 및 테스트되었습니다.
-대규모 언어 모델(RoBERTa-Large)의 원활한 학습을 위해 **48GB VRAM (24GB x 2)** 환경을 권장합니다.
+본 프로젝트는 아래와 같은 **Multi-GPU 환경**에서 학습 및 테스트되었습니다. 대규모 언어 모델(RoBERTa-Large)의 원활한 학습을 위해 **48GB VRAM** 이상의 환경을 권장합니다.
 
 | Component | Specification | Description |
 | :--- | :--- | :--- |
 | **GPU** | **2ea** x NVIDIA GeForce RTX 3090 | 24GB VRAM per GPU (Total 48GB) |
-| **CUDA** | Version 12.1 | |
-| **Driver** | Version 530.30.02 | |
-| **OS** | Linux (Ubuntu 등) | *사용 중인 OS 기재 (선택)* |
+| **CUDA** | Version 12.1 | PyTorch Compatibility |
+| **Database** | PostgreSQL | 실험 로그 및 데이터셋 메타정보 관리 |
+| **OS** | Linux (Ubuntu 20.04) | |
+
+<br>
 
 ## 🗂️ Database Schema (ERD)
-> 프로젝트에서 사용된 데이터베이스 구조는 아래와 같습니다.
+프로젝트의 모든 데이터(실험 설정, 학습 로그, 추론 결과, 사전 데이터)는 아래 ERD 구조에 따라 관리됩니다.
 
 ![ER Diagram](./assets/ERD251201.jpg)
 
+<br>
+
 ## 📁 Project Structure
-> 프로젝트에서 사용된 소스코드 및 파일들의 구조입니다.
-'''text
+리팩토링된 전체 프로젝트 디렉토리 구조입니다.
+
+```text
 sensitive-info-detector/
 ├── assets/  # 프로젝트 관련 이미지 관리
 │
@@ -117,3 +130,88 @@ sensitive-info-detector/
 │
 ├── README.md 🔄
 └── requirements.txt ❌
+```
+
+<br>
+
+## 🛠️ Installation & Setup
+
+### 1. Prerequisites
+* `Python 3.8+` 환경이 필요합니다.
+* `PostgreSQL 12+` 데이터베이스 서버가 실행 중이어야 합니다.
+* `src/database/config.py` (또는 `.env`) 파일에 본인의 DB 접속 정보(`HOST`, `PORT`, `USER`, `PASSWORD`, `DBNAME`)를 올바르게 설정해주세요.
+
+### 2. Install Dependencies
+프로젝트 실행에 필요한 파이썬 라이브러리를 설치합니다.
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Database Initialization
+프로젝트를 처음 시작하기 전, DB 테이블을 생성하고 초기 정답지 데이터를 구축해야 합니다.
+```bash
+python scripts/run_init_project.py
+```
+이 스크립트는 `configs/init_project_config.yaml` 설정을 참조하여 작동합니다. 실행 후 DB에 테이블이 생성되었는지 확인해주세요.
+
+<br>
+
+## ⚙️ Configuration
+모든 실험 제어는 `configs/` 폴더 내의 YAML파일을 통해 이루어집니다.
+
+| 파일명 | 역할 및 설명 |
+| :--- | :--- |
+| **`base_config.yaml`** | **불변 공통 설정**. 데이터/로그 저장 경로, 모델 아키텍처(RoBERTa), 라벨 맵 등 프로젝트 전반에 걸친 고정값을 관리합니다. |
+| **`experiment_config.yaml`** | **가변 실험 설정**. 실험 코드를 정의하고, 학습률(LR), 배치 크기, 실행 모드 등을 변경할 때 사용합니다. |
+
+### 주요 설정 옵션 (`experiment_config.yaml`)
+
+* **`data_category`**: 데이터셋 및 모델의 성격을 결정합니다.
+    * `"personal_data"`: 개인정보(이름, 전화번호 등) 탐지 모델
+    * `"confidential_data"`: 기업 기밀정보 탐지 모델
+* **`run_mode`**: 파이프라인 실행 방식을 결정합니다.
+    * `"train"`: 데이터셋으로 모델 학습(`process_1`) 수행 후 검증 및 규칙 기반 탐지 진행.
+    * `"test"`: 학습 과정을 건너뛰고, 지정된 Checkpoint를 로드하여 추론 및 하이브리드 검증 수행.
+* **`run_process_X`**: 각 프로세스(1~4)의 실행 여부를 제어합니다 (`true`/`false`).
+
+<br>
+
+## 🚀 Usage (Pipeline)
+
+전체 파이프라인을 실행합니다. 설정된 `run_mode`에 따라 학습 또는 추론이 자동으로 진행됩니다.
+
+```bash
+python scripts/run_experiment.py
+```
+
+### Pipeline Workflow
+본 프로젝트는 5단계의 순차적인 프로세스로 구성되어 있으며, 각 단계는 모듈화되어 유기적으로 동작합니다.
+
+1.  **Process 0 (Setup):**
+    * 데이터셋 로드 및 Train/Valid 자동 분할.
+    * 모델 아키텍처 초기화 및 가중치 로드(Resume/Inference).
+2.  **Process 1 (Model Train - Deep Learning):**
+    * BERT(RoBERTa) 모델 학습 및 검증.
+    * 매 Epoch마다 Checkpoint 저장, Loss/F1 Score 기록.
+3.  **Process 2 (Dictionary - Rule):**
+    * 구축된 사전을 메모리에 로드하여 고속 매칭 수행.
+    * **Self-Cleaning:** Train 모드에서 오탐(Wrong) 발생 시, 해당 단어를 사전에서 자동 무효화 처리.
+4.  **Process 3 (Regex - Rule):**
+    * 정규표현식을 이용한 패턴 매칭(주민번호, 전화번호, 이메일 등) 검증.
+5.  **Process 4 (Hybrid Analysis):**
+    * 규칙 기반 탐지 결과와 모델 추론 결과를 교차 검증.
+    * **Double Check:** 규칙과 모델이 모두 탐지한 경우 (높은 신뢰도).
+    * **Model Complement:** 규칙이 놓친 것을 모델이 탐지한 경우 (모델의 효용성 입증).
+
+<br>
+
+## 📊 Outputs
+
+실험이 완료되면 `outputs/logs/{experiment_code}/` 경로에 아래 결과물들이 자동 생성됩니다.
+
+| 파일 유형 | 파일명 | 설명 |
+| :--- | :--- | :--- |
+| **Report** | `{code}_all_process_results.txt` | 실험 설정, Epoch별 성능, 프로세스별 요약 통계가 담긴 **최종 성적표**. |
+| **Log** | `{code}_experiment_log.txt` | 파이프라인 실행 중 발생한 모든 시스템 로그 및 에러 메시지. |
+| **Graph** | `{code}_loss_graph.png` | 학습/검증 Loss 변화 추이를 시각화한 그래프. |
+| **Data** | `{code}_inference_sentences.csv` | 각 프로세스 및 Epoch별 **문장 단위 상세 추론 결과**. 정탐/오탐/미탐 분석 용도. |
