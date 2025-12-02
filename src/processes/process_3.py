@@ -1,16 +1,20 @@
 # src/processes/process_3.py
 
 import logging
+import os
 from datetime import datetime
 from tqdm import tqdm
 
-# Modules
+# Modules: Regex Matcher & Aggregator
 from src.modules.regex_matcher import RegexMatcher
 from src.modules.result_aggregator import ResultAggregator
 
-# Database
+# Database: DB 연결 및 CRUD 유틸리티
 from src.database.connection import db_manager
 from src.database import crud
+
+# Utils: 파일 저장 관련 유틸리티
+from src.utils.common import ensure_dir, save_logs_to_csv
 
 def run_process_3(config: dict, context: dict):
     """
@@ -19,6 +23,7 @@ def run_process_3(config: dict, context: dict):
     - 공통: RegexMatcher를 사용하여 문장 전체에서 PII 탐지 수행
     - Train 모드: BIO 태그를 파싱한 '정답 단어'와 정규식 탐지 결과를 1:1 비교 (정탐/오탐/미탐)
     - Test 모드: 정답 없이 정규식으로 탐지된 결과를 모두 저장
+    - 결과: DB 저장 및 CSV 추출
     """
     
     # ==============================================================================
@@ -26,6 +31,7 @@ def run_process_3(config: dict, context: dict):
     # ==============================================================================
     exp_conf = config['experiment']
     train_conf = config['train']
+    path_conf = config['path'] # [NEW] CSV 저장용
     
     experiment_code = exp_conf['experiment_code']
     data_category = exp_conf.get('data_category', 'personal_data')
@@ -53,9 +59,13 @@ def run_process_3(config: dict, context: dict):
     # ==============================================================================
     aggregator = ResultAggregator()
     start_time = datetime.now()
-    process_epoch = 1
+    process_epoch = 1 # Rule-base는 1회 실행
 
     logger.info("Starting regex detection loop...")
+    
+    # 로그 저장 경로 생성 (CSV용)
+    log_save_dir = os.path.join(path_conf['log_dir'], experiment_code)
+    ensure_dir(log_save_dir)
     
     for batch in tqdm(valid_loader, desc="Regex Matching"):
         batch_size = len(batch['sentence'])
@@ -75,17 +85,15 @@ def run_process_3(config: dict, context: dict):
             seq_val = sentence_seq.item() if hasattr(sentence_seq, 'item') else sentence_seq
 
             # 3-2. Regex 탐지 수행 (문장 전체 스캔)
-            # results = [{'match': '010-1234-5678', 'label': '전화번호', ...}, ...]
             regex_results = matcher.detect(original_sentence)
             
-            # 3-3. Regex 결과를 프로젝트 라벨(개인정보/기밀정보)로 매핑 및 필터링
-            # pred_spans = { "010-1234-5678": "개인정보" }
+            # 3-3. Regex 결과를 프로젝트 라벨로 매핑 및 필터링
             pred_spans = {}
             for res in regex_results:
-                raw_label = res['label'] # 예: "전화번호"
+                raw_label = res['label'] # "전화번호"
                 type_info = matcher.DETECTOR_TYPE_MAP.get(raw_label, {})
                 
-                # 현재 실험의 data_category에 맞는 것만 남김
+                # data_category 필터링
                 target_label = None
                 if data_category == "personal_data" and type_info.get("category") == "개인":
                     target_label = "개인정보" 
@@ -99,15 +107,14 @@ def run_process_3(config: dict, context: dict):
             # [Case A] Train Mode (GT와 비교하여 정밀 검증)
             # -----------------------------------------------------------
             if run_mode == 'train':
-                # (1) BIO 태그 파싱하여 정답(GT) 단어 추출
                 current_input_ids = input_ids_batch[i]
                 current_tags = labels_batch[i]
                 tokens = tokenizer.convert_ids_to_tokens(current_input_ids)
                 
+                # GT 파싱
                 gt_entities = _extract_entities_from_bio(tokens, current_tags, ner_id2label, tokenizer)
                 
-                # 타겟 카테고리에 해당하는 GT만 필터링 (예: '개인정보'만)
-                # config에 정의된 타겟 라벨명 사용
+                # 타겟 라벨명
                 expected_label_name = "개인정보" if data_category == "personal_data" else "기밀정보"
                 
                 target_gt_spans = {
@@ -115,15 +122,15 @@ def run_process_3(config: dict, context: dict):
                     if label == expected_label_name
                 }
 
-                # (2) 정탐/오탐/미탐 분류 (Set 연산)
+                # 정탐/오탐/미탐 분류
                 pred_words = set(pred_spans.keys())
                 gt_words = set(target_gt_spans.keys())
 
-                hits = pred_words & gt_words       # 교집합
-                wrongs = pred_words - gt_words     # 예측엔 있는데 정답엔 없음
-                mismatches = gt_words - pred_words # 정답엔 있는데 예측엔 없음
+                hits = pred_words & gt_words
+                wrongs = pred_words - gt_words
+                mismatches = gt_words - pred_words
 
-                # (3) 로그 기록
+                # 로그 기록
                 for word in hits:
                     _add_log(aggregator, "hit", sentence_id, file_name, seq_val, 
                              original_sentence, word, domain_id, 
@@ -143,7 +150,6 @@ def run_process_3(config: dict, context: dict):
             # [Case B] Test Mode (단순 탐지 결과 저장)
             # -----------------------------------------------------------
             elif run_mode == 'test':
-                # 비교할 GT가 없으므로 탐지된 모든 것을 'hit' (또는 prediction)으로 처리
                 for word, label in pred_spans.items():
                     _add_log(aggregator, "hit", sentence_id, file_name, seq_val,
                              original_sentence, word, domain_id,
@@ -153,18 +159,28 @@ def run_process_3(config: dict, context: dict):
     duration = (end_time - start_time).total_seconds()
 
     # ==============================================================================
-    # [Step 4] DB 저장
+    # [Step 4] 결과 저장 (DB & CSV)
     # ==============================================================================
     with db_manager.get_db() as session:
-        # 4-1. 문장 로그 저장 (Bulk Insert)
         total_logs = 0
+        all_logs_for_csv = [] # [NEW] CSV 저장을 위한 리스트
+
+        # 4-1. 문장 로그 저장 (Bulk Insert)
         for r_type in ["hit", "wrong", "mismatch"]:
             logs = aggregator.get_logs(r_type)
             if logs:
                 crud.bulk_insert_inference_sentences(session, logs)
+                all_logs_for_csv.extend(logs)
                 total_logs += len(logs)
         
         logger.info(f"Saved {total_logs} inference logs to DB.")
+
+        # [NEW] CSV 파일 추출
+        if all_logs_for_csv:
+            csv_file_name = f"{experiment_code}_process_3_{process_epoch}_inference_sentences.csv"
+            csv_file_path = os.path.join(log_save_dir, csv_file_name)
+            save_logs_to_csv(all_logs_for_csv, csv_file_path)
+            logger.info(f"Saved CSV log to {csv_file_path}")
 
         # 4-2. 프로세스 결과 요약 저장
         process_results = {
@@ -240,8 +256,7 @@ def _add_log(aggregator, match_type, sent_id, fname, seq, origin_sent, word, dom
             "match_result": match_type,
             "ground_truth": gt
         }],
-        # entity_count는 이 리스트의 길이와 같음 (여기선 단어 단위 로그라 1)
-        "entity_count": 1 
+        "entity_count": 1
     }
     
     log_entry = {

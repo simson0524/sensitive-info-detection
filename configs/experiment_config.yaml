@@ -1,2 +1,44 @@
 # configs/experiment_config.yaml
-# 실험별 하이퍼파라미터를 관리하는 파일
+
+# ============================================================
+# [Experiment Config] 이번 실험을 위한 가변 설정
+# ============================================================
+
+# 1. 실험 메타 정보
+experiment:
+  experiment_code: "EXP_2024_NER_V1"   # 실험 고유 코드 (DB 키, 폴더명으로 사용됨)
+  previous_experiment_code: null       # 이전 실험을 잇는 경우 (옵션)
+  data_category: "personal_data"       # "personal_data" or "confidential_data" (전처리기 필터링용)
+  
+  # 실행 모드 ("train" 또는 "test")
+  # - train: 학습 수행 (Process 1 실행)
+  # - test: 학습 건너뜀, inference_checkpoint 로드
+  run_mode: "train"
+
+  # 프로세스 실행 여부 (On/Off Switch)
+  run_process_1: true  # 모델 학습 및 검증
+  run_process_2: true  # 사전 매칭 검증
+  run_process_3: true  # 정규식 매칭 검증
+  run_process_4: true  # 모델 보완(Hybrid) 추론
+
+# 2. 학습 하이퍼파라미터 (Base Config의 train 섹션을 덮어쓰거나 추가)
+train:
+  seed: 42                   # 재현성을 위한 랜덤 시드
+  epochs: 10                 # 학습 반복 횟수
+  batch_size: 32             # 배치 크기
+  learning_rate: 5e-5        # 학습률
+  validation_split: 0.2      # 전체 데이터 중 검증셋 비율 (0.2 = 20%)
+  use_focal: true            # Focal Loss 사용 여부
+
+# 3. 데이터 및 모델 경로 (실험별로 달라지는 경로)
+path:
+  # 학습에 사용할 데이터셋 폴더 (JSON 파일들이 들어있는 곳)
+  data_dir: "data/train_data/finance_doc"
+  
+  # [Train Mode용] 이어서 학습할 체크포인트 (없으면 null)
+  resume_checkpoint: null 
+  # 예: "outputs/checkpoints/EXP_PREV/epoch_5.pt"
+  
+  # [Test Mode용] 추론에 사용할 학습된 모델 (run_mode: test일 때 필수)
+  inference_checkpoint: null
+  # 예: "outputs/checkpoints/EXP_2024_NER_V1/EXP_2024_NER_V1_best.pt"

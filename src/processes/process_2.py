@@ -1,6 +1,7 @@
 # src/processes/process_2.py
 
 import logging
+import os
 from datetime import datetime
 from tqdm import tqdm
 
@@ -12,6 +13,9 @@ from src.modules.result_aggregator import ResultAggregator
 from src.database.connection import db_manager
 from src.database import crud
 
+# Utils: 파일 저장 관련 유틸리티
+from src.utils.common import ensure_dir, save_logs_to_csv
+
 def run_process_2(config: dict, context: dict):
     """
     [Process 2] 사전(Dictionary) 매칭 검증 프로세스
@@ -21,7 +25,7 @@ def run_process_2(config: dict, context: dict):
     - 2단계: 검증 데이터셋을 순회하며 사전 탐색 수행
     - 3단계 (Train): 정답(GT)과 비교하여 정탐/오탐/미탐 검증 + 오탐 시 사전 업데이트
     - 3단계 (Test): 문장 내 포함된 사전 단어 단순 탐지
-    - 4단계: 결과 로그 및 통계 DB 저장
+    - 4단계: 결과 로그 DB 저장 및 CSV 파일 추출
 
     Args:
         config (dict): 설정 정보
@@ -34,6 +38,7 @@ def run_process_2(config: dict, context: dict):
     exp_conf = config['experiment']
     dict_conf = config['dictionary_init']
     train_conf = config['train']
+    path_conf = config['path'] # [NEW] CSV 저장용 경로
     
     experiment_code = exp_conf['experiment_code']
     data_category = exp_conf.get('data_category', 'personal_data') # 'personal_data' or 'confidential_data'
@@ -69,8 +74,10 @@ def run_process_2(config: dict, context: dict):
         matcher = DictionaryMatcher(session)
         
         # 설정된 도메인 ID들에 해당하는 사전을 DB에서 로드하여 메모리에 캐싱
+        # (이 과정이 없으면 매번 DB를 조회해야 하므로 속도가 매우 느려짐)
         matcher.load_dictionaries(dict_conf['domain_ids'], data_category)
         
+        # 로드된 사전의 크기 등 통계 정보 가져오기
         dict_stats = matcher.get_stats()
         logger.info(f"📚 Dictionary Stats: {dict_stats}")
 
@@ -79,9 +86,13 @@ def run_process_2(config: dict, context: dict):
     # ==============================================================================
     aggregator = ResultAggregator() # 결과(정/오/미탐)를 수집하는 객체
     start_time = datetime.now()
-    process_epoch = 1 
+    process_epoch = 1 # Rule-base 검증은 1회성 프로세스이므로 Epoch 1로 고정
 
     logger.info("Starting matching loop...")
+    
+    # 로그 저장 경로 생성 (CSV 저장용)
+    log_save_dir = os.path.join(path_conf['log_dir'], experiment_code)
+    ensure_dir(log_save_dir)
     
     # [중요] 오탐 시 사전 업데이트를 위해 세션을 루프 밖에서 엽니다.
     with db_manager.get_db() as session:
@@ -198,20 +209,33 @@ def run_process_2(config: dict, context: dict):
         duration = (end_time - start_time).total_seconds()
 
         # ==============================================================================
-        # [Step 5] 최종 DB 저장
+        # [Step 5] 최종 DB 저장 및 CSV 추출
         # ==============================================================================
         
         # 5-1. 문장 단위 상세 로그 저장 (Bulk Insert)
         total_logs = 0
+        all_logs_for_csv = [] # [NEW] CSV 저장을 위한 리스트
+
         for r_type in ["hit", "wrong", "mismatch"]:
             logs = aggregator.get_logs(r_type)
             if logs:
+                # DB에 대량 삽입
                 crud.bulk_insert_inference_sentences(session, logs)
+                # CSV용 리스트에 추가
+                all_logs_for_csv.extend(logs) 
                 total_logs += len(logs)
         
         logger.info(f"Saved {total_logs} inference logs to DB.")
 
-        # 5-2. 프로세스 요약 저장
+        # 5-2. [NEW] CSV 파일 추출 및 저장
+        if all_logs_for_csv:
+            csv_file_name = f"{experiment_code}_process_2_1_inference_sentences.csv" # Epoch 1로 고정
+            csv_file_path = os.path.join(log_save_dir, csv_file_name)
+            
+            save_logs_to_csv(all_logs_for_csv, csv_file_path)
+            logger.info(f"Saved CSV log to {csv_file_path}")
+
+        # 5-3. 프로세스 요약 저장
         process_results = {
             "dictionary_stats": dict_stats,
             "metrics": aggregator.get_metrics(),

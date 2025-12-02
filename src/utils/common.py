@@ -5,6 +5,7 @@ import random
 import yaml
 import torch
 import numpy as np
+import pandas as pd
 
 def load_yaml(path: str) -> dict:
     """
@@ -41,3 +42,22 @@ def ensure_dir(path: str):
     if not os.path.exists(path):
         os.makedirs(path)
         print(f"📂 [Common] Created directory: {path}")
+
+def save_logs_to_csv(logs: list, save_path: str):
+    """
+    로그 리스트(Dict)를 CSV 파일로 저장합니다.
+    JSON 구조의 필드는 문자열로 변환되어 저장될 수 있습니다.
+    """
+    if not logs:
+        return
+
+    try:
+        # 데이터프레임 생성
+        df = pd.DataFrame(logs)
+        
+        # CSV 저장 (utf-8-sig: 엑셀 한글 깨짐 방지)
+        df.to_csv(save_path, index=False, encoding='utf-8-sig')
+        print(f"📄 Log saved to: {save_path}")
+        
+    except Exception as e:
+        print(f"❌ Failed to save CSV: {e}")

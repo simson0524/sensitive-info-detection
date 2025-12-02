@@ -1,3 +1,42 @@
 # configs/base_config.yaml
-# 기본 설정을 관리하는 yaml파일
 
+# ============================================================
+# [Base Config] 프로젝트 공통 불변 설정
+# ============================================================
+
+# 1. 경로 설정 (상대 경로 권장)
+path:
+  # 로그 저장소
+  log_dir: "outputs/logs"
+  # 체크포인트(모델 가중치) 저장소
+  checkpoint_dir: "outputs/checkpoints"
+  # 원본 데이터 저장소 (압축 파일 등)
+  raw_data_dir: "data/zip_raw_data"
+
+# 2. 학습 기본 설정 (변하지 않는 것들)
+train:
+  # 사용할 Pretrained Model (HuggingFace Hub)
+  model_name: "klue/roberta-base"
+  # 입력 시퀀스 최대 길이
+  max_len: 256
+  
+# 3. [중요] 프로젝트 전체에서 공유하는 라벨 맵
+# (NER 학습 및 검증 시 ID 변환에 사용됨)
+label_settings:
+  # 세트 A: 개인정보용
+  personal_data:
+    label_map:
+      일반정보: 0
+      준식별자: 1
+      개인정보: 2
+      
+  # 세트 B: 기밀정보용
+  confidential_data:
+    label_map:
+      일반정보: 0
+      기밀정보: 1
+
+# 4. 사전(Dictionary) 설정
+dictionary_init:
+  # Process_2에서 로드할 도메인 ID 목록 (기본값)
+  domain_ids: ["1", "2", "3", "4", "5"]

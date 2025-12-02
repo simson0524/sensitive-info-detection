@@ -34,13 +34,14 @@
 
 ## 📁 Project Structure
 > 프로젝트에서 사용된 소스코드 및 파일들의 구조입니다.
-
+'''text
 sensitive-info-detector/
 ├── assets/  # 프로젝트 관련 이미지 관리
 │
 ├── configs/
-│   ├── base_config.yaml        # 기본 설정을 관리하는 yaml파일 ✅
-│   └── experiment_config.yaml  # 실험별 하이퍼파라미터를 관리하는 파일 ✅
+│   ├── base_config.yaml          # 기본 설정을 관리하는 yaml파일 ✅
+│   ├── experiment_config.yaml    # 실험별 하이퍼파라미터를 관리하는 파일 ✅
+│   └── init_project_config.yaml  # run_init_project.py 설정을 관리하는 파일 ✅
 │
 ├── data/
 │   ├── zip_raw_data/  # 도메인별로 관리되는 압축폴더(원본 유지용 & 데이터 수정 절대 불가능)
@@ -59,8 +60,8 @@ sensitive-info-detector/
 │   │
 │   └── logs/  # 실험단위로 관리되는 실험 로그
 │       └── {experiment_code}/
-│           ├── {experiment_code}_{process_code}_{process_epoch}_inference_sentences.csv  # 각 프로세스에서 문장 단위 추론 결과 ❌
-│           ├── {experiment_code}_all_process_results.txt                                 # 실험 + 모든 프로세스의 결과를 순서대로 작성한 txt ❌
+│           ├── {experiment_code}_{process_code}_{process_epoch}_inference_sentences.csv  # 각 프로세스에서 문장 단위 추론 결과 ✅
+│           ├── {experiment_code}_all_process_results.txt                                 # 실험 + 모든 프로세스의 결과를 순서대로 작성한 txt ✅
 │           ├── {experiment_code}_loss_graph.png                                          # 모델 학습 중 train & valid loss 추이를 나타낸 그래프 ✅
 │           ├── {experiment_code}_label_count_graph.png                                   # 모델 학습 중 정탐오탐미탐 샘플 수 추이를 나타낸 그래프 ❌
 │           └── {experiment_code}_experiment_log.txt                                      # 실험 파이프라인 실행 중 발생하는 모든 print log ✅
@@ -107,9 +108,9 @@ sensitive-info-detector/
 │   └── metric_viewer.py ❌
 │
 ├── scripts/  # 실제 실행 진입점 (Entry Points)
-│   ├── init_project.py         # DB 생성 및 초기 사전 구축 (create_dbs + init_dictionary) ❌
-│   ├── run_experiment.py       # (run_pipeline.py) 실험 전체 파이프라인 실행 ❌
-│   └── run_new_domain_gen.py   # 신도메인 데이터 생성만 따로 돌릴 때 ❌
+│   ├── run_init_project.py           # DB 생성 및 초기 사전 구축 ✅
+│   ├── run_experiment.py             # 실험 전체 파이프라인 실행 ✅
+│   └── run_new_domain_generation.py  # 신도메인 데이터 생성만 따로 돌릴 때 ❌
 │
 ├── .env  # DB 접속 정보, 비밀키 🔄
 ├── .gitignore 🔄
