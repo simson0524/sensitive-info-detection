@@ -116,8 +116,8 @@ class NerDataset(Dataset):
                 if b_label_name not in self.ner_label2id:
                     continue
                 
-                b_label_id = self.ner_label_2_id[b_label_name]
-                i_label_id = self.ner_label_2_id[i_label_name]
+                b_label_id = self.ner_label2id[b_label_name]
+                i_label_id = self.ner_label2id[i_label_name]
 
                 # 4. Character Index -> Token Index 변환 로직
                 token_start = None
