@@ -62,8 +62,9 @@ sensitive-info-detector/
 │   │
 │   └── train_data/  # 도메인별로 관리되는 폴더(데이터와 정답지 포함 & 필요에 따라 데이터 수정 가능)
 │       └── {domain_id}_{domain_name}/
-│           ├── {domain_id}_{document_id}.json  # 문서단위 데이터 ❌
-│           ├── ...                             # 문서단위 데이터 ❌
+│           ├── {domain_id}_{document_id}.json  # 문서단위 데이터(여러개일 수 있음) ❌
+│           ├── confidence_score.csv            # 현재 도메인 기준 Z-score 데이터 ❌
+│           ├── z_score.csv                     # 현재 도메인 기준 Confidence-score 데이터 ❌
 │           └── answer_sheet.csv                # 정답지(단순 추론 대상 도메인이라면 없음) ❌
 │
 ├── outputs/  # 실험 결과 및 로그
