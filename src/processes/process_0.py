@@ -3,7 +3,8 @@
 import torch
 import os
 from torch.utils.data import DataLoader
-from transformers import AutoTokenizer, AutoModel, AdamW, get_linear_schedule_with_warmup
+from transformers import AutoTokenizer, AutoModel, get_linear_schedule_with_warmup
+from torch.optim import AdamW
 from sklearn.model_selection import train_test_split
 
 # Modules: Ner모델과 해당 모델에 데이터셋을 로드하기 위한 전처리 모듈
