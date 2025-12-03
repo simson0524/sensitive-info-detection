@@ -56,19 +56,17 @@ class NerDataset(Dataset):
         """
         Raw 데이터를 순회하며 모델 입력용 인스턴스(Token ID, Label ID 등)를 생성합니다.
         """
-        # tqdm으로 진행 상황 표시
         for sent_id, sample_data in tqdm(self.samples.items(), desc="Create NER instances"):
             sentence = sample_data['sentence']
-            # sentence_id는 key값으로 이미 넘어오므로 sample_data['id']와 동일함
+            # sent_id는 key값으로 넘어오므로 sample_data['id']와 동일
             
             # domain_id 파싱 (예: doc_01_005 -> 1)
-            # 실패 시 기본값 "0" 할당
             try:
                 domain_id = str(int(sent_id.split('_')[1]))
             except:
                 domain_id = "0"
             
-            # Optional 필드들 (없으면 기본값)
+            # Optional 필드들 (없으면 기본값 할당)
             sentence_seq = sample_data.get('sequence', 0)
             filename = sample_data.get('filename', "")
 
@@ -91,18 +89,21 @@ class NerDataset(Dataset):
             labels = [self.ner_label2id["O"]] * len(input_ids)
             
             # 3. Annotations 기반으로 라벨 할당 (Token Alignment)
-            # 해당 문장에 대한 정답 라벨 리스트 가져오기
             sentence_annotations = self.annotations.get(sent_id, [])
             
             for ann in sentence_annotations:
+                # [수정] JSON 구조 변경에 따라 키값 접근 (word, start, end, label)
                 ann_label = ann['label']
                 char_start = ann['start']
-                char_end = ann['end']
+                # [주의] end는 Python 슬라이싱 기준(Exclusive)이라고 가정
+                char_end = ann['end'] 
 
                 # [필터링] data_category에 따라 학습할 라벨 선별
                 if self.data_category == "personal_data":
+                    # 개인정보 데이터셋: '기밀정보'는 제외
                     if ann_label == "기밀정보": continue
                 elif self.data_category == "confidential_data":
+                    # 기밀정보 데이터셋: '개인정보', '준식별자'는 제외
                     if ann_label in ["준식별자", "개인정보"]: continue
                 
                 if ann_label == "일반정보": continue
@@ -115,7 +116,7 @@ class NerDataset(Dataset):
                 if b_label_name not in self.ner_label2id:
                     continue
                 
-                b_label_id = self.ner_label2id[b_label_name]
+                b_label_id = self.ner_label_2_id[b_label_name]
                 i_label_id = self.ner_label_2_id[i_label_name]
 
                 # 4. Character Index -> Token Index 변환 로직
@@ -126,15 +127,15 @@ class NerDataset(Dataset):
                     # 스페셜 토큰([CLS], [SEP] 등)은 offset이 (0,0)이므로 스킵
                     if offset_start == 0 and offset_end == 0: continue
                     
-                    # 시작 토큰 찾기
+                    # 시작 토큰 찾기 (char_start가 토큰 범위 안에 포함되는지)
                     if (token_start is None) and (offset_start <= char_start < offset_end):
                         token_start = i
                     
-                    # 끝 토큰 찾기 (char_end는 포함되지 않음, < 범위 주의)
+                    # 끝 토큰 찾기 (char_end 바로 앞까지가 토큰 범위에 포함되는지)
                     if (token_end is None) and (offset_start < char_end <= offset_end):
                         token_end = i 
 
-                # 매핑 실패 시 스킵
+                # 매핑 실패 시 스킵 (토큰화 과정에서 잘렸거나 매칭 안됨)
                 if token_start is None or token_end is None:
                     continue
 
@@ -166,7 +167,6 @@ class NerDataset(Dataset):
     def __getitem__(self, idx):
         item = self.instances[idx]
         
-        # PyTorch 텐서로 변환하여 반환
         return {
             "idx": torch.tensor(idx),
             "sentence": item['sentence'],
@@ -229,8 +229,10 @@ class NerPreprocessor:
     def load_data(self, data_dir: str) -> Tuple[Dict, Dict]:
         """
         [수정됨] 변경된 JSON 포맷에 맞춰 데이터 로드
-        - 각 파일은 리스트 형태일 수도 있고, JSON Lines(한 줄에 하나)일 수도 있음을 고려
-        - 여기서는 "하나의 파일에 여러 JSON 객체가 리스트로 들어있는 구조"를 가정
+        - 입력: [{sentence, id, filename, sequence, annotations:[...]}, ...] 형태의 JSON 리스트
+        - 출력:
+            samples = { "id": {sentence, filename, sequence, ...} }
+            annotations = { "id": [ {word, start, end, label}, ... ] }
         """
         samples = {}
         annotations = {}
@@ -247,20 +249,19 @@ class NerPreprocessor:
             path = os.path.join(data_dir, file_name)
             with open(path, "r", encoding='utf-8') as f:
                 try:
-                    # 전체 파일을 읽어서 JSON 파싱 (리스트 형태 예상)
-                    json_data = json.load(f)
+                    # 파일 전체를 하나의 JSON 리스트로 로드
+                    json_list = json.load(f)
                     
-                    # 만약 파일 하나가 단일 객체라면 리스트로 감싸줌
-                    if isinstance(json_data, dict):
-                        json_data = [json_data]
+                    # 파일 하나가 리스트가 아니라 단일 객체일 경우 리스트로 감싸줌
+                    if isinstance(json_list, dict):
+                        json_list = [json_list]
                     
-                    # 데이터 파싱 Loop
-                    for item in json_data:
-                        # 필수 필드 추출
+                    # 리스트 내의 각 문장 객체 처리
+                    for item in json_list:
                         sent_id = item.get('id')
                         if not sent_id: continue
                         
-                        # Sample 데이터 저장
+                        # 1. Sample 정보 저장
                         samples[sent_id] = {
                             'sentence': item.get('sentence', ''),
                             'id': sent_id,
@@ -268,7 +269,8 @@ class NerPreprocessor:
                             'sequence': item.get('sequence', 0)
                         }
                         
-                        # Annotation 데이터 저장 (리스트)
+                        # 2. Annotation 정보 저장 (리스트 그대로 저장)
+                        # item['annotations']는 [{word, start, end, label}, ...] 형태
                         annotations[sent_id] = item.get('annotations', [])
                         
                 except Exception as e:
