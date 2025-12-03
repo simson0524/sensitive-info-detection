@@ -5,15 +5,15 @@ import os
 from datetime import datetime
 from tqdm import tqdm
 
-# Modules: Regex Matcher & Aggregator
+# Modules
 from src.modules.regex_matcher import RegexMatcher
 from src.modules.result_aggregator import ResultAggregator
 
-# Database: DB 연결 및 CRUD 유틸리티
+# Database
 from src.database.connection import db_manager
 from src.database import crud
 
-# Utils: 파일 저장 관련 유틸리티
+# Utils
 from src.utils.common import ensure_dir, save_logs_to_csv
 
 def run_process_3(config: dict, context: dict):
@@ -22,6 +22,7 @@ def run_process_3(config: dict, context: dict):
     
     - 공통: RegexMatcher를 사용하여 문장 전체에서 PII 탐지 수행
     - Train 모드: BIO 태그를 파싱한 '정답 단어'와 정규식 탐지 결과를 1:1 비교 (정탐/오탐/미탐)
+                  (라벨 Normalization 적용: 개인정보_1 -> 개인정보)
     - Test 모드: 정답 없이 정규식으로 탐지된 결과를 모두 저장
     - 결과: DB 저장 및 CSV 추출
     """
@@ -31,7 +32,7 @@ def run_process_3(config: dict, context: dict):
     # ==============================================================================
     exp_conf = config['experiment']
     train_conf = config['train']
-    path_conf = config['path'] # [NEW] CSV 저장용
+    path_conf = config['path']
     
     experiment_code = exp_conf['experiment_code']
     data_category = exp_conf.get('data_category', 'personal_data')
@@ -47,8 +48,7 @@ def run_process_3(config: dict, context: dict):
     preprocessor = context['preprocessor']
     tokenizer = preprocessor.tokenizer
     
-    # BIO 라벨 맵 (ID <-> Name) {0: "O", 1: "B-개인정보", ...}
-    # Train 모드에서 정답(GT) 파싱을 위해 필요
+    # BIO 라벨 맵 (ID <-> Name) {0: "O", 1: "B-개인정보_1", ...}
     ner_id2label = preprocessor.ner_id2label 
 
     # RegexMatcher 초기화 (내부적으로 Detectors 로드)
@@ -59,18 +59,16 @@ def run_process_3(config: dict, context: dict):
     # ==============================================================================
     aggregator = ResultAggregator()
     start_time = datetime.now()
-    process_epoch = 1 # Rule-base는 1회 실행
+    process_epoch = 1
 
     logger.info("Starting regex detection loop...")
     
-    # 로그 저장 경로 생성 (CSV용)
     log_save_dir = os.path.join(path_conf['log_dir'], experiment_code)
     ensure_dir(log_save_dir)
     
     for batch in tqdm(valid_loader, desc="Regex Matching"):
         batch_size = len(batch['sentence'])
         
-        # Tensor -> List 변환
         input_ids_batch = batch['input_ids'].cpu().tolist()
         labels_batch = batch['labels'].cpu().tolist()
 
@@ -93,7 +91,6 @@ def run_process_3(config: dict, context: dict):
                 raw_label = res['label'] # "전화번호"
                 type_info = matcher.DETECTOR_TYPE_MAP.get(raw_label, {})
                 
-                # data_category 필터링
                 target_label = None
                 if data_category == "personal_data" and type_info.get("category") == "개인":
                     target_label = "개인정보" 
@@ -111,14 +108,20 @@ def run_process_3(config: dict, context: dict):
                 current_tags = labels_batch[i]
                 tokens = tokenizer.convert_ids_to_tokens(current_input_ids)
                 
-                # GT 파싱
+                # GT 파싱 (e.g., {'홍길동': '개인정보_1'})
                 gt_entities = _extract_entities_from_bio(tokens, current_tags, ner_id2label, tokenizer)
                 
-                # 타겟 라벨명
+                # [수정] 라벨 Normalization (개인정보_1 -> 개인정보)
+                normalized_gt_entities = {
+                    word: _normalize_label(label) 
+                    for word, label in gt_entities.items()
+                }
+                
                 expected_label_name = "개인정보" if data_category == "personal_data" else "기밀정보"
                 
+                # 타겟 카테고리만 필터링
                 target_gt_spans = {
-                    word: label for word, label in gt_entities.items()
+                    word: label for word, label in normalized_gt_entities.items()
                     if label == expected_label_name
                 }
 
@@ -163,9 +166,9 @@ def run_process_3(config: dict, context: dict):
     # ==============================================================================
     with db_manager.get_db() as session:
         total_logs = 0
-        all_logs_for_csv = [] # [NEW] CSV 저장을 위한 리스트
+        all_logs_for_csv = []
 
-        # 4-1. 문장 로그 저장 (Bulk Insert)
+        # 4-1. 문장 로그 저장
         for r_type in ["hit", "wrong", "mismatch"]:
             logs = aggregator.get_logs(r_type)
             if logs:
@@ -207,6 +210,14 @@ def run_process_3(config: dict, context: dict):
 # Helper Functions
 # ------------------------------------------------------------------------------
 
+def _normalize_label(label: str) -> str:
+    """
+    라벨 정규화: '개인정보_1' -> '개인정보'
+    """
+    if "_" in label and label.split("_")[-1].isdigit():
+        return label.rsplit("_", 1)[0]
+    return label
+
 def _extract_entities_from_bio(tokens, tags, id2label, tokenizer):
     """
     BIO 태그 리스트를 파싱하여 {단어: 라벨} 딕셔너리로 반환
@@ -229,7 +240,7 @@ def _extract_entities_from_bio(tokens, tags, id2label, tokenizer):
         elif label_name.startswith("I-") and current_label == label_name[2:]:
             current_tokens.append(token)
             
-        else: # "O"
+        else:
             if current_tokens:
                 word = tokenizer.convert_tokens_to_string(current_tokens)
                 entities[word] = current_label
@@ -268,5 +279,4 @@ def _add_log(aggregator, match_type, sent_id, fname, seq, origin_sent, word, dom
         "confidence_score": 1.0
     }
     
-    # 통계용 ID (임의값 0)
     aggregator.add_result(match_type, log_entry, 0)

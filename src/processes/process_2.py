@@ -21,11 +21,14 @@ def run_process_2(config: dict, context: dict):
     [Process 2] 사전(Dictionary) 매칭 검증 프로세스
     
     기 구축된 사전 데이터를 기반으로 PII를 탐지하고 성능을 검증합니다.
-    - 1단계: DB에서 해당 도메인의 사전을 메모리에 로드
-    - 2단계: 검증 데이터셋을 순회하며 사전 탐색 수행
-    - 3단계 (Train): 정답(GT)과 비교하여 정탐/오탐/미탐 검증 + 오탐 시 사전 업데이트
-    - 3단계 (Test): 문장 내 포함된 사전 단어 단순 탐지
-    - 4단계: 결과 로그 DB 저장 및 CSV 파일 추출
+    
+    주요 기능:
+    1. DB에서 해당 도메인의 사전을 메모리에 로드 (Dictionary Matcher)
+    2. 검증 데이터셋을 순회하며 사전 탐색 수행 (문장 전체 검색)
+    3. [Train Mode] 정답(GT)과 비교하여 정탐/오탐/미탐 검증
+       -> 오탐(Wrong) 발생 시, 해당 단어를 사전에서 즉시 무효화(Self-Cleaning)
+    4. [Test Mode] 문장 내 포함된 사전 단어 단순 탐지 및 저장
+    5. 결과 로그 DB 저장 및 CSV 파일 추출
 
     Args:
         config (dict): 설정 정보
@@ -44,7 +47,7 @@ def run_process_2(config: dict, context: dict):
     data_category = exp_conf.get('data_category', 'personal_data') # 'personal_data' or 'confidential_data'
     run_mode = exp_conf.get('run_mode', 'train')
     
-    # 로거 가져오기 (run_experiment.py에서 생성됨)
+    # 로거 가져오기
     logger = logging.getLogger(experiment_code)
     logger.info(f"🚀 [Process 2] Start Dictionary Matching Verification (Mode: {run_mode})")
 
@@ -74,7 +77,7 @@ def run_process_2(config: dict, context: dict):
         matcher = DictionaryMatcher(session)
         
         # 설정된 도메인 ID들에 해당하는 사전을 DB에서 로드하여 메모리에 캐싱
-        # (이 과정이 없으면 매번 DB를 조회해야 하므로 속도가 매우 느려짐)
+        # (Insertion > Deletion 인 유효 단어만 로드됨)
         matcher.load_dictionaries(dict_conf['domain_ids'], data_category)
         
         # 로드된 사전의 크기 등 통계 정보 가져오기
@@ -94,7 +97,7 @@ def run_process_2(config: dict, context: dict):
     log_save_dir = os.path.join(path_conf['log_dir'], experiment_code)
     ensure_dir(log_save_dir)
     
-    # [중요] 오탐 시 사전 업데이트를 위해 세션을 루프 밖에서 엽니다.
+    # [중요] 오탐 시 사전 업데이트(Deletion Count 증가)를 위해 세션을 루프 밖에서 엽니다.
     with db_manager.get_db() as session:
         
         for batch in tqdm(valid_loader, desc="Dictionary Matching"):
@@ -164,7 +167,7 @@ def run_process_2(config: dict, context: dict):
                                  word, domain_id, "O", target_label_name, experiment_code)
                         
                         # [핵심] 오탐 단어는 즉시 무효화 (Deletion Count = Insertion Count)
-                        # 다음번 로드부터는 제외됨
+                        # 다음번 로드부터는 (Insertion > Deletion) 조건을 만족하지 않아 제외됨
                         crud.invalidate_dictionary_item(
                             session, word, data_category, domain_id
                         )
@@ -214,7 +217,7 @@ def run_process_2(config: dict, context: dict):
         
         # 5-1. 문장 단위 상세 로그 저장 (Bulk Insert)
         total_logs = 0
-        all_logs_for_csv = [] # [NEW] CSV 저장을 위한 리스트
+        all_logs_for_csv = [] # CSV 저장을 위한 통합 리스트
 
         for r_type in ["hit", "wrong", "mismatch"]:
             logs = aggregator.get_logs(r_type)
@@ -229,7 +232,7 @@ def run_process_2(config: dict, context: dict):
 
         # 5-2. [NEW] CSV 파일 추출 및 저장
         if all_logs_for_csv:
-            csv_file_name = f"{experiment_code}_process_2_1_inference_sentences.csv" # Epoch 1로 고정
+            csv_file_name = f"{experiment_code}_process_2_{process_epoch}_inference_sentences.csv"
             csv_file_path = os.path.join(log_save_dir, csv_file_name)
             
             save_logs_to_csv(all_logs_for_csv, csv_file_path)
