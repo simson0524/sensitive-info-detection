@@ -6,7 +6,7 @@
 
 # 1. 실험 메타 정보
 experiment:
-  experiment_code: "test_05"   # 실험 고유 코드 (DB 키, 폴더명으로 사용됨)
+  experiment_code: "test_06"   # 실험 고유 코드 (DB 키, 폴더명으로 사용됨)
   previous_experiment_code: "test_02"       # 이전 실험을 잇는 경우 (옵션)
   data_category: "personal_data"       # "personal_data" or "confidential_data" (전처리기 필터링용)
   
