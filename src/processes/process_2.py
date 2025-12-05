@@ -240,30 +240,7 @@ def run_process_2(config: dict, context: dict):
         # [Step 5] 최종 DB 저장 및 CSV 추출
         # ==============================================================================
         
-        # 5-1. 문장 단위 상세 로그 저장 (Bulk Insert)
-        total_logs = 0
-        all_logs_for_csv = [] # CSV 저장을 위한 통합 리스트
-
-        for r_type in ["hit", "wrong", "mismatch"]:
-            logs = aggregator.get_logs(r_type)
-            if logs:
-                # DB에 대량 삽입
-                crud.bulk_insert_inference_sentences(session, logs)
-                # CSV용 리스트에 추가
-                all_logs_for_csv.extend(logs) 
-                total_logs += len(logs)
-        
-        logger.info(f"Saved {total_logs} inference logs to DB.")
-
-        # 5-2. [NEW] CSV 파일 추출 및 저장
-        if all_logs_for_csv:
-            csv_file_name = f"{experiment_code}_process_2_{process_epoch}_inference_sentences.csv"
-            csv_file_path = os.path.join(log_save_dir, csv_file_name)
-            
-            save_logs_to_csv(all_logs_for_csv, csv_file_path)
-            logger.info(f"Saved CSV log to {csv_file_path}")
-
-        # 5-3. 프로세스 요약 저장
+        # 5-1. 프로세스 요약 저장
         process_results = {
             "dictionary_stats": dict_stats,
             "metrics": aggregator.get_metrics(),
@@ -279,6 +256,29 @@ def run_process_2(config: dict, context: dict):
             "process_duration": duration,
             "process_results": process_results
         })
+
+        # 5-2. 문장 단위 상세 로그 저장 (Bulk Insert)
+        total_logs = 0
+        all_logs_for_csv = [] # CSV 저장을 위한 통합 리스트
+
+        for r_type in ["hit", "wrong", "mismatch"]:
+            logs = aggregator.get_logs(r_type)
+            if logs:
+                # DB에 대량 삽입
+                crud.bulk_insert_inference_sentences(session, logs)
+                # CSV용 리스트에 추가
+                all_logs_for_csv.extend(logs) 
+                total_logs += len(logs)
+        
+        logger.info(f"Saved {total_logs} inference logs to DB.")
+
+        # 5-3. [NEW] CSV 파일 추출 및 저장
+        if all_logs_for_csv:
+            csv_file_name = f"{experiment_code}_process_2_{process_epoch}_inference_sentences.csv"
+            csv_file_path = os.path.join(log_save_dir, csv_file_name)
+            
+            save_logs_to_csv(all_logs_for_csv, csv_file_path)
+            logger.info(f"Saved CSV log to {csv_file_path}")
         
     logger.info("[Process 2] Completed Successfully.")
     return context

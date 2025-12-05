@@ -168,24 +168,7 @@ def run_process_3(config: dict, context: dict):
         total_logs = 0
         all_logs_for_csv = []
 
-        # 4-1. 문장 로그 저장
-        for r_type in ["hit", "wrong", "mismatch"]:
-            logs = aggregator.get_logs(r_type)
-            if logs:
-                crud.bulk_insert_inference_sentences(session, logs)
-                all_logs_for_csv.extend(logs)
-                total_logs += len(logs)
-        
-        logger.info(f"Saved {total_logs} inference logs to DB.")
-
-        # [NEW] CSV 파일 추출
-        if all_logs_for_csv:
-            csv_file_name = f"{experiment_code}_process_3_{process_epoch}_inference_sentences.csv"
-            csv_file_path = os.path.join(log_save_dir, csv_file_name)
-            save_logs_to_csv(all_logs_for_csv, csv_file_path)
-            logger.info(f"Saved CSV log to {csv_file_path}")
-
-        # 4-2. 프로세스 결과 요약 저장
+        # 4-1. 프로세스 결과 요약 저장
         process_results = {
             "metrics": aggregator.get_metrics(),
             "detected_count": total_logs,
@@ -201,6 +184,23 @@ def run_process_3(config: dict, context: dict):
             "process_duration": duration,
             "process_results": process_results
         })
+
+        # 4-2. 문장 로그 저장
+        for r_type in ["hit", "wrong", "mismatch"]:
+            logs = aggregator.get_logs(r_type)
+            if logs:
+                crud.bulk_insert_inference_sentences(session, logs)
+                all_logs_for_csv.extend(logs)
+                total_logs += len(logs)
+        
+        logger.info(f"Saved {total_logs} inference logs to DB.")
+
+        # [NEW] CSV 파일 추출
+        if all_logs_for_csv:
+            csv_file_name = f"{experiment_code}_process_3_{process_epoch}_inference_sentences.csv"
+            csv_file_path = os.path.join(log_save_dir, csv_file_name)
+            save_logs_to_csv(all_logs_for_csv, csv_file_path)
+            logger.info(f"Saved CSV log to {csv_file_path}")
         
     logger.info("[Process 3] Completed Successfully.")
     return context
