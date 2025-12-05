@@ -145,14 +145,13 @@ def main():
             # crud.get_experiment가 dict를 반환하므로 .get() 사용 (이전 row_to_dict 적용됨)
             # 만약 datetime 객체라면 바로 사용
             
-            # Timezone 처리
             if isinstance(start_time, datetime):
-                if start_time.tzinfo:
-                    duration = (end_time - start_time).total_seconds()
-                else:
-                    duration = (end_time - start_time.replace(tzinfo=None)).total_seconds()
-            else:
-                duration = 0.0
+                # start_time이 timezone 정보(Aware)를 가지고 있다면 제거하여 Naive로 변환
+                # end_time은 datetime.now()로 생성되어 기본적으로 Naive 상태임
+                if start_time.tzinfo is not None:
+                    start_time = start_time.replace(tzinfo=None)
+                
+                duration = (end_time - start_time).total_seconds()
 
             # DB 업데이트
             crud.update_experiment(session, experiment_code, {
