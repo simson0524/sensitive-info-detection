@@ -46,4 +46,4 @@ label_settings:
 # 4. 사전(Dictionary) 설정
 dictionary_init:
   # Process_2에서 로드할 도메인 ID 목록 (기본값)
-  domain_ids: ["1", "2", "3", "4", "5"]
+  domain_ids: ['8']

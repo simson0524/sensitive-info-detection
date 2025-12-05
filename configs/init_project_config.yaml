@@ -10,8 +10,8 @@ project:
 
 dictionary_init:
   # 1. 구축할 도메인 ID (DB info_dictionary의 domain_id로 들어감)
-  target_domain_id: "1" 
+  target_domain_id: "8" 
   
   # 2. 정답지 CSV 파일 경로 (여기서 단어와 라벨을 추출)
   # CSV 컬럼 필수 포함: 'word', 'label'
-  source_csv_path: "data/train_data/1_finance/answer_sheet.csv"
+  source_csv_path: "/home/student1/sensitive-info-detection/data/train_data/008_contract_sheet/answer_sheet.csv"
