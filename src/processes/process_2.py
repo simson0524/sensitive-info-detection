@@ -14,7 +14,7 @@ from src.database.connection import db_manager
 from src.database import crud
 
 # Utils: 파일 저장 관련 유틸리티
-from src.utils.common import ensure_dir, save_logs_to_csv
+from src.utils.common import ensure_dir, save_logs_to_csv, normalize_label
 
 def run_process_2(config: dict, context: dict):
     """
@@ -65,9 +65,34 @@ def run_process_2(config: dict, context: dict):
     target_label_name = "개인정보" if data_category == "personal_data" else "기밀정보"
     
     # 통계용 라벨 ID (없으면 건너뜀)
-    pred_label_id = train_conf['label_map'].get(target_label_name)
+    label_settings = config['label_settings']
+    if data_category not in label_settings:
+        logger.error(f"❌ Unknown data_category: {data_category}")
+        return context
+        
+    label_map = label_settings[data_category]['label_map']
+    
+    # ID -> Label 변환용 (예: {1: "개인정보"})
+    id2label = {v: k for k, v in label_map.items()}
+
+    # 검증 대상 라벨 설정 (예: '개인정보')
+    target_label_name = "개인정보" if data_category == "personal_data" else "기밀정보"
+
+    pred_label_id = label_map.get(target_label_name) # 1. 정확히 일치 확인
+
     if pred_label_id is None:
-        logger.warning(f"⚠️ Target label '{target_label_name}' not found. Skipping Process 2.")
+        # 2. "_1" 붙여서 확인
+        pred_label_id = label_map.get(f"{target_label_name}_1")
+    
+    if pred_label_id is None:
+        # 3. 그래도 없으면 루프 돌며 Normalize해서 확인 (개인정보_2, _3 등 아무거나)
+        for lbl, pid in label_map.items():
+            if normalize_label(lbl) == target_label_name:
+                pred_label_id = pid
+                break
+
+    if pred_label_id is None:
+        logger.warning(f"⚠️ Target label '{target_label_name}' (or variants) not found in label_map. Skipping Process 2.")
         return context
 
     # ==============================================================================

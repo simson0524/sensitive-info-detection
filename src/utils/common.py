@@ -61,3 +61,22 @@ def save_logs_to_csv(logs: list, save_path: str):
         
     except Exception as e:
         print(f"❌ Failed to save CSV: {e}")
+
+def normalize_label(label: str) -> str:
+    """
+    라벨 이름에서 접미사(_숫자)를 제거하여 원본 카테고리명을 반환합니다.
+    
+    [동작 예시]
+    - "개인정보_1" -> "개인정보"
+    - "개인정보_2" -> "개인정보"
+    - "개인정보"   -> "개인정보" (변화 없음)
+    - "전화번호"   -> "전화번호"
+    """
+    if not label:
+        return label
+        
+    # "_"가 있고 마지막 부분이 숫자인 경우에만 분리
+    if "_" in label and label.rsplit("_", 1)[-1].isdigit():
+        return label.rsplit("_", 1)[0]
+    
+    return label

@@ -6,6 +6,7 @@ import os
 from typing import List, Dict, Any, Tuple
 from torch.utils.data import Dataset
 from transformers import PreTrainedTokenizerFast
+from src.utils.common import normalize_label
 from tqdm import tqdm
 
 # ==============================================================================
@@ -98,15 +99,17 @@ class NerDataset(Dataset):
                 # [주의] end는 Python 슬라이싱 기준(Exclusive)이라고 가정
                 char_end = ann['end'] 
 
-                # [필터링] data_category에 따라 학습할 라벨 선별
+                norm_label = normalize_label(ann_label)
+
+                # [핵심 변경] 라벨을 정규화해서 카테고리 판단 (유지보수성 UP)
                 if self.data_category == "personal_data":
                     # 개인정보 데이터셋: '기밀정보'는 제외
-                    if ann_label == "기밀정보": continue
+                    if norm_label == "기밀정보": continue
                 elif self.data_category == "confidential_data":
                     # 기밀정보 데이터셋: '개인정보', '준식별자'는 제외
-                    if ann_label in ["준식별자", "개인정보"]: continue
+                    if norm_label in ["준식별자", "개인정보"]: continue
                 
-                if ann_label == "일반정보": continue
+                if norm_label == "일반정보": continue
 
                 # BIO 태그 이름 생성
                 b_label_name = f"B-{ann_label}"
