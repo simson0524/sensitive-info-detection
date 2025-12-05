@@ -178,7 +178,7 @@ def run_process_1(config: dict, context: dict):
         # ==============================================================================
         exp_obj = crud.get_experiment(session, experiment_code)
         if exp_obj:
-            current_config = exp_obj.experiment_config or {}
+            current_config = exp_obj.get('experiment_config') or {}
             
             # 최고 성능 모델 경로 구성 (파일명 형식 일치시킴)
             best_f1_path = os.path.join(ckpt_save_dir, f"{experiment_code}_epoch_{best_f1_epoch}.pt")
