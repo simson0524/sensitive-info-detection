@@ -166,7 +166,7 @@ def run_process_2(config: dict, context: dict):
                     # 현재 타겟 카테고리(예: 개인정보)에 해당하는 GT만 필터링
                     target_gt_words = {
                         word for word, label in gt_entities.items() 
-                        if label == target_label_name
+                        if normalize_label(label) == target_label_name
                     }
 
                     # (2) 정탐/오탐/미탐 분류 (집합 연산)
