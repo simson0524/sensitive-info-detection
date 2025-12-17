@@ -6,8 +6,8 @@
 
 # 1. 실험 메타 정보
 experiment:
-  experiment_code: "test_07"   # 실험 고유 코드 (DB 키, 폴더명으로 사용됨)
-  previous_experiment_code: "test_02"       # 이전 실험을 잇는 경우 (옵션)
+  experiment_code: "251212_05"   # 실험 고유 코드 (DB 키, 폴더명으로 사용됨)
+  previous_experiment_code: null       # 이전 실험을 잇는 경우 (옵션)
   data_category: "personal_data"       # "personal_data" or "confidential_data" (전처리기 필터링용)
   
   # 실행 모드 ("train" 또는 "test")
@@ -24,7 +24,7 @@ experiment:
 # 2. 학습 하이퍼파라미터 (Base Config의 train 섹션을 덮어쓰거나 추가)
 train:
   seed: 42                   # 재현성을 위한 랜덤 시드
-  epochs: 1                  # 학습 반복 횟수
+  epochs: 10                 # 학습 반복 횟수
   batch_size: 32             # 배치 크기
   learning_rate: 5e-5        # 학습률
   validation_split: 0.2      # 전체 데이터 중 검증셋 비율 (0.2 = 20%)
@@ -33,10 +33,10 @@ train:
 # 3. 데이터 및 모델 경로 (실험별로 달라지는 경로)
 path:
   # 학습에 사용할 데이터셋 폴더 (JSON 파일들이 들어있는 곳)
-  data_dir: "/home/student1/sensitive-info-detection/data/train_data/008_contract_sheet"
+  data_dir: "/home/student1/sensitive-info-detection/data/train_data/002_patient_chart"
   
   # [Train Mode용] 이어서 학습할 체크포인트 (없으면 null)
-  resume_checkpoint: "/home/student1/sensitive-info-detection/outputs/checkpoints/test_02/test_02_epoch_10.pt" 
+  resume_checkpoint: "/home/student1/sensitive-info-detection/outputs/checkpoints/251212_04/251212_04_epoch_4.pt"
   # 예: "outputs/checkpoints/EXP_PREV/epoch_5.pt"
   
   # [Test Mode용] 추론에 사용할 학습된 모델 (run_mode: test일 때 필수)
