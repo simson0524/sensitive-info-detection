@@ -12,6 +12,8 @@ path:
   checkpoint_dir: "outputs/checkpoints"
   # 원본 데이터 저장소 (압축 파일 등)
   raw_data_dir: "data/zip_raw_data"
+  # 학습 데이터 저장소
+  train_data_root: "data/train_data"
 
 # 2. 학습 기본 설정 (변하지 않는 것들)
 train:

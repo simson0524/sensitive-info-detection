@@ -92,7 +92,7 @@ sensitive-info-detector/
 │   │   └── ner_roberta.py ✅
 │   │
 │   ├── modules/  # 각 탐지 로직의 핵심 모듈
-│   │   ├── z_score_calculator.py           # Z-score 계산 모듈 ❌
+│   │   ├── z_score_calculator.py           # Z-score 계산 모듈 ✅
 │   │   ├── confidence_score_calculator.py  # Confidence-score 계산 모듈 ❌
 │   │   ├── data_generator.py               # 신도메인 데이터 생성 모듈 ❌
 │   │   ├── result_aggregator.py            # 정탐/오탐/미팀 데이터 수집 & 통계 & 포맷팅 모듈 ✅
@@ -124,6 +124,7 @@ sensitive-info-detector/
 ├── scripts/  # 실제 실행 진입점 (Entry Points)
 │   ├── run_init_project.py           # DB 생성 및 초기 사전 구축 ✅
 │   ├── run_experiment.py             # 실험 전체 파이프라인 실행 ✅
+│   ├── run_update_z_score.py         # 전체 도메인의 z_score를 업데이트 ✅
 │   └── run_new_domain_generation.py  # 신도메인 데이터 생성만 따로 돌릴 때 ❌
 │
 ├── .env  # DB 접속 정보, 비밀키 ✅
