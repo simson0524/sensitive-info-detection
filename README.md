@@ -128,6 +128,7 @@ sensitive-info-detector/
 │   ├── run_init_project.py           # DB 생성 및 초기 사전 구축 ✅
 │   ├── run_experiment.py             # 실험 전체 파이프라인 실행 ✅
 │   ├── run_update_z_score.py         # 전체 도메인의 z_score를 업데이트 ✅
+│   ├── run_add_sub_annotation.py     # z-score or confidence score에 따라 sub_label을 추가 ✅
 │   └── run_new_domain_generation.py  # 신도메인 데이터 생성만 따로 돌릴 때 ❌
 │
 ├── .env  # DB 접속 정보, 비밀키 ✅
