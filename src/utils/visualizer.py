@@ -1,10 +1,14 @@
 # src/utils/visualizer.py
 
-import matplotlib.pyplot as plt
 import os
-import numpy as np
 import platform
-from matplotlib import font_manager, rc
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+import seaborn as sns
+import pandas as pd
+import numpy as np
+from matplotlib import rc
+from typing import List, Dict, Optional
 
 def set_korean_font():
     """
@@ -129,3 +133,67 @@ def plot_confusion_matrix_trends(cm_history: list, id2label: dict, save_dir: str
     plt.savefig(save_path)
     plt.close()
     print(f"📊 Label Count Graph saved to {save_path}")
+
+
+def plot_z_score_distribution(df: pd.DataFrame, save_dir: str):
+    """
+    Z-Score 분포를 시각화하여 저장합니다. (Global vs Local 비교)
+    
+    Args:
+        df (pd.DataFrame): 컬럼 ['Type', 'Score', 'Label', 'Domain']을 가진 데이터프레임
+                           - Type: 'Global Z-Score' or 'Local Z-Score'
+                           - Label: '개인정보', '준식별자' 등
+        save_dir (str): 저장할 디렉토리 경로 (보통 data/train_data/)
+    """
+    if df.empty:
+        print("⚠️ [Visualizer] Empty DataFrame provided for Z-Score plotting.")
+        return
+        
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir, exist_ok=True)
+
+    # Binning (점수 구간화)
+    bins = [-float('inf'), -1, 0, 1, 2, 3, 4, float('inf')]
+    labels = ['< -1', '-1~0', '0~1', '1~2', '2~3', '3~4', '4+']
+    df['Score_Bin'] = pd.cut(df['Score'], bins=bins, labels=labels)
+
+    # 스타일 설정
+    sns.set_style("whitegrid")
+    set_korean_font() # seaborn 스타일 적용 후 폰트 재설정
+
+    # 색상 팔레트
+    palette = {
+        '개인정보': '#ff6b6b',    # Red
+        '준식별자': '#feca57',    # Yellow
+        '기밀정보': '#48dbfb',    # Blue
+        'Non-labeled': '#c8d6e5', # Grey
+        'Other': '#c8d6e5'
+    }
+    
+    # 캔버스 생성
+    fig, axes = plt.subplots(1, 2, figsize=(18, 8))
+    
+    # 1. Global Plot
+    sns.countplot(
+        data=df[df['Type'] == 'Global Z-Score'],
+        x='Score_Bin', hue='Label', palette=palette,
+        ax=axes[0], edgecolor='black', linewidth=0.5
+    )
+    axes[0].set_title("Global Z-Score Distribution (Entire Corpus)", fontsize=14, fontweight='bold')
+    axes[0].set_ylabel("Word Count")
+
+    # 2. Local Plot
+    sns.countplot(
+        data=df[df['Type'] == 'Local Z-Score'],
+        x='Score_Bin', hue='Label', palette=palette,
+        ax=axes[1], edgecolor='black', linewidth=0.5
+    )
+    axes[1].set_title("Local Z-Score Distribution (Per Domain)", fontsize=14, fontweight='bold')
+    axes[1].set_ylabel("Word Count")
+
+    plt.tight_layout()
+    
+    save_path = os.path.join(save_dir, "z_score_distribution.png")
+    plt.savefig(save_path, dpi=300)
+    plt.close()
+    print(f"📊 [Visualizer] Z-Score Distribution saved to {save_path}")
