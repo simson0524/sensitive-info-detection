@@ -40,6 +40,7 @@ def run_process_0(config: dict) -> dict:
     train_conf = config['train']
     path_conf = config['path']
     label_settings = config['label_settings'] # [NEW] base_config에서 로드된 라벨 설정
+    target_device = train_conf['device']
     
     experiment_code = exp_conf['experiment_code']
     run_mode = exp_conf.get('run_mode', 'train') # 'train' or 'test'
@@ -50,7 +51,7 @@ def run_process_0(config: dict) -> dict:
 
     # 재현성을 위해 랜덤 시드 고정
     set_seed(train_conf.get('seed', 42))
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device(target_device if torch.cuda.is_available() else 'cpu')
 
     # [핵심] 데이터 카테고리에 따른 라벨 맵 선택
     data_category = exp_conf.get('data_category', 'personal_data')
