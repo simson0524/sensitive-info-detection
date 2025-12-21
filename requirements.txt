@@ -31,3 +31,5 @@ pyahocorasick
 seqeval
 SQLAlchemy
 python-dotenv
+streamlit
+konlpy
