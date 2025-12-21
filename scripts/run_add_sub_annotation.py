@@ -4,7 +4,6 @@ import sys
 import os
 import argparse
 import json
-import shutil
 import re
 import numpy as np
 from typing import List, Dict, Any
@@ -162,9 +161,6 @@ def process_json_file(file_path: str, z_score_data: Dict, tokenizer, mecab, sett
     except Exception as e:
         logger.error(f"Failed to load {file_path}: {e}")
         return
-
-    # [Safety] 파일 덮어쓰기 전 백업 생성 (.bak)
-    shutil.copy(file_path, file_path + ".bak")
 
     # 설정값 추출
     scope = settings['scope']
