@@ -137,43 +137,47 @@ def plot_confusion_matrix_trends(cm_history: list, id2label: dict, save_dir: str
 
 def plot_z_score_distribution(df: pd.DataFrame, save_dir: str):
     """
-    Z-Score 분포를 시각화하여 저장합니다. (Global vs Local 비교)
-    
-    Args:
-        df (pd.DataFrame): 컬럼 ['Type', 'Score', 'Label', 'Domain']을 가진 데이터프레임
-                           - Type: 'Global Z-Score' or 'Local Z-Score'
-                           - Label: '개인정보', '준식별자' 등
-        save_dir (str): 저장할 디렉토리 경로 (보통 data/train_data/)
+    [기능 Update] Z-Score 분포를 0.2 단위로 정밀하게 시각화합니다.
     """
     if df.empty:
-        print("⚠️ [Visualizer] Empty DataFrame provided for Z-Score plotting.")
+        print("⚠️ [Visualizer] Empty DataFrame provided.")
         return
         
     if not os.path.exists(save_dir):
         os.makedirs(save_dir, exist_ok=True)
 
-    # Binning (점수 구간화)
-    bins = [-float('inf'), -1, 0, 1, 2, 3, 4, float('inf')]
-    labels = ['< -1', '-1~0', '0~1', '1~2', '2~3', '3~4', '4+']
+    # 1. Binning (0.2 단위로 구간 설정)
+    # 범위: -2.0 ~ 4.0 (대부분의 Z-Score가 이 안에 존재)
+    # np.arange(시작, 끝, 간격)
+    bin_edges = np.arange(-2.0, 4.2, 0.2) 
+    
+    # 구간보다 작은/큰 값 처리를 위해 -inf, inf 추가
+    bins = [-float('inf')] + list(bin_edges) + [float('inf')]
+    
+    # 라벨 자동 생성 (예: '-1.0~-0.8')
+    labels = ['< -2.0']
+    for i in range(len(bin_edges)-1):
+        labels.append(f"{bin_edges[i]:.1f}~{bin_edges[i+1]:.1f}")
+    labels.append('4.0+')
+    
+    # 2. 데이터 구간화
     df['Score_Bin'] = pd.cut(df['Score'], bins=bins, labels=labels)
 
-    # 스타일 설정
+    # 3. 스타일 설정
     sns.set_style("whitegrid")
-    set_korean_font() # seaborn 스타일 적용 후 폰트 재설정
+    set_korean_font()
 
-    # 색상 팔레트
     palette = {
         '개인정보': '#ff6b6b',    # Red
         '준식별자': '#feca57',    # Yellow
         '기밀정보': '#48dbfb',    # Blue
-        'Non-labeled': '#c8d6e5', # Grey
-        'Other': '#c8d6e5'
+        'Non-labeled': '#c8d6e5' # Grey
     }
     
-    # 캔버스 생성
-    fig, axes = plt.subplots(1, 2, figsize=(18, 8))
+    # 4. 그래프 그리기 (막대그래프)
+    fig, axes = plt.subplots(1, 2, figsize=(24, 8)) # 가로 길이 늘림 (구간이 많아서)
     
-    # 1. Global Plot
+    # Global Plot
     sns.countplot(
         data=df[df['Type'] == 'Global Z-Score'],
         x='Score_Bin', hue='Label', palette=palette,
@@ -181,8 +185,9 @@ def plot_z_score_distribution(df: pd.DataFrame, save_dir: str):
     )
     axes[0].set_title("Global Z-Score Distribution (Entire Corpus)", fontsize=14, fontweight='bold')
     axes[0].set_ylabel("Word Count")
+    axes[0].tick_params(axis='x', rotation=45) # X축 라벨 45도 회전
 
-    # 2. Local Plot
+    # Local Plot
     sns.countplot(
         data=df[df['Type'] == 'Local Z-Score'],
         x='Score_Bin', hue='Label', palette=palette,
@@ -190,6 +195,7 @@ def plot_z_score_distribution(df: pd.DataFrame, save_dir: str):
     )
     axes[1].set_title("Local Z-Score Distribution (Per Domain)", fontsize=14, fontweight='bold')
     axes[1].set_ylabel("Word Count")
+    axes[1].tick_params(axis='x', rotation=45)
 
     plt.tight_layout()
     
