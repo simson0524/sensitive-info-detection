@@ -8,23 +8,27 @@ from typing import List, Dict, Optional, Set, Any
 from sklearn.feature_extraction.text import TfidfVectorizer
 from collections import defaultdict
 from transformers import AutoTokenizer
-from konlpy.tag import Okt  # [필수] 형태소 분석기 재도입
+
+# [변경] Sudo 권한 없이 설치 가능한 Mecab 라이브러리
+from mecab import MeCab 
 from src.utils.logger import setup_experiment_logger 
 
 class ZScoreCalculator:
     """
     [Z-Score Calculator]
-    BERT Tokenizer의 재결합 능력과 KoNLPy의 형태소 분석 능력을 결합하여
-    '조사/어미가 제거된 순수 의미 단어'의 통계적 중요도를 계산합니다.
+    BERT Tokenizer의 '재결합(Reconstruction)' 능력과 MeCab의 '형태소 분석(POS Tagging)' 능력을 결합하여,
+    문맥상 의미 있는 알맹이 단어(명사, 숫자, 외국어 등)의 통계적 중요도(Z-Score)를 계산합니다.
     """
 
     def __init__(self, data_root_dir: str = 'data/train_data', model_name: str = "klue/roberta-base"):
+        # 1. 독립적인 로거 생성 (로그 경로: outputs/logs/Z_SCORE_CALC)
         self.logger = setup_experiment_logger(experiment_code="Z_SCORE_CALC")
+        
         self.data_root = data_root_dir
         self.documents: List[Dict[str, Any]] = [] 
         self.domain_target_vocab: Dict[str, Optional[Set[str]]] = {}
         
-        # 1. BERT Tokenizer 로드 (서브워드 분해용)
+        # 2. BERT Tokenizer 로드 (Subword 분해용)
         self.logger.info(f"[ZScore] Loading tokenizer from: {model_name}")
         try:
             self.tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -34,31 +38,38 @@ class ZScoreCalculator:
         
         self.special_tokens = set(self.tokenizer.all_special_tokens)
         
-        # 2. KoNLPy Okt 로드 (품사 판별 및 조사 제거용)
-        self.logger.info("[ZScore] Initializing KoNLPy Okt for POS tagging...")
-        self.okt = Okt()
+        # 3. MeCab 초기화 (python-mecab-ko 사용)
+        self.logger.info("[ZScore] Initializing MeCab (python-mecab-ko)...")
+        try:
+            self.mecab = MeCab()
+        except Exception as e:
+            self.logger.critical("Failed to initialize MeCab. Please run 'pip install python-mecab-ko'")
+            raise e
+        
+        # [최적화] 형태소 분석 결과 캐시 (메모이제이션)
+        # 반복되는 단어(예: '삼성전자')의 중복 분석을 방지하여 속도를 비약적으로 향상시킵니다.
+        self.pos_cache: Dict[str, List[str]] = {}
 
     def _smart_tokenizer(self, text: str) -> List[str]:
         """
         [Advanced Hybrid Tokenizer]
-        1. RoBERTa Tokenize: 문장을 모델의 서브워드 단위로 쪼갬
-        2. Merge: '##' 토큰을 앞 단어와 결합하여 어절(Eojeol) 단위 복원
-        3. POS Check: 복원된 어절을 Okt로 분석하여 조사(Josa) 등을 제거하고 명사/숫자 등만 추출
+        1. Tokenize: BERT 모델 기준으로 문장을 쪼갭니다.
+        2. Merge: '##'으로 시작하는 서브워드를 앞 단어와 합쳐 온전한 어절로 복원합니다.
+        3. Filter: 복원된 어절을 MeCab으로 분석해 조사 등을 제거하고 핵심 품사만 남깁니다.
         
-        Example:
-            Input: "삼성전자가 2024년에"
-            1. RoBERTa: ['삼성', '##전자', '##가', '2024', '##년', '##에']
-            2. Merge:   ['삼성전자가', '2024년에']
-            3. Okt POS: [('삼성전자', 'Noun'), ('가', 'Josa')], [('2024', 'Number'), ('년', 'Noun'), ('에', 'Josa')]
-            4. Filter:  ['삼성전자', '2024', '년']
+        Returns:
+            List[str]: 정제된 핵심 단어 리스트
         """
         if not isinstance(text, str):
             return []
         
-        # --- Step 1 & 2: Tokenize & Reconstruct (Merge ##) ---
+        # --- Step 1: RoBERTa Tokenization ---
+        # 예: "삼성전자가" -> ['삼성', '##전자', '##가']
         raw_tokens = self.tokenizer.tokenize(text)
         merged_chunks = []
         
+        # --- Step 2: Merge Subwords (Reconstruction) ---
+        # 예: ['삼성', '##전자', '##가'] -> ['삼성전자가']
         for t in raw_tokens:
             if t in self.special_tokens: continue
             
@@ -70,29 +81,42 @@ class ZScoreCalculator:
             else:
                 merged_chunks.append(t)
         
-        # --- Step 3 & 4: Morphological Analysis & Filtering ---
+        # --- Step 3: MeCab POS Filtering (with Cache) ---
         final_tokens = []
         
-        # 분석할 의미 있는 품사 정의
-        # 1,2,3(명사, 숫자 등)은 살리고 4(조사)는 버리는 기준
-        TARGET_TAGS = {'Noun', 'Number', 'Alpha', 'Foreign'} 
+        # 추출할 핵심 품사 (MeCab 태그 기준)
+        # NNG:일반명사, NNP:고유명사, NNB:의존명사, NR:수사, SL:외국어, SN:숫자
+        TARGET_TAGS = {'NNG', 'NNP', 'NNB', 'NR', 'SL', 'SN'} 
         
         for chunk in merged_chunks:
-            # 복원된 덩어리(예: "삼성전자가")를 형태소 분석
-            # norm=True: 오타 보정, stem=True: 어간 추출
+            # 3-1. 캐시 확인 (이미 분석한 단어면 바로 반환)
+            if chunk in self.pos_cache:
+                final_tokens.extend(self.pos_cache[chunk])
+                continue
+
+            # 3-2. 캐시에 없으면 분석 수행
             try:
-                pos_results = self.okt.pos(chunk, stem=True, norm=True)
+                valid_words = []
+                pos_results = self.mecab.pos(chunk)
                 
                 for word, tag in pos_results:
+                    # 태그가 타겟 품사에 속하는지 확인
                     if tag in TARGET_TAGS:
-                        final_tokens.append(word)
+                        valid_words.append(word)
+                
+                # 3-3. 결과 캐싱
+                self.pos_cache[chunk] = valid_words
+                final_tokens.extend(valid_words)
+                
             except Exception:
-                # 분석 실패 시(특수문자 등) 원본 청크 그대로 사용 여부 결정 (여기선 스킵)
                 pass
                 
         return final_tokens
 
     def load_all_data(self):
+        """
+        데이터 로드 및 정답지(CSV) 전처리 프로세스
+        """
         abs_root = os.path.abspath(self.data_root)
         self.logger.info(f"[ZScore] Scanning data root: {abs_root}")
         
@@ -107,21 +131,23 @@ class ZScoreCalculator:
             if not os.path.isdir(domain_path) or domain_dir.startswith('.'):
                 continue
             
-            # --- Answer Sheet CSV ---
+            # --- Answer Sheet CSV 처리 ---
             answer_sheet_path = os.path.join(domain_path, 'answer_sheet.csv')
             target_vocab = None
             
             if os.path.exists(answer_sheet_path):
                 try:
                     df = pd.read_csv(answer_sheet_path)
+                    # 컬럼명 호환성 체크
                     if 'word' in df.columns: col_data = df['word']
                     else: col_data = df.iloc[:, 0]
                     
                     raw_words = col_data.dropna().astype(str).tolist()
                     processed_vocab = set()
                     
+                    # [중요] 정답지 단어도 동일한 로직(Tokenize->Merge->Filter)을 거쳐야
+                    # 문서에서 분석된 단어와 Key가 일치하게 됩니다.
                     for w in raw_words:
-                        # 정답지 단어도 동일한 필터링 과정을 거쳐야 매칭됨
                         tokens = self._smart_tokenizer(w)
                         processed_vocab.update(tokens)
                         
@@ -135,8 +161,9 @@ class ZScoreCalculator:
             
             self.domain_target_vocab[domain_dir] = target_vocab
 
-            # --- Load JSON Docs ---
+            # --- JSON 문서 로드 ---
             for file_name in os.listdir(domain_path):
+                # z_score.json 파일은 제외
                 if not file_name.endswith('.json') or file_name == 'z_score.json':
                     continue
                 
@@ -155,12 +182,15 @@ class ZScoreCalculator:
                     pass
 
     def _compute_stats(self, docs_subset: List[Dict], vocab: Optional[Set[str]] = None) -> List[Dict[str, float]]:
+        """
+        TF-IDF 및 Z-Score 계산 엔진
+        """
         if not docs_subset:
             return []
 
         corpus = [d['full_text'] for d in docs_subset]
         
-        # KoNLPy 처리를 위해 lowercase=False 유지 (영어 대소문자 구분을 위해)
+        # [중요] lowercase=False: 대소문자 구분을 유지하여 고유명사(DNA, CEO 등)를 정확히 식별
         vectorizer = TfidfVectorizer(
             tokenizer=self._smart_tokenizer,
             token_pattern=None,
@@ -178,7 +208,7 @@ class ZScoreCalculator:
         
         means = np.mean(dense_tfidf, axis=0)
         stds = np.std(dense_tfidf, axis=0)
-        stds[stds == 0] = 1.0 
+        stds[stds == 0] = 1.0 # Zero Division 방지
         
         z_matrix = (dense_tfidf - means) / stds
         
@@ -186,10 +216,12 @@ class ZScoreCalculator:
         for i in range(len(docs_subset)):
             doc_scores = {}
             if vocab is not None:
+                # [Case A] 정답지가 있는 경우: 점수가 0이라도 모든 타겟 단어 기록
                 for idx, word in enumerate(feature_names):
                     score = z_matrix[i][idx]
                     doc_scores[word] = round(float(score), 4)
             else:
+                # [Case B] 정답지가 없는 경우: 실제 등장한 단어만 기록 (용량 절약)
                 nonzero_indices = dense_tfidf[i].nonzero()[0]
                 for idx in nonzero_indices:
                     word = feature_names[idx]
@@ -201,15 +233,21 @@ class ZScoreCalculator:
         return results
 
     def run(self):
+        """
+        전체 실행 파이프라인
+        1. 데이터 로드 -> 2. Global Z-Score -> 3. Local Z-Score -> 4. 저장
+        """
         self.load_all_data()
         if not self.documents: return
 
+        # --- Global Z-Score ---
         self.logger.info("[ZScore] Calculating Global Z-scores...")
         global_scores_full = self._compute_stats(self.documents, vocab=None)
         
         for i, doc in enumerate(self.documents):
             target_vocab = self.domain_target_vocab.get(doc['domain_dir'])
             if target_vocab:
+                # 정답지 단어는 점수가 없어도(0.0) 강제로 가져와서 저장
                 filtered = {}
                 for target_token in target_vocab:
                     score = global_scores_full[i].get(target_token, 0.0)
@@ -218,6 +256,7 @@ class ZScoreCalculator:
             else:
                 doc['global_z'] = global_scores_full[i]
 
+        # --- Local Z-Score ---
         self.logger.info("[ZScore] Calculating Local Z-scores...")
         domain_groups = defaultdict(list)
         doc_indices_map = defaultdict(list)
@@ -235,7 +274,7 @@ class ZScoreCalculator:
                 self.documents[original_idx]['local_z'] = score_dict
 
         self._save_results()
-        
+
     def _save_results(self):
         self.logger.info("[ZScore] Saving results...")
         results_by_domain = defaultdict(dict)

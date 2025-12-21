@@ -6,8 +6,11 @@ import argparse
 import json
 import pandas as pd
 from transformers import AutoTokenizer
-from konlpy.tag import Okt # [필수] Okt 추가
 
+# [변경] Sudo 없이 사용 가능한 Mecab
+from mecab import MeCab 
+
+# Path Setup
 current_dir = os.path.dirname(os.path.abspath(__file__)) 
 project_root = os.path.dirname(current_dir)              
 sys.path.append(project_root)
@@ -17,26 +20,33 @@ from src.utils.common import load_yaml
 from src.utils.logger import setup_experiment_logger 
 from src.utils.visualizer import plot_z_score_distribution
 
+# 전역 로거 설정
 logger = setup_experiment_logger("Z_SCORE_UPDATE")
 
 def normalize_label(raw_label: str) -> str:
+    """
+    세부 라벨(예: 개인정보_1)을 대분류(개인정보)로 통합
+    """
     raw_label = str(raw_label).strip()
     if "개인정보" in raw_label: return "개인정보"
     elif "준식별자" in raw_label: return "준식별자"
     elif "기밀정보" in raw_label: return "기밀정보"
     else: return "Non-labeled"
 
-def process_tokens_with_okt(tokenizer, okt, text: str) -> list:
+def process_tokens_with_mecab(tokenizer, mecab, text: str, cache: dict) -> list:
     """
-    [Helper] Calculator의 _smart_tokenizer와 동일한 로직
-    Tokenize -> Merge -> Okt POS Check -> Filtering
+    [Data Matching Helper]
+    ZScoreCalculator의 _smart_tokenizer와 동일한 로직을 수행합니다.
+    CSV의 단어를 이 함수로 처리해야 JSON의 Key와 정확히 매칭됩니다.
+    
+    1. RoBERTa Tokenize -> 2. Merge '##' -> 3. MeCab POS Filter
     """
-    # 1. RoBERTa Tokenize
+    # 1. Tokenize
     raw_tokens = tokenizer.tokenize(str(text))
     special_tokens = set(tokenizer.all_special_tokens)
     merged_chunks = []
     
-    # 2. Merge ##
+    # 2. Merge
     for t in raw_tokens:
         if t in special_tokens: continue
         if t.startswith("##"):
@@ -45,17 +55,27 @@ def process_tokens_with_okt(tokenizer, okt, text: str) -> list:
         else:
             merged_chunks.append(t)
             
-    # 3. Okt POS & Filter
     final_tokens = []
-    TARGET_TAGS = {'Noun', 'Number', 'Alpha', 'Foreign'}
+    # 3. MeCab POS Filter
+    TARGET_TAGS = {'NNG', 'NNP', 'NNB', 'NR', 'SL', 'SN'}
     
     for chunk in merged_chunks:
+        # 캐시 확인 (속도 최적화)
+        if chunk in cache:
+            final_tokens.extend(cache[chunk])
+            continue
+            
         try:
-            # Calculator와 동일 옵션 (stem=True, norm=True)
-            pos_results = okt.pos(chunk, stem=True, norm=True)
+            valid_words = []
+            pos_results = mecab.pos(chunk)
+            
             for word, tag in pos_results:
                 if tag in TARGET_TAGS:
-                    final_tokens.append(word)
+                    valid_words.append(word)
+            
+            # 캐시 저장
+            cache[chunk] = valid_words
+            final_tokens.extend(valid_words)
         except:
             pass
             
@@ -67,11 +87,14 @@ def create_z_score_dataframe(data_root: str, model_name: str) -> pd.DataFrame:
     
     try:
         tokenizer = AutoTokenizer.from_pretrained(model_name)
-        okt = Okt() # 매핑을 위한 Okt 인스턴스
+        mecab = MeCab() # Mecab 인스턴스 생성
     except Exception as e:
         logger.warning(f"Could not load resources: {e}")
         return pd.DataFrame()
 
+    # 시각화용 로컬 캐시 (함수 실행 동안만 유지)
+    viz_pos_cache = {} 
+    
     TARGET_CATEGORIES = {'개인정보', '준식별자', '기밀정보'}
 
     if not os.path.exists(data_root): return pd.DataFrame()
@@ -83,6 +106,7 @@ def create_z_score_dataframe(data_root: str, model_name: str) -> pd.DataFrame:
         token_label_map = {}
         csv_path = os.path.join(domain_path, 'answer_sheet.csv')
         
+        # --- [Step A] Label Mapping ---
         if os.path.exists(csv_path):
             try:
                 df_csv = pd.read_csv(csv_path)
@@ -96,15 +120,17 @@ def create_z_score_dataframe(data_root: str, model_name: str) -> pd.DataFrame:
                     cat_label = normalize_label(raw_label)
                     final_label = cat_label if cat_label in TARGET_CATEGORIES else 'Non-labeled'
 
-                    # [핵심] CSV 단어도 (Merge -> Okt) 과정을 거쳐서 알맹이만 추출
-                    refined_tokens = process_tokens_with_okt(tokenizer, okt, raw_word)
+                    # [핵심] CSV 단어 -> 정제된 토큰으로 변환 (캐시 사용)
+                    refined_tokens = process_tokens_with_mecab(tokenizer, mecab, raw_word, viz_pos_cache)
                     
+                    # 정제된 토큰들에 라벨 부여
                     for t in refined_tokens:
                         token_label_map[t] = final_label
                             
             except Exception as e:
                 logger.warning(f"Failed to process CSV in {domain_dir}: {e}")
 
+        # --- [Step B] JSON Merge ---
         json_path = os.path.join(domain_path, 'z_score.json')
         if not os.path.exists(json_path): continue
 
@@ -113,12 +139,14 @@ def create_z_score_dataframe(data_root: str, model_name: str) -> pd.DataFrame:
                 z_data = json.load(f)
 
             for doc_id, scores in z_data.items():
+                # Global Z-Score
                 for word, score in scores.get('global', {}).items():
                     all_records.append({
                         'Domain': domain_dir, 'Type': 'Global Z-Score',
                         'Word': word, 'Score': score,
                         'Label': token_label_map.get(word, 'Non-labeled')
                     })
+                # Local Z-Score
                 for word, score in scores.get('local', {}).items():
                     all_records.append({
                         'Domain': domain_dir, 'Type': 'Local Z-Score',
@@ -130,10 +158,12 @@ def create_z_score_dataframe(data_root: str, model_name: str) -> pd.DataFrame:
     return pd.DataFrame(all_records)
 
 def main():
+    # 1. Argument Parsing
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="configs/base_config.yaml")
     args = parser.parse_args()
 
+    # 2. Config Loading
     model_name = "klue/roberta-base"
     train_data_root = "data/train_data"
 
@@ -148,7 +178,8 @@ def main():
     if not os.path.isabs(train_data_root):
         train_data_root = os.path.join(project_root, train_data_root)
 
-    logger.info("=== Starting Z-Score Update (Hybrid Tokenization) ===")
+    # 3. Run Calculation
+    logger.info("=== Starting Z-Score Update (Mecab + Cache) ===")
     try:
         calculator = ZScoreCalculator(data_root_dir=train_data_root, model_name=model_name)
         calculator.run()
@@ -157,6 +188,7 @@ def main():
         logger.critical(f"Error: {e}", exc_info=True)
         return
 
+    # 4. Run Visualization
     logger.info("=== Starting Visualization ===")
     try:
         df_result = create_z_score_dataframe(data_root=train_data_root, model_name=model_name)
