@@ -229,10 +229,9 @@ class NerPreprocessor:
         print(f"[NerPreprocessor] BIO Labels Created: {len(ner_l2i)} tags")
         return ner_l2i, ner_i2l
 
-    def load_data(self, data_dir: str) -> Tuple[Dict, Dict]:
+    def load_data(self, data_dir: List[str]) -> Tuple[Dict, Dict]:
         """
-        [수정됨] 변경된 JSON 포맷에 맞춰 데이터 로드
-        - 입력: [{sentence, id, filename, sequence, annotations:[...]}, ...] 형태의 JSON 리스트
+        - 입력: data_dir (str 리스트) -> 예: ["./data/train", "./data/extra"]
         - 출력:
             samples = { "id": {sentence, filename, sequence, ...} }
             annotations = { "id": [ {word, start, end, label}, ... ] }
@@ -240,44 +239,53 @@ class NerPreprocessor:
         samples = {}
         annotations = {}
         
-        print(f"[NerPreprocessor] Loading JSON from {data_dir}...")
-        if not os.path.exists(data_dir):
-             print(f"[Warning] Directory not found: {data_dir}")
-             return samples, annotations
+        # 입력이 단일 문자열로 잘못 들어왔을 경우를 대비한 방어 코드
+        if isinstance(data_dir, str):
+            data_dir = [data_dir]
 
-        for file_name in os.listdir(data_dir):
-            if not file_name.endswith(".json"):
-                continue
+        # 전달받은 디렉토리 리스트를 순회
+        for d_path in data_dir:
+            print(f"[NerPreprocessor] Loading JSON from {d_path}...")
+            
+            if not os.path.exists(d_path):
+                print(f"[Warning] Directory not found: {d_path}")
+                continue # 해당 디렉토리가 없으면 건너뛰고 다음 디렉토리 진행
+
+            for file_name in os.listdir(d_path):
+                if not file_name.endswith(".json"):
+                    continue
                 
-            path = os.path.join(data_dir, file_name)
-            with open(path, "r", encoding='utf-8') as f:
-                try:
-                    # 파일 전체를 하나의 JSON 리스트로 로드
-                    json_list = json.load(f)
-                    
-                    # 파일 하나가 리스트가 아니라 단일 객체일 경우 리스트로 감싸줌
-                    if isinstance(json_list, dict):
-                        json_list = [json_list]
-                    
-                    # 리스트 내의 각 문장 객체 처리
-                    for item in json_list:
-                        sent_id = item.get('id')
-                        if not sent_id: continue
+                # d_path를 기준으로 경로 결합
+                path = os.path.join(d_path, file_name)
+                
+                with open(path, "r", encoding='utf-8') as f:
+                    try:
+                        # 파일 전체를 하나의 JSON 리스트로 로드
+                        json_list = json.load(f)
                         
-                        # 1. Sample 정보 저장
-                        samples[sent_id] = {
-                            'sentence': item.get('sentence', ''),
-                            'id': sent_id,
-                            'filename': item.get('filename', ''),
-                            'sequence': item.get('sequence', 0)
-                        }
+                        # 파일 하나가 리스트가 아니라 단일 객체일 경우 리스트로 감싸줌
+                        if isinstance(json_list, dict):
+                            json_list = [json_list]
                         
-                        # 2. Annotation 정보 저장 (리스트 그대로 저장)
-                        # item['annotations']는 [{word, start, end, label}, ...] 형태
-                        annotations[sent_id] = item.get('annotations', [])
-                        
-                except Exception as e:
-                    print(f"[Error] Failed to load {file_name}: {e}")
+                        # 리스트 내의 각 문장 객체 처리
+                        for item in json_list:
+                            sent_id = item.get('id')
+                            if not sent_id: continue
+                            
+                            # 1. Sample 정보 저장
+                            # 주의: 서로 다른 폴더에 같은 id가 있다면 덮어씌워집니다.
+                            samples[sent_id] = {
+                                'sentence': item.get('sentence', ''),
+                                'id': sent_id,
+                                'filename': item.get('filename', ''),
+                                'sequence': item.get('sequence', 0)
+                            }
+                            
+                            # 2. Annotation 정보 저장
+                            annotations[sent_id] = item.get('annotations', [])
+                            
+                    except Exception as e:
+                        print(f"[Error] Failed to load {file_name} in {d_path}: {e}")
                     
         return samples, annotations
 

@@ -32,8 +32,9 @@ train:
 
 # 3. 데이터 및 모델 경로 (실험별로 달라지는 경로)
 path:
-  # 학습에 사용할 데이터셋 폴더 (JSON 파일들이 들어있는 곳)
-  data_dir: "/home/student1/sensitive-info-detection/data/train_data/002_patient_chart"
+  # 학습에 사용할 데이터셋 폴더 리스트 (JSON 파일들이 들어있는 곳)
+  data_dir: 
+    - "/home/student1/sensitive-info-detection/data/train_data/002_patient_chart"
   
   # [Train Mode용] 이어서 학습할 체크포인트 (없으면 null)
   resume_checkpoint: "/home/student1/sensitive-info-detection/outputs/checkpoints/251212_04/251212_04_epoch_4.pt"
