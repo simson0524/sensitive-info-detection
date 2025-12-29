@@ -130,17 +130,23 @@ def _process_domain_pipeline(client, domain_id, domain_info, target_count, name_
         # 보강된 통합 메인 프롬프트
         main_prompt = f"""
         # Task
-        1. Create a high-quality synthetic document for the '{domain_name}' domain.
-        2. Identify and extract sensitive information (PII, Quasi-identifiers, Confidentiality) based on the provided 'Label Descriptions'.
+        1. Create a highly realistic, professional synthetic document for the '{domain_name}' domain.
+        2. Strictly identify and extract sensitive information based on 'Label Descriptions'.
 
         # Expert Role & Persona
         {domain_info['domain_system_prompt']}
 
-        # Domain Context
+        # Domain Context & Quality Requirements
         - Definition: {domain_info['domain_definition']}
         - Required Content: {domain_info['generation_form']}
         - Specific Constraints: {domain_info['domain_constraints']}
         - Output Language: MUST be "Korean" (Technical terms allowed in English).
+
+        # Document Length & Structure Rules (CRITICAL)
+        - Sentence Length: Each sentence MUST be under 300 characters for readability.
+        - Document Volume: Generate at least 25 sentences to ensure the document feels like a real-world file (not a summary).
+        - Structure: Organize the content logically (e.g., Introduction -> Detailed Body -> Conclusion/Action Items).
+        - Richness: Use professional terminology and detailed descriptions relevant to {domain_name}.
 
         # Label Descriptions (Reference for Answer Extraction)
         {json.dumps(label_desc, indent=2, ensure_ascii=False)}
