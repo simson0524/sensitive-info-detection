@@ -38,8 +38,7 @@ def main():
     # 사용자님이 정성껏 만든 new_domain_generation 함수 하나로 모든 생성을 끝냅니다.
     new_domain_generation(
         client=client,
-        target_count=gen_cfg['target_count'],
-        metadata_rel_path=metadata_rel_path
+        target_count=gen_cfg['target_count']
         # 나머지 인자들은 함수 정의의 default 값 사용
     )
 

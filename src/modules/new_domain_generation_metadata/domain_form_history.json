@@ -1,19 +1,46 @@
 {
-    "domain_counts": 12,
+    "domain_counts": 15,
     "domain_forms": {
         "002": {
             "domain_title": "medical",
             "domain_name": "의료/보건",
             "domain_definition": "환자의 생애 주기 동안 발생하는 임상 데이터와 의료 행정 기록입니다. PHI(개인건강정보) 보호와 ICD-10 질병 코드의 정확성이 핵심입니다.",
             "generation_form": "진료 기록, 처방전, 검사 보고서",
-            "domain_constraints": ["ISO-8601 날짜 준수", "질병 코드 필수", "투약 단위(mg, ml) 명시"],
-            "required_fields": ["patient_id", "visit_date", "diagnosis_code", "physician_note"],
+            "domain_constraints": [
+                "ISO-8601 날짜 준수",
+                "질병 코드 필수",
+                "투약 단위(mg, ml) 명시"
+            ],
+            "required_fields": [
+                "patient_id",
+                "visit_date",
+                "diagnosis_code",
+                "physician_note"
+            ],
             "sample_data_schema": {
-                "patient_info": {"age": "int", "gender": "string"},
-                "diagnosis": [{"code": "string", "desc": "string"}],
-                "prescriptions": [{"med_name": "string", "dosage": "string"}]
+                "patient_info": {
+                    "age": "int",
+                    "gender": "string"
+                },
+                "diagnosis": [
+                    {
+                        "code": "string",
+                        "desc": "string"
+                    }
+                ],
+                "prescriptions": [
+                    {
+                        "med_name": "string",
+                        "dosage": "string"
+                    }
+                ]
             },
-            "key_entities": ["주치의", "회진 간호사", "진단 검사 의학 전문의", "환자 보호자"],
+            "key_entities": [
+                "주치의",
+                "회진 간호사",
+                "진단 검사 의학 전문의",
+                "환자 보호자"
+            ],
             "data_volatility": "환자의 기저질환 유무에 따라 prescriptions 리스트의 길이를 0~5 사이로 조절하세요.",
             "output_language": "한국어 (의학 용어는 영어 혼용)",
             "domain_system_prompt": "당신은 대학병원 수석 의료 정보 관리자입니다. 의료법을 준수하며 임상적 개연성이 높은 데이터를 생성하세요."
@@ -23,14 +50,33 @@
             "domain_name": "금융/은행",
             "domain_definition": "자산 운용 및 거래 내역을 다룹니다. 통화 수치의 정밀도와 시계열 데이터의 무결성이 가장 중요합니다.",
             "generation_form": "계좌 이력, 신용 평가서, 투자 보고서",
-            "domain_constraints": ["금액은 소수점 2자리", "ISO-4217 통화 코드 사용"],
-            "required_fields": ["account_number", "transaction_type", "amount", "balance_after_transaction"],
+            "domain_constraints": [
+                "금액은 소수점 2자리",
+                "ISO-4217 통화 코드 사용"
+            ],
+            "required_fields": [
+                "account_number",
+                "transaction_type",
+                "amount",
+                "balance_after_transaction"
+            ],
             "sample_data_schema": {
-                "transaction_details": {"type": "string", "vendor": "string"},
+                "transaction_details": {
+                    "type": "string",
+                    "vendor": "string"
+                },
                 "auth_code": "string",
-                "metadata": {"location": "string", "device_id": "string"}
+                "metadata": {
+                    "location": "string",
+                    "device_id": "string"
+                }
             },
-            "key_entities": ["개인 고객", "기업 뱅커", "이상거래 탐지 시스템(FDS)", "세무사"],
+            "key_entities": [
+                "개인 고객",
+                "기업 뱅커",
+                "이상거래 탐지 시스템(FDS)",
+                "세무사"
+            ],
             "data_volatility": "거래 금액(amount)에 따라 수수료율을 차등 적용하고, 잔액(balance)이 마이너스가 되지 않도록 계산하세요.",
             "output_language": "한국어",
             "domain_system_prompt": "당신은 20년 경력의 금융 데이터 분석가입니다. 모든 수치 데이터의 산술적 정확성을 최우선으로 하여 데이터를 생성하세요."
@@ -40,13 +86,33 @@
             "domain_name": "보험/손해사정",
             "domain_definition": "보험 계약 및 사고 보상 과정을 다룹니다. 사고 인과관계와 보상 한도액 계산 로직이 핵심입니다.",
             "generation_form": "사고 접수 내역, 손해사정서, 보상 청구서",
-            "domain_constraints": ["사고일 < 청구일", "보상액 <= 보험한도"],
-            "required_fields": ["policy_number", "claim_id", "incident_description", "payout_amount"],
+            "domain_constraints": [
+                "사고일 < 청구일",
+                "보상액 <= 보험한도"
+            ],
+            "required_fields": [
+                "policy_number",
+                "claim_id",
+                "incident_description",
+                "payout_amount"
+            ],
             "sample_data_schema": {
-                "incident_report": {"date": "string", "location": "string", "cause": "string"},
-                "coverage_info": {"limit": "int", "deductible": "int"}
+                "incident_report": {
+                    "date": "string",
+                    "location": "string",
+                    "cause": "string"
+                },
+                "coverage_info": {
+                    "limit": "int",
+                    "deductible": "int"
+                }
             },
-            "key_entities": ["보험 가입자", "현장 조사관", "손해사정사", "보험사 보상팀"],
+            "key_entities": [
+                "보험 가입자",
+                "현장 조사관",
+                "손해사정사",
+                "보험사 보상팀"
+            ],
             "data_volatility": "사고 원인(cause)에 따라 과실 비율을 0~100 사이로 설정하고 그에 따른 보상액을 산출하세요.",
             "output_language": "한국어",
             "domain_system_prompt": "당신은 대형 손해보험사의 베테랑 보상 심사역입니다. 약관 전문 용어를 사용하여 논리적인 보상 근거를 생성하세요."
@@ -56,14 +122,35 @@
             "domain_name": "법률/공증",
             "domain_definition": "사법 절차 및 계약 관계를 규정하는 공식 문서 도메인입니다. 조항의 엄격성과 법적 용어 사용이 필수적입니다.",
             "generation_form": "민사 계약서, 소장, 법률 의견서",
-            "domain_constraints": ["법령 인용 시 정확한 명칭 사용", "관할 법원 명시"],
-            "required_fields": ["case_number", "contract_parties", "effective_date", "legal_terms"],
+            "domain_constraints": [
+                "법령 인용 시 정확한 명칭 사용",
+                "관할 법원 명시"
+            ],
+            "required_fields": [
+                "case_number",
+                "contract_parties",
+                "effective_date",
+                "legal_terms"
+            ],
             "sample_data_schema": {
-                "parties": {"first": "string", "second": "string"},
-                "clauses": [{"id": "int", "content": "string"}],
+                "parties": {
+                    "first": "string",
+                    "second": "string"
+                },
+                "clauses": [
+                    {
+                        "id": "int",
+                        "content": "string"
+                    }
+                ],
                 "stamps": "boolean"
             },
-            "key_entities": ["법률 대리인", "원고/피고", "공증인", "법원 서기관"],
+            "key_entities": [
+                "법률 대리인",
+                "원고/피고",
+                "공증인",
+                "법원 서기관"
+            ],
             "data_volatility": "계약의 종류(매매, 임대, 고용 등)에 따라 필수 조항(clauses)의 내용을 가변적으로 구성하세요.",
             "output_language": "한국어",
             "domain_system_prompt": "당신은 기업 법무팀의 수석 변호사입니다. 고도로 정제된 문어체와 법리적 일관성을 유지하며 데이터를 생성하세요."
@@ -73,13 +160,32 @@
             "domain_name": "부동산/자산관리",
             "domain_definition": "부동산 거래 및 권리 분석 기록입니다. 주소의 정확성과 등기상 권리 관계 묘사가 핵심입니다.",
             "generation_form": "매매 계약서, 감정평가서, 임대 내역",
-            "domain_constraints": ["면적 단위 ㎡ 고정", "표준 주소 체계 사용"],
-            "required_fields": ["property_address", "building_type", "transaction_price", "seller_buyer_info"],
+            "domain_constraints": [
+                "면적 단위 ㎡ 고정",
+                "표준 주소 체계 사용"
+            ],
+            "required_fields": [
+                "property_address",
+                "building_type",
+                "transaction_price",
+                "seller_buyer_info"
+            ],
             "sample_data_schema": {
-                "property_details": {"size": "float", "floor": "int"},
-                "rights_analysis": {"mortgage": "int", "owner": "string"}
+                "property_details": {
+                    "size": "float",
+                    "floor": "int"
+                },
+                "rights_analysis": {
+                    "mortgage": "int",
+                    "owner": "string"
+                }
             },
-            "key_entities": ["공인중개사", "임대인/임차인", "감정평가사", "자산관리 전문 법인"],
+            "key_entities": [
+                "공인중개사",
+                "임대인/임차인",
+                "감정평가사",
+                "자산관리 전문 법인"
+            ],
             "data_volatility": "건물 유형(아파트, 빌라, 상가)에 따라 전용률과 관리비 항목을 무작위로 변경하세요.",
             "output_language": "한국어",
             "domain_system_prompt": "당신은 부동산 자산관리사입니다. 시장 관행을 반영하여 실무적인 부동산 거래 데이터를 생성하세요."
@@ -89,13 +195,35 @@
             "domain_name": "전자상거래/유통",
             "domain_definition": "온라인 플랫폼의 주문, 결제, 배송 데이터를 포함합니다. SKU 관리와 트랜잭션 흐름이 주요 포인트입니다.",
             "generation_form": "주문서, 배송 송장, CS 상담 로그",
-            "domain_constraints": ["주문 상태 값 고정", "SKU 코드 고유 형식"],
-            "required_fields": ["order_id", "product_list", "payment_method", "shipping_address"],
+            "domain_constraints": [
+                "주문 상태 값 고정",
+                "SKU 코드 고유 형식"
+            ],
+            "required_fields": [
+                "order_id",
+                "product_list",
+                "payment_method",
+                "shipping_address"
+            ],
             "sample_data_schema": {
-                "cart_items": [{"sku": "string", "qty": "int", "price": "int"}],
-                "delivery": {"carrier": "string", "status": "string"}
+                "cart_items": [
+                    {
+                        "sku": "string",
+                        "qty": "int",
+                        "price": "int"
+                    }
+                ],
+                "delivery": {
+                    "carrier": "string",
+                    "status": "string"
+                }
             },
-            "key_entities": ["구매자", "물류 센터 피커", "배송 기사", "CS 상담원"],
+            "key_entities": [
+                "구매자",
+                "물류 센터 피커",
+                "배송 기사",
+                "CS 상담원"
+            ],
             "data_volatility": "결제 수단(카드, 간편결제, 무통장)에 따라 승인 번호 형식을 다르게 생성하세요.",
             "output_language": "한국어",
             "domain_system_prompt": "당신은 글로벌 이커머스 오퍼레이션 매니저입니다. 실시간 트랜잭션의 특징을 살려 정교한 로그를 생성하세요."
@@ -105,13 +233,32 @@
             "domain_name": "여행/항공",
             "domain_definition": "항공 및 숙박 예약 여정 기록입니다. IATA 표준 코드와 PNR(예약번호) 관리가 중요합니다.",
             "generation_form": "e-티켓, 호텔 바우처, 여행 일정표",
-            "domain_constraints": ["IATA 공항 코드 사용", "시간대(UTC) 명시"],
-            "required_fields": ["booking_reference", "traveler_name", "origin_destination", "departure_time"],
+            "domain_constraints": [
+                "IATA 공항 코드 사용",
+                "시간대(UTC) 명시"
+            ],
+            "required_fields": [
+                "booking_reference",
+                "traveler_name",
+                "origin_destination",
+                "departure_time"
+            ],
             "sample_data_schema": {
-                "flight_info": {"carrier": "string", "flight_num": "string"},
-                "accommodation": {"hotel_name": "string", "room_type": "string"}
+                "flight_info": {
+                    "carrier": "string",
+                    "flight_num": "string"
+                },
+                "accommodation": {
+                    "hotel_name": "string",
+                    "room_type": "string"
+                }
             },
-            "key_entities": ["여행자", "항공사 카운터 직원", "현지 가이드", "호텔 지배인"],
+            "key_entities": [
+                "여행자",
+                "항공사 카운터 직원",
+                "현지 가이드",
+                "호텔 지배인"
+            ],
             "data_volatility": "좌석 등급(Economy, Business)에 따라 수하물 허용량 정보를 가변적으로 생성하세요.",
             "output_language": "한국어 (공항/항공사명은 영어)",
             "domain_system_prompt": "당신은 전문 여행사 오퍼레이터입니다. 항공 노선과 호텔 시스템 규격에 맞는 데이터를 구성하세요."
@@ -121,13 +268,31 @@
             "domain_name": "정보통신/네트워크",
             "domain_definition": "통신 서비스 가입 및 사용량 데이터입니다. CDR(통화 상세 기록)의 기술적 속성이 핵심입니다.",
             "generation_form": "통화 내역서, 요금 청구서, 네트워크 로그",
-            "domain_constraints": ["전화번호 형식 준수", "데이터 단위(GB) 사용"],
-            "required_fields": ["subscriber_id", "phone_number", "call_duration", "data_usage"],
+            "domain_constraints": [
+                "전화번호 형식 준수",
+                "데이터 단위(GB) 사용"
+            ],
+            "required_fields": [
+                "subscriber_id",
+                "phone_number",
+                "call_duration",
+                "data_usage"
+            ],
             "sample_data_schema": {
-                "usage_stats": {"voice_min": "int", "data_mb": "float"},
-                "plan_info": {"name": "string", "monthly_fee": "int"}
+                "usage_stats": {
+                    "voice_min": "int",
+                    "data_mb": "float"
+                },
+                "plan_info": {
+                    "name": "string",
+                    "monthly_fee": "int"
+                }
             },
-            "key_entities": ["통신 가입자", "망 운영 센터(NOC) 기술자", "청구 담당자"],
+            "key_entities": [
+                "통신 가입자",
+                "망 운영 센터(NOC) 기술자",
+                "청구 담당자"
+            ],
             "data_volatility": "사용자의 요금제 종류에 따라 기본 제공량 초과 시 추가 과금액을 계산하여 포함하세요.",
             "output_language": "한국어",
             "domain_system_prompt": "당신은 통신사 과금 시스템 아키텍트입니다. 기술적 로그의 정확성과 과금 데이터의 정밀도를 유지하세요."
@@ -137,13 +302,32 @@
             "domain_name": "호텔/숙박서비스",
             "domain_definition": "투숙객 경험 및 서비스 관리 데이터입니다. 룸서비스와 멤버십 기반 선호도 관리가 포함됩니다.",
             "generation_form": "체크인 카드, 룸서비스 영수증, VIP 로그",
-            "domain_constraints": ["체크인 < 체크아웃 날짜", "객실 번호 체계 유지"],
-            "required_fields": ["reservation_id", "guest_name", "room_number", "stay_duration"],
+            "domain_constraints": [
+                "체크인 < 체크아웃 날짜",
+                "객실 번호 체계 유지"
+            ],
+            "required_fields": [
+                "reservation_id",
+                "guest_name",
+                "room_number",
+                "stay_duration"
+            ],
             "sample_data_schema": {
-                "guest_preference": {"pillow_type": "string", "allergy": "list"},
-                "billing": {"room_charge": "int", "extra_charge": "int"}
+                "guest_preference": {
+                    "pillow_type": "string",
+                    "allergy": "list"
+                },
+                "billing": {
+                    "room_charge": "int",
+                    "extra_charge": "int"
+                }
             },
-            "key_entities": ["VIP 투숙객", "컨시어지", "하우스키핑 팀장", "총지배인"],
+            "key_entities": [
+                "VIP 투숙객",
+                "컨시어지",
+                "하우스키핑 팀장",
+                "총지배인"
+            ],
             "data_volatility": "고객의 멤버십 등급(Gold, Platinum)에 따라 제공되는 무료 서비스(Amenity) 항목을 다르게 구성하세요.",
             "output_language": "한국어",
             "domain_system_prompt": "당신은 5성급 호텔 매니저입니다. 정중한 톤과 세심한 서비스 기록을 바탕으로 데이터를 생성하세요."
@@ -153,13 +337,36 @@
             "domain_name": "교통/물류운송",
             "domain_definition": "물류 흐름 및 운행 관리 데이터입니다. GPS 좌표와 정비 이력의 기술적 측면이 강조됩니다.",
             "generation_form": "화물 운송장, 차량 정비 로그, 운행 일지",
-            "domain_constraints": ["차량 번호판 형식 준수", "속도/거리 단위 명시"],
-            "required_fields": ["vehicle_id", "driver_name", "route_info", "maintenance_status"],
+            "domain_constraints": [
+                "차량 번호판 형식 준수",
+                "속도/거리 단위 명시"
+            ],
+            "required_fields": [
+                "vehicle_id",
+                "driver_name",
+                "route_info",
+                "maintenance_status"
+            ],
             "sample_data_schema": {
-                "logistics": {"origin": "string", "dest": "string", "weight": "float"},
-                "gps_log": [{"lat": "float", "lng": "float", "time": "string"}]
+                "logistics": {
+                    "origin": "string",
+                    "dest": "string",
+                    "weight": "float"
+                },
+                "gps_log": [
+                    {
+                        "lat": "float",
+                        "lng": "float",
+                        "time": "string"
+                    }
+                ]
             },
-            "key_entities": ["트럭 운전사", "물류 센터장", "정비 메카닉", "관제사"],
+            "key_entities": [
+                "트럭 운전사",
+                "물류 센터장",
+                "정비 메카닉",
+                "관제사"
+            ],
             "data_volatility": "운송 물품의 종류(위험물, 냉동, 일반)에 따라 차량의 온도 설정 및 주의사항 필드를 추가하세요.",
             "output_language": "한국어",
             "domain_system_prompt": "당신은 스마트 물류 센터 운영 팀장입니다. 물류 흐름의 시계열적 특성을 반영한 데이터를 생성하세요."
@@ -169,13 +376,34 @@
             "domain_name": "에너지/유틸리티",
             "domain_definition": "에너지 공급 및 검침 데이터입니다. 스마트 미터링의 주기적 패턴과 청구 무결성이 필요합니다.",
             "generation_form": "검침 보고서, 요금 고지서, 설비 점검표",
-            "domain_constraints": ["에너지 단위(kWh) 사용", "검침 주기 일관성"],
-            "required_fields": ["meter_id", "customer_type", "current_usage", "billing_amount"],
+            "domain_constraints": [
+                "에너지 단위(kWh) 사용",
+                "검침 주기 일관성"
+            ],
+            "required_fields": [
+                "meter_id",
+                "customer_type",
+                "current_usage",
+                "billing_amount"
+            ],
             "sample_data_schema": {
-                "hourly_usage": [{"hour": "int", "value": "float"}],
-                "facility_status": {"health": "string", "last_check": "string"}
+                "hourly_usage": [
+                    {
+                        "hour": "int",
+                        "value": "float"
+                    }
+                ],
+                "facility_status": {
+                    "health": "string",
+                    "last_check": "string"
+                }
             },
-            "key_entities": ["산업용 수용가", "현장 검침원", "에너지 분석가", "배전반 관리자"],
+            "key_entities": [
+                "산업용 수용가",
+                "현장 검침원",
+                "에너지 분석가",
+                "배전반 관리자"
+            ],
             "data_volatility": "계절 및 시간대에 따른 에너지 사용량 피크 패턴을 무작위로 생성하여 반영하세요.",
             "output_language": "한국어",
             "domain_system_prompt": "당신은 스마트 그리드 에너지 분석가입니다. 전력 부하 패턴을 고려한 정밀한 시뮬레이션 데이터를 생성하세요."
@@ -185,16 +413,249 @@
             "domain_name": "사회복지/공공서비스",
             "domain_definition": "공공 복지 상담 및 지원 데이터입니다. 수급 자격 심사 및 질적 상담 내용 묘사가 중요합니다.",
             "generation_form": "상담 일지, 수급 신청서, 심사 보고서",
-            "domain_constraints": ["개인정보 비식별화", "복지 카테고리 명시"],
-            "required_fields": ["case_id", "service_type", "assessment_result", "provider_note"],
+            "domain_constraints": [
+                "개인정보 비식별화",
+                "복지 카테고리 명시"
+            ],
+            "required_fields": [
+                "case_id",
+                "service_type",
+                "assessment_result",
+                "provider_note"
+            ],
             "sample_data_schema": {
-                "client_profile": {"income_level": "string", "family_count": "int"},
-                "action_plan": ["string"]
+                "client_profile": {
+                    "income_level": "string",
+                    "family_count": "int"
+                },
+                "action_plan": [
+                    "string"
+                ]
             },
-            "key_entities": ["사회복지사", "자원봉사자", "심사 위원", "복지 대상자"],
+            "key_entities": [
+                "사회복지사",
+                "자원봉사자",
+                "심사 위원",
+                "복지 대상자"
+            ],
             "data_volatility": "상담 결과(assessment)에 따라 지원되는 서비스 항목과 긴급도를 다르게 설정하세요.",
             "output_language": "한국어",
             "domain_system_prompt": "당신은 선임 사례관리사입니다. 대상자에 대한 인간적인 통찰과 행정적 엄밀함을 담은 상담 데이터를 생성하세요."
+        },
+        "014": {
+            "domain_title": "education",
+            "domain_name": "교육(교육 및 학습 서비스)",
+            "domain_definition": "교육 도메인은 유아·초중등·고등교육, 대학교육, 평생교육, 직업훈련, 기업 교육 및 온라인 학습 플랫폼(LMS/e-learning)을 포함하여 학습자와 교육 제공자 사이의 상호작용을 기록·관리하는 모든 데이터와 문서를 다룬다. 여기에는 학습자 식별자(학생ID), 인적정보(이름, 생년월일, 연락처, 보호자정보), 입학·등록정보(입학일, 등록상태, 학기별 수강목록), 성적 및 평가데이터(과제·시험 점수, 등급, 성적표), 출결 및 활동 로그(출석기록, 수업참여 로그, 출결 사유), 교과과정 및 강의자료(강의계획서, 학습목표, 교육과정 맵), 교육 콘텐츠 메타데이터(SCORM/xAPI 패키지, 접근성 태그), 시험·평가문서(시험지, 채점기록), 상담·복지기록(상담노트, 학습지원기록), 재정정보(장학금·수업료 청구/결제), 기관운영 문서(인증·인가 서류, 교원 자격·근무기록), 학습분석 로그(이수경로, 시간당 활동, 클릭스트림) 등 다양하다. 데이터는 학습자 연속성(장기추적)을 지원하도록 설계되어야 하며, 개인식별정보(PII)에 대한 법적·윤리적 보호(예: 개인정보보호법, GDPR/FERPA 준수), 상호운용성 표준(IMS Global, SCORM, xAPI, LTI), 접근성 준수(WCAG), 데이터 보존 정책과 익명화/가명화 절차가 필수적이다. 또한 미성년자 데이터 처리에 대한 부모/법적대리인 동의, 데이터 최소수집 원칙, 암호화·접근제어·감사로그 등 기술적 제약을 반드시 반영해야 한다.",
+            "generation_form": "student_id,full_name,date_of_birth,gender,guardian_contact,enrollment_date,enrollment_status,institution_id,program_name,course_code,course_title,academic_term,credits,grade,grade_scale,transcript,attendance_records,assessment_scores,assessment_type,teacher_id,teacher_name,learning_objective,syllabus_url,content_metadata(SCORM/xAPI),lms_event_log,timestamp,scholarship_info,tuition_invoice,accreditation_document",
+            "domain_constraints": [
+                "개인정보보호법·GDPR·FERPA 등 관련 법규 준수: 민감정보 및 미성년자 데이터는 별도 보호·동의 필요",
+                "데이터 최소수집 원칙: 분석 목적에 필요한 최소한의 식별정보만 수집",
+                "익명화/가명화 표준 적용: 재식별 위험을 평가하고 영구/반영구 방식으로 처리",
+                "상호운용성 표준 준수: SCORM, xAPI, IMS LTI 포맷의 메타데이터 호환성 유지",
+                "접근제어 및 암호화: 전송(HTTPS/TLS)·저장(암호화-at-rest) 모두 보호",
+                "연속성 및 참조무결성: 학생·강의·교원 간 관계는 일관성 있게 유지(외래키 무결성)",
+                "보존기간 및 파기정책: 기관·법규별 보존주기 준수 후 안전 파기",
+                "접근성 및 포함성: 콘텐츠 메타데이터에 WCAG 준수 여부 표기",
+                "실시간 로그 부하 관리: 고빈도 이벤트(클릭스트림, 실시간 퀴즈)는 스트리밍/버퍼링 설계",
+                "민감정보 거버넌스: 상담·건강·복지 기록은 별도 보안·심사 절차 필요"
+            ],
+            "required_fields": [
+                "student_id",
+                "full_name",
+                "date_of_birth",
+                "enrollment_status",
+                "institution_id",
+                "academic_term",
+                "course_enrollments",
+                "grades",
+                "attendance_records"
+            ],
+            "sample_data_schema": {
+                "student_id": "string/학습자 고유 식별자(기관 내 유니크 ID, 예: S20250001)",
+                "full_name": "string/학습자 성명(실제 PII는 테스트 시 가명화)",
+                "date_of_birth": "date(YYYY-MM-DD)/생년월일(미성년자 여부 판단에 사용)",
+                "gender": "string/성별(선택형: Male/Female/Other/Prefer_not_to_say)",
+                "guardian_contact": "object/보호자 연락처(이름, 관계, 전화, 이메일) — 미성년자에 한함",
+                "enrollment_date": "datetime(ISO8601)/최초 등록일자",
+                "enrollment_status": "string/등록상태(Active, Graduated, Withdrawn, Leave)",
+                "institution_id": "string/교육기관 고유 식별자",
+                "program_name": "string/학위·과정명(예: 컴퓨터공학과, 직업훈련 과정)",
+                "course_enrollments": "array/수강 목록(객체 배열: {course_code, course_title, term, credits})",
+                "course_code": "string/교과목 코드(예: CS101)",
+                "academic_term": "string/학기 표기(예: 2025-Spring)",
+                "credits": "number/학점 수",
+                "grades": "array/성적 목록(객체 배열: {course_code, grade_value, grade_scale, date_recorded})",
+                "grade_scale": "string/성적 척도(예: A-F, 0-100, GPA4.0)",
+                "transcript": "object/성적증명서 요약(총평점, 누적학점, 발급일자, 발급기관)",
+                "attendance_records": "array/출결기록(객체 배열: {date, status, reason})",
+                "assessment_scores": "array/평가 점수 로그(객체 배열: {assessment_id, type, score, max_score, timestamp})",
+                "lms_event_log": "array/학습관리시스템 이벤트(객체 배열: {event_type, resource_id, user_id, timestamp, metadata})",
+                "content_metadata": "object/학습콘텐츠 메타데이터(표준: SCORM/xAPI, accessibility_tags, file_type, language)",
+                "teacher_id": "string/교원 식별자",
+                "teacher_name": "string/교원 이름",
+                "scholarship_info": "object/장학금 정보(종류, 금액, 유효기간)",
+                "tuition_invoice": "object/수업료 청구서(금액, 납부기한, 결제상태)",
+                "accreditation_document": "object/인증서류 메타(기관, 인증유형, 유효기간, 문서URL)"
+            },
+            "key_entities": [
+                "학생(학습자)",
+                "교원(강사, 교수)",
+                "학사관리자(레지스트라)",
+                "교육기관(학교, 대학교, 교육센터)",
+                "보호자/법적대리인",
+                "컨텐츠 저작자(교육 콘텐츠 제공자)",
+                "LMS/플랫폼 운영자",
+                "평가자(시험감독, 채점자)",
+                "학습분석가/데이터팀",
+                "인가·인증 기관(교육부, 인증 기관)"
+            ],
+            "data_volatility": "데이터별 변동성 가이드: 인적정보(이름, 생년월일, 학번)는 저변동(안정적)이지만 연락처·주소는 중간 변동성, 수강목록·등록상태·성적은 학기 단위의 저중간 변동성, 출결기록·LMS 이벤트·퀴즈 점수 등 실시간/일간 로그는 고변동성(고빈도 스트리밍 데이터)이다. 학습 분석 시 시계열 연속성(타임스탬프 정확도), 이벤트 순서 보존, 타임존 일관성(ISO8601) 유지를 권장한다. 합성 데이터 생성 시에는 인구통계 분포와 학사 진행 로직(예: 선수과목 요구, 수료요건)을 반영하여 현실감 있는 패턴을 유지하되 실제 개인 식별정보는 포함하지 않아야 한다.",
+            "output_language": "한국어 기반 (전문 용어는 영어 권장)",
+            "domain_system_prompt": "당신은 교육 데이터 엔지니어이자 학습분석 전문가이다. 학습자 기록, 성적, 출결, LMS 로그, 교과과정 메타데이터 등 교육 관련 구조화 데이터를 생성·검증해야 한다. 데이터 생성 시 다음을 엄격히 준수하라: (1) 실제 개인 식별정보는 포함하지 말고 항상 가명화 또는 완전 합성 데이터를 사용하라; (2) 미성년자 데이터는 법적·윤리적 제약을 고려해 부모 동의 및 최소정보 원칙을 모사하라; (3) SCORM, xAPI, IMS LTI 등 상호운용성 표준을 따르는 메타데이터 스키마를 사용하라; (4) PII는 전송·저장 모두 암호화되었다고 가정하고 출력 예시에서는 마스킹·토큰화하라; (5) 타임스탬프는 ISO8601 형식을 사용하고 학기·수강 이력의 일관성을 유지하라; (6) 성적·출결 등 민감 데이터는 접근 통제 필요성을 메타데이터로 명시하라; (7) 생성된 샘플은 현실적인 분포(인구통계, 수강패턴, 성적분포)를 따르되 실제 기관·개인과의 우연한 일치가 발생하지 않도록 가명화 규칙을 적용하라. 문서(예: 성적증명서, 커리큘럼)는 기관 포맷을 모사하되 가상의 기관명을 사용하고 발급일·학기·등급체계는 명확히 표기하라."
+        },
+        "015": {
+            "domain_title": "agriculture",
+            "domain_name": "농업",
+            "domain_definition": "농업 도메인은 작물·가축·토양·수자원·기계 등 농업 생산 활동과 관련된 정적·동적 데이터 및 문서를 포괄한다. 여기에는 농장 관리 정보(농장·필지 식별자, 토지 경계·면적, 토지 이용 이력), 재배 계획 및 작부(작물 유형, 품종, 파종·정식·수확 일정), 토양·수질·작물 생리 검사 결과(화학·물리적 수치, 시험방법, 샘플링 위치), 기상 및 기후 데이터(현지 관측 및 예측 모델 출력), IoT·원격탐사 데이터(토양수분 센서, 온습도, 드론·위성 이미지 메타데이터), 농약·비료 사용 기록(제품명, 성분, 투입량·투입일, 적용 필지), 관개·농작업·기계 정비 로그, 수확량·품질 검사(수확량 집계, 등급·반품 사유), 포장·출하·유통 추적 정보(로트·배치 번호, 운송·저장 조건), 계약·보조금·보험 서류 및 규제 준수 문서(인증서, 검역·위생 검사 결과) 등이 포함된다. 데이터는 고빈도 시계열(센서, 기상), 대용량 이미지/지리공간 데이터, 표준화된 거래·추적 레코드, 그리고 규제·인증을 위한 감사 가능한 이력 로그를 모두 포함하며, 식품안전·환경규제·지불보조금·무역 규칙 준수를 위한 정확성·추적 가능성(traceability)이 핵심 요구사항이다.",
+            "generation_form": "farm_id, field_id(또는 GeoJSON 필드 경계), crop_type, variety, planting_date, harvest_date, expected_yield_kg, actual_yield_kg, soil_test_ph, soil_test_nitrogen_ppm, irrigation_event(timestamp, volume_l), pesticide_application(timestamp, product_name, active_ingredient, dose_kg_per_ha), sensor_readings(timestamp, sensor_id, type, value, unit), satellite_image_metadata(acquisition_time, sensor, cloud_cover, resolution), machinery_maintenance_log(date, machine_id, odometer_hours, issue), batch_traceability(batch_id, produced_date, storage_temperature_c), certification_status(organic/eco/none), farm_worker_records(worker_id, role, work_hours)",
+            "domain_constraints": [
+                "식품안전·추적성 규정 준수(예: HACCP, GlobalGAP, 국가별 잔류농약 기준 등)에 따라 데이터의 검증 가능성 및 감사 추적성 필요",
+                "위치 기반 데이터(필지 경계, 좌표)는 개인정보/소유권 보호를 고려한 익명화 또는 접근 제어 필요",
+                "센서·위성 데이터는 대용량·고주기 특성이 있어 스트리밍 처리와 시계열 DB 설계 필요",
+                "단위와 표준화(kg, tonne, ha, ppm, L 등) 엄격한 통일 및 변환 규칙 필요",
+                "네트워크 제약(현장 농장에 제한적 인터넷)으로 오프라인 우선 데이터 수집·동기화 로직 필수",
+                "계절성·지리적 특성으로 인한 데이터 편향 존재(기후·토양에 따른 범위 차이)를 모델·분석 시 보정 필요",
+                "GS1/EPCIS 등 공급망 표준과의 상호운용성 요구",
+                "민감한 경제정보(보조금, 계약 가격)는 접근 권한 및 암호화 필요"
+            ],
+            "required_fields": [
+                "farm_id",
+                "field_id",
+                "field_geometry_geojson",
+                "crop_type",
+                "variety",
+                "planting_date",
+                "harvest_date",
+                "expected_yield_kg",
+                "actual_yield_kg",
+                "sensor_readings",
+                "soil_tests",
+                "pesticide_applications",
+                "irrigation_events",
+                "batch_traceability",
+                "certification_status"
+            ],
+            "sample_data_schema": {
+                "farm_id": "string/농장 고유 식별자(UUID 또는 등록번호)",
+                "field_id": "string/필지 고유 식별자",
+                "field_geometry_geojson": "object/GeoJSON 형식의 필지 경계(Polygon, 좌표계 표기)",
+                "crop_type": "string/재배 작물명(예: rice, corn, tomato)",
+                "variety": "string/품종명",
+                "planting_date": "date/파종 또는 정식 날짜(ISO 8601)",
+                "expected_yield_kg": "number/예상 수확량(kg)",
+                "actual_yield_kg": "number/실제 수확량(kg)",
+                "harvest_date": "date/수확 날짜(ISO 8601)",
+                "sensor_readings": "array/시계열 센서 데이터 배열 [{timestamp: ISO8601, sensor_id: string, type: string, value: number, unit: string}]",
+                "soil_tests": "array/토양 검사 결과 [{sample_id: string, date: ISO8601, ph: number, nitrogen_ppm: number, phosphorus_ppm: number, potassium_ppm: number, organic_matter_percent: number}]",
+                "pesticide_applications": "array/농약 투입 기록 [{timestamp: ISO8601, product_name: string, active_ingredient: string, dose_kg_per_ha: number, applicator_id: string, method: string}]",
+                "irrigation_events": "array/관개 기록 [{timestamp: ISO8601, system_id: string, volume_l: number, duration_min: number}]",
+                "satellite_image_metadata": "array/위성·드론 이미지 메타데이터 [{acquisition_time: ISO8601, sensor: string, resolution_m: number, cloud_cover_percent: number, url: string}]",
+                "machinery_maintenance_log": "array/기계 정비 로그 [{date: ISO8601, machine_id: string, odometer_hours: number, action: string, notes: string}]",
+                "batch_traceability": "array/출하·로트 추적 [{batch_id: string, produced_date: ISO8601, packed_quantity: number, storage_temperature_c: number, destination: string}]",
+                "certification_status": "string/인증 상태(예: organic, globalGAP, none)",
+                "owner_contact": "object/소유자 연락처 {name: string, phone: string, email: string}",
+                "geopolitical_region": "string/행정구역(도/시/군 등) 또는 ISO 지역 코드"
+            },
+            "key_entities": [
+                "farmer",
+                "farm_owner",
+                "farm_worker",
+                "agronomist",
+                "cooperative",
+                "input_supplier(비료/농약)",
+                "equipment_provider",
+                "logistics_provider",
+                "distributor",
+                "retailer",
+                "regulator/inspection_body",
+                "certification_body",
+                "insurance_provider",
+                "satellite/drone_operator",
+                "sensor_operator/IoT_device"
+            ],
+            "data_volatility": "농업 데이터는 계절성(시즌별 주기)이 강하고, 센서 데이터는 고주기 변동과 노이즈가 높다. 기상·병해충 발생·시장가격 등 이벤트에 의해 급격한 스파이크 발생 가능. 토양·토지 정보 같은 정적 데이터는 낮은 변동성, 관개·센서·작업 로그는 높은 변동성을 보인다. 또한 일부 필드는 연결 문제로 누락 또는 지연될 수 있으므로 결측치 처리와 타임윈도우 기반 보간·정합 로직이 필요하다.",
+            "output_language": "한국어 기반 (전문 용어는 영어 권장)",
+            "domain_system_prompt": "당신은 농업 데이터 전문가이자 데이터 엔지니어입니다. 데이터 생성·검증 시 다음에 유의하세요: 1) 모든 타임스탬프는 ISO 8601 형식이며 지역 타임존을 명시하고, 농사 시즌(예: 파종→생장→수확)에 따라 일관된 시퀀스를 유지할 것. 2) 위치 정보는 GeoJSON으로 제공하고 좌표계(EPSG:4326 등)를 표기할 것. 3) 단위(kg, L, ha, ppm, °C 등)를 엄격히 통일하고 필요한 경우 단위 변환 로그를 포함할 것. 4) 센서 데이터는 현실적인 노이즈 및 샘플링 간격(예: 5분, 1시간)을 시뮬레이션하고, 결측치·중복·오류값 처리를 명확히 할 것. 5) 규제·인증 관련 필드는 감사 가능하게 변경 이력과 증빙(문서 URL 또는 해시)을 연결할 것. 6) 개인정보(농장 소유자 위치·연락처 등)는 최소화하거나 접근 제어/익명화 규칙을 따를 것. 7) 공급망 추적성(batch/lot)은 모든 단계에서 고유 식별자가 이어지도록 하고, 온도·습도 등 저장 조건의 허용 범위를 벗어난 경우 경고 플래그를 추가할 것. 8) 데이터 생성 시 계절성·지리적 특성(기후대, 작물 품종 차이)을 반영하여 값의 현실성을 검증하되, 극단치나 이상치는 별도 필드로 표기할 것. 9) 외부 표준(GS1, EPCIS, ISO 표준 등)과의 맵핑 가능성을 염두에 두고 메타데이터를 설계할 것."
+        },
+        "016": {
+            "domain_title": "manufacturing_industry",
+            "domain_name": "제조업",
+            "domain_definition": "제조업 도메인은 원자재 조달부터 생산, 조립, 검사, 포장, 출하까지의 전체 생산 라이프사이클과 관련된 모든 데이터 및 문서를 포괄한다. 다루는 데이터 유형은 BOM(Bill of Materials), 작업지시서(Work Orders), 생산 스케줄, 작업자·교대 정보, 설비·기계 로그(PLC/SCADA), IIoT/센서 시계열 데이터(온도·진동·전력 등), 공정 파라미터, 품질검사 결과(검사 항목, 불량유형, 치수 측정값), 유지보수·서비스 이력, 자재·재고 레코드, 공급업체 계약·원가 데이터, 운송·출하 문서, 규제·안전(EHS) 리포트, CAD/도면 및 제조지침(MI, work instructions) 등이다. 데이터 형식은 구조화된 트랜잭션(ERP/MES), 반구조화된 로그(JSON/CSV/XML), 비정형 문서(PDF, 이미지, CAD) 및 고주기 시계열 스트리밍 데이터가 혼재되어 있으며, 실시간성·정합성·추적성(traceability)이 특히 중요하다. 제조 도메인은 설비 상태와 품질 결과 간의 상관관계 분석, 예측정비(PdM), 공정 최적화, 리콜 추적 및 규정 준수 증빙을 위해 고빈도·고해상도 데이터와 메타데이터의 융합을 요구한다.",
+            "generation_form": "BOM,work_order,production_schedule,work_station,shift_info,machine_log(sensor_id,timestamp,value),sensor_readings(time_series),quality_report(defect_code,measurement_values),maintenance_report(action,timestamp,technician_id),inventory_record(sku,quantity,location),supplier_contract(contract_id,terms),shipping_manifest(tracking_id),CAD_drawing_reference,file_metadata,EHS_incident_report",
+            "domain_constraints": [
+                "실시간 또는 근실시간 스트리밍 데이터(초~밀리초 단위)를 수용해야 함",
+                "PLC/SCADA, MES, ERP 등 이기종 시스템 간 데이터 포맷 불일치(CSV, XML, OPC-UA 등)를 고려한 데이터 정규화 필요",
+                "데이터 무결성(traceability): 원재료→배치→제품 단위로 롯트 추적이 가능해야 함",
+                "센서 데이터는 노이즈·결측·드리프트가 빈번하므로 전처리(필터링, 보간, 캘리브레이션) 규칙 필요",
+                "레거시 시스템에서 온 데이터는 중복·불일치가 많아 동기화 및 식별자 정합성 보장 필요",
+                "규제 및 컴플라이언스(안전, 환경, 제품 인증) 요구사항에 따른 보존기간·감사로그 보관",
+                "지적재산(도면, 제조공정)·가격정보 등 민감정보에 대한 접근제어·암호화 필요",
+                "운영 중단을 초래하지 않는 비파괴적 데이터 수집(예: 생산성 저하 없이 센서 추가)",
+                "데이터 지연(latency)과 처리량(throughput)에 대한 SLA 명시"
+            ],
+            "required_fields": [
+                "production_line_id",
+                "timestamp",
+                "machine_id",
+                "operation_code",
+                "batch_id",
+                "product_sku",
+                "quantity",
+                "unit",
+                "operator_id",
+                "shift_id",
+                "quality_status",
+                "sensor_readings",
+                "maintenance_status",
+                "upstream_supplier_id",
+                "lot_traceability_id",
+                "document_refs"
+            ],
+            "sample_data_schema": {
+                "production_line_id": "string/생산 라인 고유 식별자(예: LINE-A1)",
+                "timestamp": "datetime(ISO8601)/이벤트 또는 측정 발생 시각(예: 2025-01-15T08:23:45Z)",
+                "machine_id": "string/설비·장비 고유 ID(예: MCH-202)",
+                "operation_code": "string/공정 또는 작업 코드(예: OP-INSPECT, OP-WELD)",
+                "batch_id": "string/원료·제품 배치 식별자(LOT 번호)",
+                "product_sku": "string/제품 SKU 또는 모델명",
+                "quantity": "integer/단일 이벤트에 해당하는 수량(예: 생산된 개수)",
+                "unit": "string/수량 단위(예: pcs, kg)",
+                "operator_id": "string/작업자 또는 담당자 ID",
+                "shift_id": "string/교대 코드(예: SHIFT-A)",
+                "quality_status": "enum/품질 판정 상태 (PASS, FAIL, HOLD)",
+                "sensor_readings": "array/object/센서별 시계열 데이터 {sensor_id:string, measurements:[{timestamp:datetime,value:float,unit:string}]}",
+                "maintenance_status": "object/유지보수 상태 {last_maintenance:datetime, next_due:datetime,maintenance_actions:[{action:string,technician_id:string,timestamp:datetime}]}",
+                "upstream_supplier_id": "string/원자재 공급자 ID",
+                "lot_traceability_id": "string/제품 추적을 위한 통합 트레이스 ID",
+                "document_refs": "array/참조 문서 리스트(도면, 검사성적서, 계약서 등) {doc_type:string,doc_id:string,uri:string}"
+            },
+            "key_entities": [
+                "production_manager",
+                "line_operator",
+                "maintenance_engineer",
+                "quality_inspector",
+                "supply_chain_manager",
+                "supplier",
+                "warehouse_operator",
+                "logistics_partner",
+                "MES_system",
+                "ERP_system",
+                "PLC/SCADA_sensor",
+                "regulatory_auditor"
+            ],
+            "data_volatility": "제조 데이터는 시간축 상의 규칙적 패턴(교대별, 주간·월간 수요)과 설비 작동에 따른 고주파 시계열(센서) 데이터가 혼재한다. 일반 가이드라인: 시계열 데이터는 강한 계절성·자기상관을 보이며, 센서값은 낮은 수준의 지속적 노이즈와 간헐적 이상치(결함/캘리브레이션 오류)를 포함해야 한다. 배치·작업 관련 이벤트는 이산적이며 특정 시점에 집중된다. 결측치는 네트워크/장비 장애에 의해 군집적으로 발생할 수 있으므로, 합리적 보간/삭제 정책(예: 짧은 결측은 선형보간, 장기 결측은 null 표기)을 시뮬레이션해야 한다. 이상치율(critical anomalies)은 일반적으로 0.1~2% 범위로 설정하고, 유지보수·품질 이벤트는 평균 빈도와 피크 발생(예: 생산 전환, 신규 라인 도입) 조건을 반영해야 한다.",
+            "output_language": "한국어 기반 (전문 용어는 영어 권장)",
+            "domain_system_prompt": "당신은 제조업 분야의 시니어 데이터 엔지니어이자 공정·설비·품질 데이터를 설계·생성하는 전문가 페르소나입니다. 데이터 생성 시 다음을 준수하세요: 1) 모든 레코드는 일관된 식별자(라인, 머신, 배치)를 통해 서로 연관되어야 하며 traceability가 확보되어야 합니다. 2) 타임스탬프는 ISO8601을 사용하고 시계열의 연속성 및 교대·배치 경계(shift/batch boundaries)를 현실적으로 모사하세요. 3) 센서 데이터는 장비별 물리적 범위와 단위를 준수하고, 정상범위·드리프트·노이즈·이상치를 포함해야 합니다. 4) 품질결과와 유지보수 이벤트는 생산 이벤트와 논리적으로 연계되어야 하며 불량 발생 시 조치 내역이 포함되어야 합니다. 5) 레거시 시스템에서 오는 다양한 포맷과 누락 데이터를 반영하되, 데이터 정합성 위반으로 시스템 작동을 불가능하게 하지 마세요(실무에서 가능한 범위의 오류만). 6) 민감한 인적·계약 정보는 익명화하거나 샘플화하고 실제 개인식별정보(주민등록번호 등)는 생성하지 마세요. 7) 규제·감사 요구 사항을 만족하기 위해 변경 이력(audit trail)과 문서 참조(document_refs)를 포함하세요. 8) 생성 데이터는 후속 분석(예: 예측정비, 공정 최적화, 불량 원인 분석)에 유용하도록 충분한 메타데이터(정확도, 측정 주기, 캘리브레이션 정보)를 제공해야 합니다."
         }
     }
 }

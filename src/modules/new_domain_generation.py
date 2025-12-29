@@ -15,7 +15,7 @@ def new_domain_generation(
     target_count=100, 
     metadata_rel_path='new_domain_generation_metadata/generated_domain_form.json', 
     name_pool_rel_path='new_domain_generation_metadata/name_pool.json',
-    label_desc_rel_path='new_domain_generation_metadata/label_descriptions.json',
+    label_desc_rel_path='new_domain_generation_metadata/label_description.json',
     format_sample_rel_path='new_domain_generation_metadata/document_format.json'
 ):
     """

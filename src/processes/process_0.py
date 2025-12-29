@@ -118,8 +118,8 @@ def run_process_0(config: dict) -> dict:
     valid_dataset = preprocessor.create_dataset(valid_samples, valid_annos, data_category=data_category)
     
     # 2-5. DataLoader 생성
-    train_loader = DataLoader(train_dataset, batch_size=train_conf['batch_size'], shuffle=True)
-    valid_loader = DataLoader(valid_dataset, batch_size=train_conf['batch_size'], shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=train_conf['batch_size'], shuffle=True, collate_fn=smart_collate_fn)
+    valid_loader = DataLoader(valid_dataset, batch_size=train_conf['batch_size'], shuffle=False, collate_fn=smart_collate_fn)
 
 
     # ==============================================================================
@@ -199,3 +199,33 @@ def run_process_0(config: dict) -> dict:
     }
     
     return context
+
+
+import torch
+
+def smart_collate_fn(batch):
+    keys = batch[0].keys()
+    output = {}
+
+    for key in keys:
+        sample = batch[0][key]
+
+        # [Case 1] 텐서인 경우 -> Stack
+        if isinstance(sample, torch.Tensor):
+            output[key] = torch.stack([item[key] for item in batch])
+            
+        # [Case 2] 숫자(int, float)인 경우 -> Try Tensor conversion
+        elif isinstance(sample, (int, float)):
+            try:
+                # 일단 텐서 변환을 시도합니다.
+                output[key] = torch.tensor([item[key] for item in batch])
+            except (ValueError, TypeError, RuntimeError):
+                # 앗! 중간에 문자열이나 None이 섞여있어서 실패했네요.
+                # 그러면 그냥 안전하게 리스트로 저장합니다.
+                output[key] = [item[key] for item in batch]
+            
+        # [Case 3] 그 외 (문자열 등) -> List
+        else:
+            output[key] = [item[key] for item in batch]
+            
+    return output

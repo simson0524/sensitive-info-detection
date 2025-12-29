@@ -171,7 +171,7 @@ class NerDataset(Dataset):
         item = self.instances[idx]
         
         return {
-            "idx": torch.tensor(idx),
+            "idx": idx,
             "sentence": item['sentence'],
             "sentence_id": item['sentence_id'],
             "domain_id": item['domain_id'],
