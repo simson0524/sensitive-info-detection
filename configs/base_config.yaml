@@ -21,6 +21,8 @@ train:
   model_name: "klue/roberta-base"
   # 입력 시퀀스 최대 길이
   max_len: 256
+  # 학습 device
+  device: "cuda:0"
   
 # 3. [중요] 프로젝트 전체에서 공유하는 라벨 맵
 # (NER 학습 및 검증 시 ID 변환에 사용됨)
@@ -48,4 +50,4 @@ label_settings:
 # 4. 사전(Dictionary) 설정
 dictionary_init:
   # Process_2에서 로드할 도메인 ID 목록 (기본값)
-  domain_ids: ['8']
+  domain_ids: ['2']
