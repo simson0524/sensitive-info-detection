@@ -52,9 +52,10 @@ sensitive-info-detector/
 ├── assets/  # 프로젝트 관련 이미지 관리
 │
 ├── configs/
-│   ├── base_config.yaml          # 기본 설정을 관리하는 yaml파일 ✅
-│   ├── experiment_config.yaml    # 실험별 하이퍼파라미터를 관리하는 파일 ✅
-│   └── init_project_config.yaml  # run_init_project.py 설정을 관리하는 파일 ✅
+│   ├── base_config.yaml                   # 기본 설정을 관리하는 파일 ✅
+│   ├── experiment_config.yaml             # 실험별 하이퍼파라미터를 관리하는 파일 ✅
+│   ├── new_domain_generation_config.yaml  # 신도메인 생성 관련 설정을 관리하는 파일 ✅
+│   └── init_project_config.yaml           # run_init_project.py 설정을 관리하는 파일 ✅
 │
 ├── data/
 │   ├── zip_raw_data/  # 도메인별로 관리되는 압축폴더(원본 유지용 & 데이터 수정 절대 불가능)
@@ -91,18 +92,20 @@ sensitive-info-detector/
 │   ├── models/  # 모델 아키텍처
 │   │   └── ner_roberta.py ✅
 │   │
-│   ├── modules/  # 각 탐지 로직의 핵심 모듈
-│   │   ├── z_score_calculator.py           # Z-score 계산 모듈 ✅
-│   │   ├── confidence_score_calculator.py  # Confidence-score 계산 모듈 ❌
-│   │   ├── data_generator.py               # 신도메인 데이터 생성 모듈 ❌
-│   │   ├── result_aggregator.py            # 정탐/오탐/미팀 데이터 수집 & 통계 & 포맷팅 모듈 ✅
-│   │   ├── ner_preprocessor.py             # [NER모델]데이터 전처리 및 로드 모듈 ✅
-│   │   ├── ner_trainer.py                  # [NER모델]학습 모듈 ✅
-│   │   ├── ner_evaluator.py                # [NER모델]검증 모듈 ✅
-│   │   ├── dictionary_matcher.py           # 사전 매칭 모듈 ✅
-│   │   ├── dictionary_updater.py           # 사전 업데이트 모듈 ❌
-│   │   ├── regex_matcher.py                # 정규표현식 매칭 모듈 ✅
-│   │   └── regex_logics/                   # 정규표현식 매칭 모듈에서 사용하는 로직 ✅
+│   ├── modules/  # 각 로직의 핵심 모듈
+│   │   ├── z_score_calculator.py            # Z-score 계산 모듈 ✅
+│   │   ├── confidence_score_calculator.py   # Confidence-score 계산 모듈 ❌
+│   │   ├── new_domain_def_generation.py     # 신도메인 데이터 정의문 생성 모듈 ❌
+│   │   ├── new_domain_generation.py         # 신도메인 데이터 생성 모듈 ❌
+│   │   ├── new_domain_generation_metadata/  # 신도메인 데이터 생성 관련 메타 데이터 ❌
+│   │   ├── result_aggregator.py             # 정탐/오탐/미팀 데이터 수집 & 통계 & 포맷팅 모듈 ✅
+│   │   ├── ner_preprocessor.py              # [NER모델]데이터 전처리 및 로드 모듈 ✅
+│   │   ├── ner_trainer.py                   # [NER모델]학습 모듈 ✅
+│   │   ├── ner_evaluator.py                 # [NER모델]검증 모듈 ✅
+│   │   ├── dictionary_matcher.py            # 사전 매칭 모듈 ✅
+│   │   ├── dictionary_updater.py            # 사전 업데이트 모듈 ❌
+│   │   ├── regex_matcher.py                 # 정규표현식 매칭 모듈 ✅
+│   │   └── regex_logics/                    # 정규표현식 매칭 모듈에서 사용하는 로직 ✅
 │   │
 │   ├── processes/  # 실행 프로세스 
 │   │   ├── process_0.py  # Model초기화, Dataset, Dataloader 준비 프로세스 ✅    

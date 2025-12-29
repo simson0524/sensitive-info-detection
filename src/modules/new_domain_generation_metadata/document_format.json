@@ -1,0 +1,26 @@
+{
+    "document_id": "{domain_id:03}_{document_id:04}",
+    "document_title": "해당 문서의 실제 한글 명칭",
+    "data": [
+        {
+            "sentence": "생성된 문서의 첫 번째 문장 텍스트",
+            "id": "sample_{domain_id:03}_{document_id:04}_000001",
+            "annotations": []
+        },
+        {
+            "sentence": "생성된 문서의 두 번째 문장 텍스트",
+            "id": "sample_{domain_id:03}_{document_id:04}_000002",
+            "annotations": []
+        },
+        {
+            "sentence": "생성된 문서의 세 번째 문장 텍스트",
+            "id": "sample_{domain_id:03}_{document_id:04}_000003",
+            "annotations": []
+        },
+        {
+            "sentence": "생성된 문서의 N 번째 문장 텍스트",
+            "id": "sample_{domain_id:03}_{document_id:04}_00000N",
+            "annotations": []
+        }
+    ]
+}

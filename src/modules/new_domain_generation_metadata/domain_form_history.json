@@ -1,0 +1,200 @@
+{
+    "domain_counts": 12,
+    "domain_forms": {
+        "002": {
+            "domain_title": "medical",
+            "domain_name": "의료/보건",
+            "domain_definition": "환자의 생애 주기 동안 발생하는 임상 데이터와 의료 행정 기록입니다. PHI(개인건강정보) 보호와 ICD-10 질병 코드의 정확성이 핵심입니다.",
+            "generation_form": "진료 기록, 처방전, 검사 보고서",
+            "domain_constraints": ["ISO-8601 날짜 준수", "질병 코드 필수", "투약 단위(mg, ml) 명시"],
+            "required_fields": ["patient_id", "visit_date", "diagnosis_code", "physician_note"],
+            "sample_data_schema": {
+                "patient_info": {"age": "int", "gender": "string"},
+                "diagnosis": [{"code": "string", "desc": "string"}],
+                "prescriptions": [{"med_name": "string", "dosage": "string"}]
+            },
+            "key_entities": ["주치의", "회진 간호사", "진단 검사 의학 전문의", "환자 보호자"],
+            "data_volatility": "환자의 기저질환 유무에 따라 prescriptions 리스트의 길이를 0~5 사이로 조절하세요.",
+            "output_language": "한국어 (의학 용어는 영어 혼용)",
+            "domain_system_prompt": "당신은 대학병원 수석 의료 정보 관리자입니다. 의료법을 준수하며 임상적 개연성이 높은 데이터를 생성하세요."
+        },
+        "003": {
+            "domain_title": "finance",
+            "domain_name": "금융/은행",
+            "domain_definition": "자산 운용 및 거래 내역을 다룹니다. 통화 수치의 정밀도와 시계열 데이터의 무결성이 가장 중요합니다.",
+            "generation_form": "계좌 이력, 신용 평가서, 투자 보고서",
+            "domain_constraints": ["금액은 소수점 2자리", "ISO-4217 통화 코드 사용"],
+            "required_fields": ["account_number", "transaction_type", "amount", "balance_after_transaction"],
+            "sample_data_schema": {
+                "transaction_details": {"type": "string", "vendor": "string"},
+                "auth_code": "string",
+                "metadata": {"location": "string", "device_id": "string"}
+            },
+            "key_entities": ["개인 고객", "기업 뱅커", "이상거래 탐지 시스템(FDS)", "세무사"],
+            "data_volatility": "거래 금액(amount)에 따라 수수료율을 차등 적용하고, 잔액(balance)이 마이너스가 되지 않도록 계산하세요.",
+            "output_language": "한국어",
+            "domain_system_prompt": "당신은 20년 경력의 금융 데이터 분석가입니다. 모든 수치 데이터의 산술적 정확성을 최우선으로 하여 데이터를 생성하세요."
+        },
+        "004": {
+            "domain_title": "insurance",
+            "domain_name": "보험/손해사정",
+            "domain_definition": "보험 계약 및 사고 보상 과정을 다룹니다. 사고 인과관계와 보상 한도액 계산 로직이 핵심입니다.",
+            "generation_form": "사고 접수 내역, 손해사정서, 보상 청구서",
+            "domain_constraints": ["사고일 < 청구일", "보상액 <= 보험한도"],
+            "required_fields": ["policy_number", "claim_id", "incident_description", "payout_amount"],
+            "sample_data_schema": {
+                "incident_report": {"date": "string", "location": "string", "cause": "string"},
+                "coverage_info": {"limit": "int", "deductible": "int"}
+            },
+            "key_entities": ["보험 가입자", "현장 조사관", "손해사정사", "보험사 보상팀"],
+            "data_volatility": "사고 원인(cause)에 따라 과실 비율을 0~100 사이로 설정하고 그에 따른 보상액을 산출하세요.",
+            "output_language": "한국어",
+            "domain_system_prompt": "당신은 대형 손해보험사의 베테랑 보상 심사역입니다. 약관 전문 용어를 사용하여 논리적인 보상 근거를 생성하세요."
+        },
+        "005": {
+            "domain_title": "legal",
+            "domain_name": "법률/공증",
+            "domain_definition": "사법 절차 및 계약 관계를 규정하는 공식 문서 도메인입니다. 조항의 엄격성과 법적 용어 사용이 필수적입니다.",
+            "generation_form": "민사 계약서, 소장, 법률 의견서",
+            "domain_constraints": ["법령 인용 시 정확한 명칭 사용", "관할 법원 명시"],
+            "required_fields": ["case_number", "contract_parties", "effective_date", "legal_terms"],
+            "sample_data_schema": {
+                "parties": {"first": "string", "second": "string"},
+                "clauses": [{"id": "int", "content": "string"}],
+                "stamps": "boolean"
+            },
+            "key_entities": ["법률 대리인", "원고/피고", "공증인", "법원 서기관"],
+            "data_volatility": "계약의 종류(매매, 임대, 고용 등)에 따라 필수 조항(clauses)의 내용을 가변적으로 구성하세요.",
+            "output_language": "한국어",
+            "domain_system_prompt": "당신은 기업 법무팀의 수석 변호사입니다. 고도로 정제된 문어체와 법리적 일관성을 유지하며 데이터를 생성하세요."
+        },
+        "006": {
+            "domain_title": "real_estate",
+            "domain_name": "부동산/자산관리",
+            "domain_definition": "부동산 거래 및 권리 분석 기록입니다. 주소의 정확성과 등기상 권리 관계 묘사가 핵심입니다.",
+            "generation_form": "매매 계약서, 감정평가서, 임대 내역",
+            "domain_constraints": ["면적 단위 ㎡ 고정", "표준 주소 체계 사용"],
+            "required_fields": ["property_address", "building_type", "transaction_price", "seller_buyer_info"],
+            "sample_data_schema": {
+                "property_details": {"size": "float", "floor": "int"},
+                "rights_analysis": {"mortgage": "int", "owner": "string"}
+            },
+            "key_entities": ["공인중개사", "임대인/임차인", "감정평가사", "자산관리 전문 법인"],
+            "data_volatility": "건물 유형(아파트, 빌라, 상가)에 따라 전용률과 관리비 항목을 무작위로 변경하세요.",
+            "output_language": "한국어",
+            "domain_system_prompt": "당신은 부동산 자산관리사입니다. 시장 관행을 반영하여 실무적인 부동산 거래 데이터를 생성하세요."
+        },
+        "007": {
+            "domain_title": "ecommerce",
+            "domain_name": "전자상거래/유통",
+            "domain_definition": "온라인 플랫폼의 주문, 결제, 배송 데이터를 포함합니다. SKU 관리와 트랜잭션 흐름이 주요 포인트입니다.",
+            "generation_form": "주문서, 배송 송장, CS 상담 로그",
+            "domain_constraints": ["주문 상태 값 고정", "SKU 코드 고유 형식"],
+            "required_fields": ["order_id", "product_list", "payment_method", "shipping_address"],
+            "sample_data_schema": {
+                "cart_items": [{"sku": "string", "qty": "int", "price": "int"}],
+                "delivery": {"carrier": "string", "status": "string"}
+            },
+            "key_entities": ["구매자", "물류 센터 피커", "배송 기사", "CS 상담원"],
+            "data_volatility": "결제 수단(카드, 간편결제, 무통장)에 따라 승인 번호 형식을 다르게 생성하세요.",
+            "output_language": "한국어",
+            "domain_system_prompt": "당신은 글로벌 이커머스 오퍼레이션 매니저입니다. 실시간 트랜잭션의 특징을 살려 정교한 로그를 생성하세요."
+        },
+        "008": {
+            "domain_title": "travel",
+            "domain_name": "여행/항공",
+            "domain_definition": "항공 및 숙박 예약 여정 기록입니다. IATA 표준 코드와 PNR(예약번호) 관리가 중요합니다.",
+            "generation_form": "e-티켓, 호텔 바우처, 여행 일정표",
+            "domain_constraints": ["IATA 공항 코드 사용", "시간대(UTC) 명시"],
+            "required_fields": ["booking_reference", "traveler_name", "origin_destination", "departure_time"],
+            "sample_data_schema": {
+                "flight_info": {"carrier": "string", "flight_num": "string"},
+                "accommodation": {"hotel_name": "string", "room_type": "string"}
+            },
+            "key_entities": ["여행자", "항공사 카운터 직원", "현지 가이드", "호텔 지배인"],
+            "data_volatility": "좌석 등급(Economy, Business)에 따라 수하물 허용량 정보를 가변적으로 생성하세요.",
+            "output_language": "한국어 (공항/항공사명은 영어)",
+            "domain_system_prompt": "당신은 전문 여행사 오퍼레이터입니다. 항공 노선과 호텔 시스템 규격에 맞는 데이터를 구성하세요."
+        },
+        "009": {
+            "domain_title": "telecom",
+            "domain_name": "정보통신/네트워크",
+            "domain_definition": "통신 서비스 가입 및 사용량 데이터입니다. CDR(통화 상세 기록)의 기술적 속성이 핵심입니다.",
+            "generation_form": "통화 내역서, 요금 청구서, 네트워크 로그",
+            "domain_constraints": ["전화번호 형식 준수", "데이터 단위(GB) 사용"],
+            "required_fields": ["subscriber_id", "phone_number", "call_duration", "data_usage"],
+            "sample_data_schema": {
+                "usage_stats": {"voice_min": "int", "data_mb": "float"},
+                "plan_info": {"name": "string", "monthly_fee": "int"}
+            },
+            "key_entities": ["통신 가입자", "망 운영 센터(NOC) 기술자", "청구 담당자"],
+            "data_volatility": "사용자의 요금제 종류에 따라 기본 제공량 초과 시 추가 과금액을 계산하여 포함하세요.",
+            "output_language": "한국어",
+            "domain_system_prompt": "당신은 통신사 과금 시스템 아키텍트입니다. 기술적 로그의 정확성과 과금 데이터의 정밀도를 유지하세요."
+        },
+        "010": {
+            "domain_title": "hospitality",
+            "domain_name": "호텔/숙박서비스",
+            "domain_definition": "투숙객 경험 및 서비스 관리 데이터입니다. 룸서비스와 멤버십 기반 선호도 관리가 포함됩니다.",
+            "generation_form": "체크인 카드, 룸서비스 영수증, VIP 로그",
+            "domain_constraints": ["체크인 < 체크아웃 날짜", "객실 번호 체계 유지"],
+            "required_fields": ["reservation_id", "guest_name", "room_number", "stay_duration"],
+            "sample_data_schema": {
+                "guest_preference": {"pillow_type": "string", "allergy": "list"},
+                "billing": {"room_charge": "int", "extra_charge": "int"}
+            },
+            "key_entities": ["VIP 투숙객", "컨시어지", "하우스키핑 팀장", "총지배인"],
+            "data_volatility": "고객의 멤버십 등급(Gold, Platinum)에 따라 제공되는 무료 서비스(Amenity) 항목을 다르게 구성하세요.",
+            "output_language": "한국어",
+            "domain_system_prompt": "당신은 5성급 호텔 매니저입니다. 정중한 톤과 세심한 서비스 기록을 바탕으로 데이터를 생성하세요."
+        },
+        "011": {
+            "domain_title": "transportation",
+            "domain_name": "교통/물류운송",
+            "domain_definition": "물류 흐름 및 운행 관리 데이터입니다. GPS 좌표와 정비 이력의 기술적 측면이 강조됩니다.",
+            "generation_form": "화물 운송장, 차량 정비 로그, 운행 일지",
+            "domain_constraints": ["차량 번호판 형식 준수", "속도/거리 단위 명시"],
+            "required_fields": ["vehicle_id", "driver_name", "route_info", "maintenance_status"],
+            "sample_data_schema": {
+                "logistics": {"origin": "string", "dest": "string", "weight": "float"},
+                "gps_log": [{"lat": "float", "lng": "float", "time": "string"}]
+            },
+            "key_entities": ["트럭 운전사", "물류 센터장", "정비 메카닉", "관제사"],
+            "data_volatility": "운송 물품의 종류(위험물, 냉동, 일반)에 따라 차량의 온도 설정 및 주의사항 필드를 추가하세요.",
+            "output_language": "한국어",
+            "domain_system_prompt": "당신은 스마트 물류 센터 운영 팀장입니다. 물류 흐름의 시계열적 특성을 반영한 데이터를 생성하세요."
+        },
+        "012": {
+            "domain_title": "energy",
+            "domain_name": "에너지/유틸리티",
+            "domain_definition": "에너지 공급 및 검침 데이터입니다. 스마트 미터링의 주기적 패턴과 청구 무결성이 필요합니다.",
+            "generation_form": "검침 보고서, 요금 고지서, 설비 점검표",
+            "domain_constraints": ["에너지 단위(kWh) 사용", "검침 주기 일관성"],
+            "required_fields": ["meter_id", "customer_type", "current_usage", "billing_amount"],
+            "sample_data_schema": {
+                "hourly_usage": [{"hour": "int", "value": "float"}],
+                "facility_status": {"health": "string", "last_check": "string"}
+            },
+            "key_entities": ["산업용 수용가", "현장 검침원", "에너지 분석가", "배전반 관리자"],
+            "data_volatility": "계절 및 시간대에 따른 에너지 사용량 피크 패턴을 무작위로 생성하여 반영하세요.",
+            "output_language": "한국어",
+            "domain_system_prompt": "당신은 스마트 그리드 에너지 분석가입니다. 전력 부하 패턴을 고려한 정밀한 시뮬레이션 데이터를 생성하세요."
+        },
+        "013": {
+            "domain_title": "human_services",
+            "domain_name": "사회복지/공공서비스",
+            "domain_definition": "공공 복지 상담 및 지원 데이터입니다. 수급 자격 심사 및 질적 상담 내용 묘사가 중요합니다.",
+            "generation_form": "상담 일지, 수급 신청서, 심사 보고서",
+            "domain_constraints": ["개인정보 비식별화", "복지 카테고리 명시"],
+            "required_fields": ["case_id", "service_type", "assessment_result", "provider_note"],
+            "sample_data_schema": {
+                "client_profile": {"income_level": "string", "family_count": "int"},
+                "action_plan": ["string"]
+            },
+            "key_entities": ["사회복지사", "자원봉사자", "심사 위원", "복지 대상자"],
+            "data_volatility": "상담 결과(assessment)에 따라 지원되는 서비스 항목과 긴급도를 다르게 설정하세요.",
+            "output_language": "한국어",
+            "domain_system_prompt": "당신은 선임 사례관리사입니다. 대상자에 대한 인간적인 통찰과 행정적 엄밀함을 담은 상담 데이터를 생성하세요."
+        }
+    }
+}
