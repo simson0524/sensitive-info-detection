@@ -40,7 +40,7 @@
 ## 🗂️ Database Schema (ERD)
 프로젝트의 모든 데이터(실험 설정, 학습 로그, 추론 결과, 사전 데이터)는 아래 ERD 구조에 따라 관리됩니다.
 
-![ER Diagram](./assets/ERD251201.jpg)
+![ER Diagram](./assets/ERD260101.drawio.png)
 
 <br>
 
