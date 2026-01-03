@@ -13,10 +13,10 @@ from src.modules.new_domain_annotation import new_domain_annotation
 def new_domain_generation(
     client, 
     target_count=100, 
-    metadata_rel_path='new_domain_generation_metadata/generated_domain_form.json', 
-    name_pool_rel_path='new_domain_generation_metadata/name_pool.json',
-    label_desc_rel_path='new_domain_generation_metadata/label_description.json',
-    format_sample_rel_path='new_domain_generation_metadata/document_format.json'
+    metadata_rel_path='src/modules/new_domain_generation_metadata/generated_domain_form.json', 
+    name_pool_rel_path='src/modules/new_domain_generation_metadata/name_pool.json',
+    label_desc_rel_path='src/modules/new_domain_generation_metadata/label_description.json',
+    format_sample_rel_path='src/modules/new_domain_generation_metadata/document_format.json'
 ):
     """
     [데이터 생성 파이프라인 - 2번 박스: 도메인별 데이터 병렬 생성 및 실시간 모니터링]
@@ -28,10 +28,10 @@ def new_domain_generation(
     module_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(module_dir, "../../"))
     
-    metadata_path      = os.path.join(module_dir, metadata_rel_path)
-    name_pool_path     = os.path.join(module_dir, name_pool_rel_path)
-    label_desc_path    = os.path.join(module_dir, label_desc_rel_path)
-    format_sample_path = os.path.join(module_dir, format_sample_rel_path)
+    metadata_path      = os.path.join(project_root, metadata_rel_path)
+    name_pool_path     = os.path.join(project_root, name_pool_rel_path)
+    label_desc_path    = os.path.join(project_root, label_desc_rel_path)
+    format_sample_path = os.path.join(project_root, format_sample_rel_path)
     
     zip_storage_dir = os.path.join(project_root, "data", "zip_raw_data")
     os.makedirs(zip_storage_dir, exist_ok=True)
@@ -55,7 +55,7 @@ def new_domain_generation(
 
     # 병렬 처리를 위해 ThreadPoolExecutor 사용
     # max_workers를 통해 한 번에 화면에 보일 서브 바의 개수를 조절할 수 있습니다.
-    with ThreadPoolExecutor(max_workers=min(len(domain_ids), 5)) as executor:
+    with ThreadPoolExecutor(max_workers=min(len(domain_ids), 20)) as executor:
         futures = {
             executor.submit(
                 _process_domain_pipeline, 

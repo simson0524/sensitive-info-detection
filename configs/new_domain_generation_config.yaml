@@ -2,9 +2,9 @@
 
 # 신규 도메인 데이터 생성 설정
 generation_settings:
-  mode: true                 # true: 신규 생성(generated_domain_form.json), false: 전체 생성(domain_form_history.json)
-  target_count: 10          # 도메인당 생성할 문서 개수
-  new_domain_n: 1             # 병렬 처리할 최대 도메인 수
+  mode: false                 # true: 신규 생성(generated_domain_form.json), false: 전체 생성(domain_form_history.json)
+  target_count: 100          # 도메인당 생성할 문서 개수
+  new_domain_n: 16             # 병렬 처리할 최대 도메인 수
   model_name: "gpt-5-mini"   # 사용할 LLM 모델명
   temperature: 0.7           # 생성 다양성 조절
 
