@@ -95,6 +95,7 @@ sensitive-info-detector/
 │   │   └── ner_roberta.py ✅
 │   │
 │   ├── modules/  # 각 로직의 핵심 모듈
+│   │   ├── dtm_initializer.py               # Z-score을 위한 Domain-Term Matrix 및 관련 테이블 초기화 모듈 ✅
 │   │   ├── tf_idf_updater.py                # Z-score을 위한 TF-IDF 점수 계산 모듈 ✅
 │   │   ├── z_score_updater.py               # Z-score 계산 모듈 ✅
 │   │   ├── confidence_score_calculator.py   # Confidence-score 계산 모듈 ❌ ⚠️
