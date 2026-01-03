@@ -8,7 +8,10 @@ from src.database.models import (
     ExperimentProcessInferenceSentence,
     InfoDictionary, 
     InfoDictionarySentence, 
-    NewDomainDatasetGenerationProcess
+    NewDomainDatasetGenerationProcess,
+    DomainTermMatrix,
+    Domain,
+    Term
 )
 
 # ==============================================================================
@@ -459,6 +462,7 @@ def delete_dictionary_item(session: Session, annotated_word: str, data_category:
     ).delete()
     return deleted_count > 0
 
+
 def invalidate_dictionary_item(session: Session, annotated_word: str, data_category: str, domain_id: str):
     """
     사전에서 특정 단어를 즉시 무효화합니다. (오탐 발생 시)
@@ -588,3 +592,142 @@ def delete_generation_process_log(session: Session, generated_domain_id: int) ->
         NewDomainDatasetGenerationProcess.generated_domain_id == generated_domain_id
     ).delete()
     return deleted_count > 0
+
+
+# ==============================================================================
+# 7. 단어 출현 횟수 및 TF-IDF 점수 (DomainTermMatrix)
+# ==============================================================================
+
+def bulk_insert_dtm_items(session: Session, data_list: list[dict]):
+    """
+    DTM 데이터를 대량으로 '신규 삽입'합니다.
+    (이미 데이터가 존재할 경우 IntegrityError가 발생하므로, 초기 생성 시에 사용합니다.)
+    """
+    if data_list:
+        session.bulk_insert_mappings(DomainTermMatrix, data_list)
+
+
+def bulk_update_dtm_items(session: Session, data_list: list[dict]):
+    """
+    기존 DTM 행들의 점수를 대량으로 '수정'합니다.
+    Args:
+        data_list: PK(domain_id, term)와 수정할 필드(tf_score 등)가 포함된 리스트
+    """
+    if data_list:
+        session.bulk_update_mappings(DomainTermMatrix, data_list)
+
+
+def get_dtm_by_domain(session: Session, domain_id: int, batch_size: int = 2000):
+    """
+    특정 도메인의 모든 단어 점수를 스트리밍 방식으로 조회합니다.
+    
+    Yields:
+        dict: DTM 데이터 행
+    """
+    query = session.query(DomainTermMatrix).filter(DomainTermMatrix.domain_id == domain_id)
+    for row in query.yield_per(batch_size):
+        yield row_to_dict(row)
+
+
+def get_dtm_by_term(session: Session, term: str) -> list[dict]:
+    """
+    특정 단어가 어느 도메인들에서 나타나는지 점수와 함께 조회합니다.
+    """
+    rows = session.query(DomainTermMatrix).filter(DomainTermMatrix.term == term).all()
+    return rows_to_list(rows)
+
+
+def delete_dtm_by_domain(session: Session, domain_id: int) -> int:
+    """특정 도메인의 모든 DTM 데이터를 삭제합니다."""
+    deleted_count = session.query(DomainTermMatrix).filter(
+        DomainTermMatrix.domain_id == domain_id
+    ).delete()
+    return deleted_count
+
+
+# ==============================================================================
+# 8. 도메인 정보 (Domain)
+# ==============================================================================
+
+def create_domain(session: Session, domain_name: str) -> dict:
+    """
+    새로운 도메인을 생성하고 정보를 반환합니다.
+    """
+    db_obj = Domain(domain_name=domain_name)
+    session.add(db_obj)
+    session.flush()
+    session.refresh(db_obj)
+    return row_to_dict(db_obj)
+
+
+def create_domain_with_id(session: Session, domain_id: int, domain_name: str) -> dict:
+    """
+    [추가] 특정 ID를 지정하여 도메인을 생성합니다. (dtm_initializer에서 사용)
+    폴더명에서 추출한 고정 ID를 DB에 그대로 박아넣을 때 사용합니다.
+    """
+    db_obj = Domain(domain_id=domain_id, domain_name=domain_name)
+    session.add(db_obj)
+    session.flush()
+    session.refresh(db_obj)
+    return row_to_dict(db_obj)
+
+def get_domain_by_name(session: Session, domain_name: str) -> dict:
+    """
+    [추가] 도메인 이름을 통해 정보를 조회합니다.
+    """
+    row = session.query(Domain).filter(Domain.domain_name == domain_name).first()
+    return row_to_dict(row)
+
+
+def get_all_domains(session: Session) -> list[dict]:
+    """
+    전체 도메인 목록을 조회합니다.
+    """
+    rows = session.query(Domain).all()
+    return rows_to_list(rows)
+
+
+def get_domain_count(session: Session) -> int:
+    """
+    총 도메인 수(IDF 계산의 분모)를 구합니다.
+    """
+    return session.query(Domain).count()
+
+
+# ==============================================================================
+# 9. 단어 통계 정보 (Term)
+# ==============================================================================
+
+def bulk_insert_terms(session: Session, data_list: list[dict]):
+    """
+    새로운 단어들을 통계 테이블에 대량 삽입합니다.
+    """
+    if data_list:
+        session.bulk_insert_mappings(Term, data_list)
+
+
+def bulk_update_terms(session: Session, data_list: list[dict]):
+    """
+    기존 단어들의 통계 정보(included_domain_counts 등)를 대량 수정합니다.
+    Args:
+        data_list: PK(term)와 수정할 필드가 포함된 리스트
+    """
+    if data_list:
+        session.bulk_update_mappings(Term, data_list)
+
+
+def get_term_stats(session: Session, term: str) -> dict:
+    """
+    특정 단어의 통계 정보(예: 몇 개의 도메인에 나타나는지)를 조회합니다.
+    """
+    row = session.query(Term).filter(Term.term == term).first()
+    return row_to_dict(row)
+
+
+def get_all_terms_streaming(session: Session, batch_size: int = 5000):
+    """
+    전체 단어장 정보를 스트리밍 조회합니다 (IDF 재계산 시 유용).
+    """
+    query = session.query(Term)
+    for row in query.yield_per(batch_size):
+        yield row_to_dict(row)

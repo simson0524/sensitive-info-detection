@@ -40,7 +40,7 @@
 ## 🗂️ Database Schema (ERD)
 프로젝트의 모든 데이터(실험 설정, 학습 로그, 추론 결과, 사전 데이터)는 아래 ERD 구조에 따라 관리됩니다.
 
-![ER Diagram](./assets/ERD251201.jpg)
+![ER Diagram](./assets/ERD260101.drawio.png)
 
 <br>
 
@@ -64,8 +64,8 @@ sensitive-info-detector/
 │   └── train_data/  # 도메인별로 관리되는 폴더(데이터와 정답지 포함 & 필요에 따라 데이터 수정 가능)
 │       └── {domain_id}_{domain_name}/
 │           ├── {domain_id}_{document_id}.json  # 문서단위 데이터(여러개일 수 있음) ✅
-│           ├── confidence_score.csv            # 현재 도메인 기준 Confidence-score 데이터 ❌
-│           ├── z_score.csv                     # 현재 도메인 기준 Z-score 데이터 ✅
+│           ├── confidence_score.csv            # 현재 도메인 기준 Confidence-score 데이터 ❌ (⚠️ z-score만 사용할 듯)
+│           ├── z_score.csv                     # 현재 도메인 기준 Z-score 데이터 ✅ (⚠️ 별도 테이블로 관리하기 때문에 {domain_id}_{domain_name}/에 포함될 이유가 없을 듯)
 │           └── answer_sheet.csv                # 정답지(단순 추론 대상 도메인이라면 없음) ✅
 │
 ├── outputs/  # 실험 결과 및 로그
@@ -76,9 +76,11 @@ sensitive-info-detector/
 │   └── logs/  # 실험단위로 관리되는 실험 로그
 │       └── {experiment_code}/
 │           ├── {experiment_code}_{process_code}_{process_epoch}_inference_sentences.csv  # 각 프로세스에서 문장 단위 추론 결과 ✅
-│           ├── {experiment_code}_all_process_results.txt                                 # 실험 + 모든 프로세스의 결과를 순서대로 작성한 txt ✅
+│           ├── {experiment_code}_all_process_results.txt                                 # 실험 + 모든 프로세스의 결과를 순서대로 작성한 txt ✅ (⚠️ 아래 사항들 추가하기)
 │           ├── {experiment_code}_loss_graph.png                                          # 모델 학습 중 train & valid loss 추이를 나타낸 그래프 ✅
-│           ├── {experiment_code}_label_count_graph.png                                   # 모델 학습 중 정탐오탐미탐 샘플 수 추이를 나타낸 그래프 ✅
+│           ├── {experiment_code}_label_count_graph.png                                   # 모델 학습 중 정탐오탐미탐 샘플 수 추이를 나타낸 그래프 ✅ (⚠️ BIO태깅은 혼합한 형태로 수정하기)
+│           ├── {experiment_code}_label_confusion_matrix.png                              # 모델 학습 중 최적 epoch(valid loss 최소)의 정탐오탐미탐 샘플 비율(수)를 나타낸 hit map ❌ (⚠️ BIO태깅은 혼합한 형태로 수정하기)
+│           ├── {experiment_code}_label_metric_distribution.png                           # 모델 학습 중 최적 epoch(valid loss 최소)의 라벨 별 정확도 분포를 나타낸 그래프 ❌ (⚠️ BIO태깅은 혼합한 형태로 수정하기)
 │           └── {experiment_code}_experiment_log.txt                                      # 실험 파이프라인 실행 중 발생하는 모든 print log ✅
 │   
 ├── src/  # 소스 코드 (Package)
@@ -93,8 +95,10 @@ sensitive-info-detector/
 │   │   └── ner_roberta.py ✅
 │   │
 │   ├── modules/  # 각 로직의 핵심 모듈
-│   │   ├── z_score_calculator.py            # Z-score 계산 모듈 ✅
-│   │   ├── confidence_score_calculator.py   # Confidence-score 계산 모듈 ❌
+│   │   ├── dtm_initializer.py               # Z-score을 위한 Domain-Term Matrix 및 관련 테이블 초기화 모듈 ✅
+│   │   ├── tf_idf_updater.py                # Z-score을 위한 TF-IDF 점수 계산 모듈 ✅
+│   │   ├── z_score_updater.py               # Z-score 계산 모듈 ✅
+│   │   ├── confidence_score_calculator.py   # Confidence-score 계산 모듈 ❌ ⚠️
 │   │   ├── new_domain_def_generation.py     # 신도메인 데이터 정의문 생성 모듈 ✅
 │   │   ├── new_domain_generation.py         # 신도메인 데이터 생성 모듈 ✅
 │   │   ├── new_domain_annotation.py         # 신도메인 데이터 어노테이션 모듈(향후 generation에 합치기) ✅
@@ -103,8 +107,8 @@ sensitive-info-detector/
 │   │   ├── ner_preprocessor.py              # [NER모델]데이터 전처리 및 로드 모듈 ✅
 │   │   ├── ner_trainer.py                   # [NER모델]학습 모듈 ✅
 │   │   ├── ner_evaluator.py                 # [NER모델]검증 모듈 ✅
-│   │   ├── dictionary_matcher.py            # 사전 매칭 모듈 ✅
-│   │   ├── dictionary_updater.py            # 사전 업데이트 모듈 ❌
+│   │   ├── dictionary_matcher.py            # 사전 매칭 모듈 ✅ ⚠️
+│   │   ├── dictionary_updater.py            # 사전 업데이트 모듈 ❌ ⚠️
 │   │   ├── regex_matcher.py                 # 정규표현식 매칭 모듈 ✅
 │   │   └── regex_logics/                    # 정규표현식 매칭 모듈에서 사용하는 로직 ✅
 │   │
@@ -113,8 +117,7 @@ sensitive-info-detector/
 │   │   ├── process_1.py  # 모델학습 및 검증 프로세스 ✅        
 │   │   ├── process_2.py  # 사전 매칭 검증 프로세스 ✅
 │   │   ├── process_3.py  # 정규표현식 매칭 검증 프로세스 ✅    
-│   │   ├── process_4.py  # 모델 검증 프로세스(process_2, process_3에서 정탐된 word들과 비교) ✅
-│   │   └── process_5.py  # 신도메인 데이터 생성 및 ZIP 저장 프로세스(근데 이거도 module로 가야 할 것 같은데..) ❌
+│   │   └── process_4.py  # 모델 검증 프로세스(process_2, process_3에서 정탐된 word들과 비교) ✅
 │   │
 │   └── utils/  # 유틸리티
 │       ├── common.py      # YAML 로드, 시드 고정, 디렉토리 생성 등 공통 함수 ✅
@@ -133,7 +136,7 @@ sensitive-info-detector/
 │   ├── run_experiment.py             # 실험 전체 파이프라인 실행 ✅
 │   ├── run_update_z_score.py         # 전체 도메인의 z_score를 업데이트 ✅
 │   ├── run_add_sub_annotation.py     # z-score or confidence score에 따라 sub_label을 추가 ✅
-│   └── run_new_domain_generation.py  # 신도메인 데이터 생성만 따로 돌릴 때 ❌
+│   └── run_new_domain_generation.py  # 신도메인 데이터 생성만 따로 돌릴 때 ✅
 │
 ├── .env  # DB 접속 정보, 비밀키 ✅
 ├── .gitignore ✅

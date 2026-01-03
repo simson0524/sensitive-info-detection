@@ -142,6 +142,54 @@ class NewDomainDatasetGenerationProcess(Base):
 
 
 # --------------------------------------------------------
+# 7. 단어 출현 횟수의 Z-score 계산을 위한 TF-IDF 점수 테이블 (DTM)
+# --------------------------------------------------------
+class DomainTermMatrix(Base):
+    __tablename__ = "domain_term_matrix"
+
+    # 복합 Primary Key (PK1, PK2)
+    domain_id = Column(Integer, primary_key=True)
+    term = Column(Text, primary_key=True)
+
+    tf_score = Column(Float)
+    idf_score = Column(Float)
+    tfidf_score = Column(Float)
+    z_score = Column(Float)
+
+    # 관계 설정 (ORM 접근용)
+    domain_info = relationship("Domain", back_populates="term_matrices")
+    term_info = relationship("Term", back_populates="term_matrices")
+
+
+# --------------------------------------------------------
+# 8. 도메인 정보 및 도메인 count 함수를 이용한 총 도메인 수 추출을 위한 테이블
+# --------------------------------------------------------
+class Domain(Base):
+    __tablename__ = "domain"
+
+    domain_id = Column(Integer, primary_key=True)
+
+    domain_name = Column(Text)
+
+    # 관계 설정 (선택 사항: Domain 객체에서 바로 DTM 기록에 접근 가능)
+    term_matrices = relationship("DomainTermMatrix", back_populates="domain_info", cascade="all, delete-orphan")
+
+
+# --------------------------------------------------------
+# 9. IDF 점수 계산을 위한 기준 단어가 포함된 도메인의 수 정보 저장 테이블
+# --------------------------------------------------------
+class Term(Base):
+    __tablename__ = "term"
+
+    term = Column(Text, primary_key=True)
+
+    included_domain_counts = Column(Integer)
+
+    # 관계 설정 (선택 사항: Term 객체에서 이 단어가 쓰인 DTM 기록들에 접근 가능)
+    term_matrices = relationship("DomainTermMatrix", back_populates="term_info", cascade="all, delete-orphan")
+
+
+# --------------------------------------------------------
 # 테이블 매핑 (CRUD 유틸리티용)
 # --------------------------------------------------------
 TABLE_MAPPING = {
@@ -150,5 +198,8 @@ TABLE_MAPPING = {
     'experiment_process_inference_sentences': ExperimentProcessInferenceSentence,
     'info_dictionary': InfoDictionary,
     'info_dictionary_sentences': InfoDictionarySentence,
-    'new_domain_dataset_generation_process': NewDomainDatasetGenerationProcess
+    'new_domain_dataset_generation_process': NewDomainDatasetGenerationProcess,
+    'domain_term_matrix': DomainTermMatrix,
+    'domain': Domain,
+    'term': Term
 }

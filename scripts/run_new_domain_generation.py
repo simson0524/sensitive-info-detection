@@ -36,12 +36,17 @@ def main():
     # [STEP 2] 2번 박스(+내부 3번 박스): 데이터 생성 및 어노테이션 패키징
     # ---------------------------------------------------------
     # 사용자님이 정성껏 만든 new_domain_generation 함수 하나로 모든 생성을 끝냅니다.
-    new_domain_generation(
-        client=client,
-        target_count=gen_cfg['target_count'],
-        metadata_rel_path=metadata_rel_path,
-        # 나머지 인자들은 함수 정의의 default 값 사용
-    )
+    if gen_cfg['mode']:
+        new_domain_generation(
+            client=client,
+            target_count=gen_cfg['target_count']
+        )
+    else:
+        new_domain_generation(
+            client=client,
+            target_count=gen_cfg['target_count'],
+            metadata_rel_path=metadata_rel_path
+        )
 
     print("\n[Final System] 모든 파이프라인 프로세스가 성공적으로 완료되었습니다.")
 
