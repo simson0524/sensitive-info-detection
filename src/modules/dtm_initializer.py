@@ -111,7 +111,7 @@ class DTMInitializer:
                     col = df_ans['word'] if 'word' in df_ans.columns else df_ans.iloc[:, 0]
                     for w in col.dropna().astype(str):
                         # 정답지의 단어도 본문 분석과 동일한 토크나이저를 거쳐 일관성을 유지합니다.
-                        target_vocab.update(self._smart_tokenizer(w))
+                        target_vocab.add(w.strip())
 
                 # --- [Step 3] 문서 데이터(JSON) 통합 로드 ---
                 all_text = ""
@@ -133,8 +133,18 @@ class DTMInitializer:
                 tf_counts = Counter(tokens)
 
                 # [중요] 정답지 단어 보정: 본문에는 없지만 정답지에는 있는 단어들을 TF 0으로 추가합니다.
-                # 이를 통해 정답지 단어들이 통계 분석 대상(DTM)에 반드시 포함되도록 합니다.
+                # 형태소 분석기가 놓치거나 다르게 분석했을 수 있는 '정답 단어'들을 본문에서 직접 찾습니다.
                 for v_word in target_vocab:
+                    # 1. 본문 텍스트 내에서 해당 단어가 단순히 몇 번 출현하는지 count
+                    # (정규표현식이나 단순 count를 사용할 수 있습니다.)
+                    appearance_count = all_text.count(v_word)
+                    
+                    # 2. 만약 형태소 분석 결과(tf_counts)보다 직접 센 횟수가 더 많다면 갱신
+                    # (이미 tf_counts에 있다면 더 큰 값을 취하고, 없다면 새로 등록)
+                    if appearance_count > tf_counts.get(v_word, 0):
+                        tf_counts[v_word] = appearance_count
+                    
+                    # 3. 본문에도 아예 없더라도 DTM에는 존재해야 하므로 최소 0 유지
                     if v_word not in tf_counts:
                         tf_counts[v_word] = 0
 
