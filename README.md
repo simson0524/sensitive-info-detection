@@ -99,7 +99,7 @@ sensitive-info-detector/
 │   │   ├── z_score_updater.py               # Z-score 계산 모듈 ✅
 │   │   ├── new_domain_def_generation.py     # 신도메인 데이터 정의문 생성 모듈 ✅
 │   │   ├── new_domain_generation.py         # 신도메인 데이터 생성 모듈 ✅
-│   │   ├── new_domain_annotation.py         # 신도메인 데이터 어노테이션 모듈(향후 generation에 합치기) ✅
+│   │   ├── new_domain_annotation.py         # 신도메인 데이터 어노테이션 모듈(향후 generation에 합치기, 함수 호출을 상위 레이어가 아니라 동 레이어에서 하기 때문) ✅
 │   │   ├── new_domain_generation_metadata/  # 신도메인 데이터 생성 관련 메타 데이터 ✅
 │   │   ├── result_aggregator.py             # 정탐/오탐/미팀 데이터 수집 & 통계 & 포맷팅 모듈 ✅
 │   │   ├── ner_preprocessor.py              # [NER모델]데이터 전처리 및 로드 모듈 ✅
