@@ -5,6 +5,7 @@ import json
 import pandas as pd
 from collections import Counter
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from transformers import AutoTokenizer
 from mecab import MeCab
 from tqdm import tqdm # 진행 현황 파악용
@@ -59,9 +60,9 @@ class DTMInitializer:
         2. 도메인 폴더를 순회하며 도메인/단어/TF 정보를 DB에 저장합니다.
         """
         self.logger.info("Initializing tables: Truncating domain, term, and DTM...")
-        self.session.execute("TRUNCATE TABLE domain_term_matrix CASCADE")
-        self.session.execute("TRUNCATE TABLE domain CASCADE")
-        self.session.execute("TRUNCATE TABLE term CASCADE")
+        self.session.execute(text("TRUNCATE TABLE domain_term_matrix CASCADE"))
+        self.session.execute(text("TRUNCATE TABLE domain CASCADE"))
+        self.session.execute(text("TRUNCATE TABLE term CASCADE"))
         self.session.commit()
 
         abs_train_path = os.path.abspath(train_data_path)
