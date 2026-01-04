@@ -96,8 +96,20 @@ class DTMInitializer:
                 file_list = [f for f in os.listdir(domain_full_path) if f.endswith('.json')]
                 for file_name in file_list:
                     with open(os.path.join(domain_full_path, file_name), 'r', encoding='utf-8') as f:
-                        data = json.load(f)
-                        all_text += " ".join([item.get('sentence', '') for item in data])
+                        try:
+                            root_data = json.load(f)
+                            
+                            # JSON의 "data" 키 내부에 있는 리스트를 가져옴
+                            # get()을 사용해 해당 키가 없을 경우 빈 리스트를 반환하도록 안전하게 처리
+                            items = root_data.get('data', [])
+                            
+                            if isinstance(items, list):
+                                # 리스트 내의 각 딕셔너리에서 'sentence' 추출
+                                all_text += " " + " ".join([it.get('sentence', '') for it in items if isinstance(it, dict)])
+                                
+                        except json.JSONDecodeError:
+                            self.logger.warning(f"Invalid JSON format in {file_name}")
+                            continue
                 
                 # --- 단어 빈도(TF) 계산 ---
                 tokens = self._smart_tokenizer(all_text)
