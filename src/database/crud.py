@@ -617,6 +617,23 @@ def bulk_update_dtm_items(session: Session, data_list: list[dict]):
         session.bulk_update_mappings(DomainTermMatrix, data_list)
 
 
+def get_all_dtm_for_viz(session: Session, batch_size: int = 10000):
+    """
+    시각화에 필요한 컬럼만 선택적으로 스트리밍하여 메모리 부하를 최소화합니다.    
+    
+    Yields:
+        dict: DTM 데이터 행
+    """
+    query = session.query(
+        DomainTermMatrix.z_score,
+        DomainTermMatrix.is_sensitive_label
+    )
+    
+    for row in query.yield_per(batch_size):
+        # row_to_dict 대신 필요한 값만 튜플/딕셔너리로 반환
+        yield {'Score': row.z_score, 'Label': row.is_sensitive_label}
+
+
 def get_dtm_by_domain(session: Session, domain_id: int, batch_size: int = 2000):
     """
     특정 도메인의 모든 단어 점수를 스트리밍 방식으로 조회합니다.

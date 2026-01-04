@@ -4,6 +4,7 @@ import sys
 import os
 import argparse
 import time
+import pandas as pd
 from sqlalchemy.orm import Session
 
 # 프로젝트 루트 경로 설정
@@ -19,8 +20,9 @@ from src.modules.z_score_updater import ZScoreUpdater
 
 from src.utils.common import load_yaml
 from src.utils.logger import setup_experiment_logger 
-# 시각화 함수는 필요에 따라 DB 데이터를 DataFrame으로 변환하여 호출 가능
-# from src.utils.visualizer import plot_z_score_distribution
+from src.utils.visualizer import plot_z_score_distribution
+from src.database.crud import get_all_dtm_for_viz
+
 
 # 전역 로거 설정
 logger = setup_experiment_logger("DB_STAT_PIPELINE")
@@ -104,11 +106,29 @@ def main():
     finally:
         session.close() # DB 세션 반납
 
-    # 4. Visualization (Optional)
-    # DB 데이터를 조회하여 기존 plot_z_score_distribution 함수에 넘겨줄 수 있는 
-    # DataFrame 생성 로직을 추가하여 시각화를 수행할 수 있습니다.
-    # logger.info("=== Starting Visualization (Optional) ===")
-    # ... (DB 데이터를 pandas df로 변환하는 코드 추가 가능)
+    # 4. Visualization
+    logger.info("[Phase 4] Generating Statistical Distributions...")
+    try:        
+        # 1. DB에서 데이터 로드 (yield_per를 사용하여 안전하게 리스트화)
+        # 시각화에 필요한 2개 컬럼(z_score, is_sensitive_label)만 가져옵니다.
+        session_viz = SessionLocal() # 새 세션을 열거나 기존 로직 유지
+        viz_data_gen = get_all_dtm_for_viz(session_viz, batch_size=10000)
+        
+        # 2. DataFrame 변환 (모든 샘플을 메모리에 적재)
+        viz_df = pd.DataFrame(viz_data_gen)
+        
+        if not viz_df.empty:
+            # 3. 시각화 실행 (그림 그리기 전용 함수 호출)
+            report_dir = os.path.join(train_data_root, "reports")
+            plot_z_score_distribution(viz_df, report_dir)
+            logger.info(f"✅ Phase 4 Completed. Check {report_dir} for results.")
+        else:
+            logger.warning("⚠️ No data found in DomainTermMatrix to plot.")
+            
+    except Exception as e:
+        logger.error(f"❌ Visualization failed: {e}")
+    finally:
+        session_viz.close()
 
 if __name__ == "__main__":
     main()

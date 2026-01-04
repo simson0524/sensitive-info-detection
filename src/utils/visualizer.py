@@ -137,69 +137,66 @@ def plot_confusion_matrix_trends(cm_history: list, id2label: dict, save_dir: str
 
 def plot_z_score_distribution(df: pd.DataFrame, save_dir: str):
     """
-    [기능 Update] Z-Score 분포를 0.2 단위로 정밀하게 시각화합니다.
+    [Visualization Only] 
+    전달받은 DataFrame(z_score, is_sensitive_label 포함)을 바탕으로 
+    0.2 단위 구간 분포를 그립니다.
     """
     if df.empty:
-        print("⚠️ [Visualizer] Empty DataFrame provided.")
+        print("⚠️ [Visualizer] 시각화할 데이터가 없습니다 (DataFrame empty).")
         return
-        
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir, exist_ok=True)
 
-    # 1. Binning (0.2 단위로 구간 설정)
-    # 범위: -2.0 ~ 4.0 (대부분의 Z-Score가 이 안에 존재)
-    # np.arange(시작, 끝, 간격)
-    bin_edges = np.arange(-2.0, 4.2, 0.2) 
-    
-    # 구간보다 작은/큰 값 처리를 위해 -inf, inf 추가
+    # 1. Binning 설정 (0.2 단위)
+    # 범위: -2.0 ~ 3.0, 그 외 구간은 < -2.0, 3.0+ 로 처리
+    bin_edges = np.arange(-2.0, 3.2, 0.2) 
     bins = [-float('inf')] + list(bin_edges) + [float('inf')]
     
-    # 라벨 자동 생성 (예: '-1.0~-0.8')
     labels = ['< -2.0']
     for i in range(len(bin_edges)-1):
         labels.append(f"{bin_edges[i]:.1f}~{bin_edges[i+1]:.1f}")
-    labels.append('4.0+')
+    labels.append('3.0+')
     
-    # 2. 데이터 구간화
-    df['Score_Bin'] = pd.cut(df['Score'], bins=bins, labels=labels)
+    # 데이터 구간화 (Score와 Is_Sensitive 컬럼명 기준)
+    # 만약 원본 DF 컬럼명이 다르면 여기서 맞춰줍니다.
+    plot_df = df.copy()
+    plot_df['Score_Bin'] = pd.cut(plot_df['z_score'], bins=bins, labels=labels)
+    plot_df['Label_Group'] = plot_df['is_sensitive_label'].map({True: 'Sensitive (민감)', False: 'Normal (일반)'})
 
-    # 3. 스타일 설정
+    # 2. 스타일 설정
     sns.set_style("whitegrid")
-    set_korean_font()
+    # 한글 깨짐 방지 (시스템에 따라 폰트명은 수정될 수 있습니다)
+    plt.rcParams['font.family'] = 'NanumGothic' 
+    plt.rcParams['axes.unicode_minus'] = False
 
-    palette = {
-        '개인정보': '#ff6b6b',    # Red
-        '준식별자': '#feca57',    # Yellow
-        '기밀정보': '#48dbfb',    # Blue
-        'Non-labeled': '#c8d6e5' # Grey
-    }
+    # 3. 그래프 그리기 (2단 구성)
+    # 두 라벨 간의 데이터 편차가 크므로 sharey=False로 설정
+    fig, axes = plt.subplots(2, 1, figsize=(20, 12))
     
-    # 4. 그래프 그리기 (막대그래프)
-    fig, axes = plt.subplots(1, 2, figsize=(24, 8)) # 가로 길이 늘림 (구간이 많아서)
-    
-    # Global Plot
-    sns.countplot(
-        data=df[df['Type'] == 'Global Z-Score'],
-        x='Score_Bin', hue='Label', palette=palette,
-        ax=axes[0], edgecolor='black', linewidth=0.5
-    )
-    axes[0].set_title("Global Z-Score Distribution (Entire Corpus)", fontsize=14, fontweight='bold')
-    axes[0].set_ylabel("Word Count")
-    axes[0].tick_params(axis='x', rotation=45) # X축 라벨 45도 회전
+    palette = {'Sensitive (민감)': '#ff6b6b', 'Normal (일반)': '#54a0ff'}
+    groups = ['Normal (일반)', 'Sensitive (민감)']
 
-    # Local Plot
-    sns.countplot(
-        data=df[df['Type'] == 'Local Z-Score'],
-        x='Score_Bin', hue='Label', palette=palette,
-        ax=axes[1], edgecolor='black', linewidth=0.5
-    )
-    axes[1].set_title("Local Z-Score Distribution (Per Domain)", fontsize=14, fontweight='bold')
-    axes[1].set_ylabel("Word Count")
-    axes[1].tick_params(axis='x', rotation=45)
+    for i, group_name in enumerate(groups):
+        group_data = plot_df[plot_df['Label_Group'] == group_name]
+        
+        sns.countplot(
+            data=group_data,
+            x='Score_Bin',
+            ax=axes[i],
+            color=palette[group_name],
+            edgecolor='black',
+            linewidth=0.5,
+            order=labels # 모든 구간이 표시되도록 순서 고정
+        )
+        
+        axes[i].set_title(f"Z-Score Distribution: {group_name}", fontsize=16, fontweight='bold')
+        axes[i].set_ylabel("Count")
+        axes[i].tick_params(axis='x', rotation=45)
 
     plt.tight_layout()
     
+    # 4. 저장
+    os.makedirs(save_dir, exist_ok=True)
     save_path = os.path.join(save_dir, "z_score_distribution.png")
     plt.savefig(save_path, dpi=300)
     plt.close()
-    print(f"📊 [Visualizer] Z-Score Distribution saved to {save_path}")
+    
+    print(f"📊 [Visualizer] 시각화 이미지가 저장되었습니다: {save_path}")
