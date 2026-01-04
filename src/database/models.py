@@ -148,8 +148,16 @@ class DomainTermMatrix(Base):
     __tablename__ = "domain_term_matrix"
 
     # 복합 Primary Key (PK1, PK2)
-    domain_id = Column(Integer, primary_key=True)
-    term = Column(Text, primary_key=True)
+    domain_id = Column(
+        Integer, 
+        ForeignKey("domain.domain_id", ondelete="CASCADE"), 
+        primary_key=True
+    )
+    term = Column(
+        Text, 
+        ForeignKey("term.term", ondelete="CASCADE"), 
+        primary_key=True
+    )
 
     tf_score = Column(Float)
     idf_score = Column(Float)
