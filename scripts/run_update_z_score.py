@@ -14,7 +14,7 @@ sys.path.append(project_root)
 # DB 및 모듈 임포트
 from src.database.connection import SessionLocal
 from src.modules.dtm_initializer import DTMInitializer
-from src.modules.tfidf_updater import TFIDFUpdater
+from src.modules.tf_idf_updater import TFIDFUpdater
 from src.modules.z_score_updater import ZScoreUpdater
 
 from src.utils.common import load_yaml
