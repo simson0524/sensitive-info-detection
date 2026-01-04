@@ -93,11 +93,6 @@ def main():
         session.commit() # 트랜잭션 확정
         logger.info(f"✅ Phase 3 Completed ({time.time() - p3_start:.2f}s)")
 
-        total_elapsed = time.time() - start_all
-        logger.info("=" * 60)
-        logger.info(f"✨ Pipeline Finished Successfully! (Total: {total_elapsed:.2f}s)")
-        logger.info("=" * 60)
-
     except Exception as e:
         session.rollback() # 오류 발생 시 모든 변경사항 되돌림
         logger.critical(f"❌ Pipeline Failed due to Error: {e}", exc_info=True)
@@ -119,11 +114,15 @@ def main():
         
         if not viz_df.empty:
             # 3. 시각화 실행 (그림 그리기 전용 함수 호출)
-            report_dir = os.path.join(train_data_root, "reports")
-            plot_z_score_distribution(viz_df, report_dir)
-            logger.info(f"✅ Phase 4 Completed. Check {report_dir} for results.")
+            plot_z_score_distribution(viz_df, train_data_root)
+            logger.info(f"✅ Phase 4 Completed. Check {train_data_root} for results.")
         else:
             logger.warning("⚠️ No data found in DomainTermMatrix to plot.")
+
+        total_elapsed = time.time() - start_all
+        logger.info("=" * 60)
+        logger.info(f"✨ Pipeline Finished Successfully! (Total: {total_elapsed:.2f}s)")
+        logger.info("=" * 60)
             
     except Exception as e:
         logger.error(f"❌ Visualization failed: {e}")

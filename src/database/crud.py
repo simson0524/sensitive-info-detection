@@ -630,8 +630,7 @@ def get_all_dtm_for_viz(session: Session, batch_size: int = 10000):
     )
     
     for row in query.yield_per(batch_size):
-        # row_to_dict 대신 필요한 값만 튜플/딕셔너리로 반환
-        yield {'Score': row.z_score, 'Label': row.is_sensitive_label}
+        yield {'z_score': row.z_score, 'is_sensitive_label': row.is_sensitive_label}
 
 
 def get_dtm_by_domain(session: Session, domain_id: int, batch_size: int = 2000):
