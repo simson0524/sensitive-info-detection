@@ -1,6 +1,6 @@
 # src/database/models.py
 
-from sqlalchemy import Column, String, Integer, BigInteger, Float, Text, ForeignKey, DateTime, ForeignKeyConstraint
+from sqlalchemy import Column, String, Integer, BigInteger, Float, Text, ForeignKey, DateTime, ForeignKeyConstraint, Boolean
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -163,6 +163,7 @@ class DomainTermMatrix(Base):
     idf_score = Column(Float)
     tfidf_score = Column(Float)
     z_score = Column(Float)
+    is_sensitive_label = Column(Boolean, default=False, nullable=False)
 
     # 관계 설정 (ORM 접근용)
     domain_info = relationship("Domain", back_populates="term_matrices")
