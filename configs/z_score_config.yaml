@@ -1,0 +1,7 @@
+annotation_edit:
+  thresholds:
+    - threshold: 0.2
+      suffix: "_3"
+    - threshold: -0.2
+      suffix: "_2"
+  default_suffix: "_1"

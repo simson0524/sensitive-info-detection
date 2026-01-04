@@ -55,6 +55,7 @@ sensitive-info-detector/
 │   ├── base_config.yaml                   # 기본 설정을 관리하는 파일 ✅
 │   ├── experiment_config.yaml             # 실험별 하이퍼파라미터를 관리하는 파일 ✅
 │   ├── new_domain_generation_config.yaml  # 신도메인 생성 관련 설정을 관리하는 파일 ✅
+│   ├── z_score_config.yaml                # z-score 관련 설정을 관리하는 파일 ✅
 │   └── init_project_config.yaml           # run_init_project.py 설정을 관리하는 파일 ✅
 │
 ├── data/
@@ -64,8 +65,6 @@ sensitive-info-detector/
 │   └── train_data/  # 도메인별로 관리되는 폴더(데이터와 정답지 포함 & 필요에 따라 데이터 수정 가능)
 │       └── {domain_id}_{domain_name}/
 │           ├── {domain_id}_{document_id}.json  # 문서단위 데이터(여러개일 수 있음) ✅
-│           ├── confidence_score.csv            # 현재 도메인 기준 Confidence-score 데이터 ❌ (⚠️ z-score만 사용할 듯)
-│           ├── z_score.csv                     # 현재 도메인 기준 Z-score 데이터 ✅ (⚠️ 별도 테이블로 관리하기 때문에 {domain_id}_{domain_name}/에 포함될 이유가 없을 듯)
 │           └── answer_sheet.csv                # 정답지(단순 추론 대상 도메인이라면 없음) ✅
 │
 ├── outputs/  # 실험 결과 및 로그
@@ -98,7 +97,6 @@ sensitive-info-detector/
 │   │   ├── dtm_initializer.py               # Z-score을 위한 Domain-Term Matrix 및 관련 테이블 초기화 모듈 ✅
 │   │   ├── tf_idf_updater.py                # Z-score을 위한 TF-IDF 점수 계산 모듈 ✅
 │   │   ├── z_score_updater.py               # Z-score 계산 모듈 ✅
-│   │   ├── confidence_score_calculator.py   # Confidence-score 계산 모듈 ❌ ⚠️
 │   │   ├── new_domain_def_generation.py     # 신도메인 데이터 정의문 생성 모듈 ✅
 │   │   ├── new_domain_generation.py         # 신도메인 데이터 생성 모듈 ✅
 │   │   ├── new_domain_annotation.py         # 신도메인 데이터 어노테이션 모듈(향후 generation에 합치기) ✅
@@ -132,11 +130,11 @@ sensitive-info-detector/
 │           └── 02_candidate_labeler.py  # 사전에 들어갈 친구들 라벨링하는 것 ❌
 │
 ├── scripts/  # 실제 실행 진입점 (Entry Points)
-│   ├── run_init_project.py           # DB 생성 및 초기 사전 구축 ✅
-│   ├── run_experiment.py             # 실험 전체 파이프라인 실행 ✅
-│   ├── run_update_z_score.py         # 전체 도메인의 z_score를 업데이트 ✅
-│   ├── run_add_sub_annotation.py     # z-score or confidence score에 따라 sub_label을 추가 ✅
-│   └── run_new_domain_generation.py  # 신도메인 데이터 생성만 따로 돌릴 때 ✅
+│   ├── run_init_project.py            # DB 생성 및 초기 사전 구축 ✅
+│   ├── run_experiment.py              # 실험 전체 파이프라인 실행 ✅
+│   ├── run_update_z_score.py          # 전체 도메인의 z_score를 업데이트 ✅
+│   ├── run_update_sub_annotations.py  # z-score or confidence score에 따라 sub_label을 추가 ✅
+│   └── run_new_domain_generation.py   # 신도메인 데이터 생성만 따로 돌릴 때 ✅
 │
 ├── .env  # DB 접속 정보, 비밀키 ✅
 ├── .gitignore ✅
