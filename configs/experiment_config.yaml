@@ -6,8 +6,8 @@
 
 # 1. 실험 메타 정보
 experiment:
-  experiment_code: "251221_07"   # 실험 고유 코드 (DB 키, 폴더명으로 사용됨)
-  previous_experiment_code: "251221_03"       # 이전 실험을 잇는 경우 (옵션)
+  experiment_code: "260105_23"   # 실험 고유 코드 (DB 키, 폴더명으로 사용됨)
+  previous_experiment_code: null       # 이전 실험을 잇는 경우 (옵션)
   data_category: "personal_data"       # "personal_data" or "confidential_data" (전처리기 필터링용)
   
   # 실행 모드 ("train" 또는 "test")
@@ -17,14 +17,14 @@ experiment:
 
   # 프로세스 실행 여부 (On/Off Switch)
   run_process_1: true  # 모델 학습 및 검증
-  run_process_2: true  # 사전 매칭 검증
-  run_process_3: true  # 정규식 매칭 검증
-  run_process_4: true  # 모델 보완(Hybrid) 추론
+  run_process_2: false  # 사전 매칭 검증
+  run_process_3: false  # 정규식 매칭 검증
+  run_process_4: false  # 모델 보완(Hybrid) 추론
 
 # 2. 학습 하이퍼파라미터 (Base Config의 train 섹션을 덮어쓰거나 추가)
 train:
   seed: 42                   # 재현성을 위한 랜덤 시드
-  epochs: 10                 # 학습 반복 횟수
+  epochs: 5                 # 학습 반복 횟수
   batch_size: 32             # 배치 크기
   learning_rate: 5e-5        # 학습률
   validation_split: 0.2      # 전체 데이터 중 검증셋 비율 (0.2 = 20%)
@@ -34,13 +34,26 @@ train:
 path:
   # 학습에 사용할 데이터셋 폴더 "List" (JSON 파일들이 들어있는 곳)
   data_dir: 
-    - "/home/student1/sensitive-info-detection/data/train_data/001_virtual_company"
-    - "/home/student1/sensitive-info-detection/data/train_data/002_patient_chart"
-    - "/home/student1/sensitive-info-detection/data/train_data/999_contract_sheet"
+    # - "/home/student1/sensitive-info-detection/data/train_data/002_medical"
+    # - "/home/student1/sensitive-info-detection/data/train_data/003_finance"
+    # - "/home/student1/sensitive-info-detection/data/train_data/004_insurance"
+    - "/home/student1/sensitive-info-detection/data/train_data/005_legal"
+    - "/home/student1/sensitive-info-detection/data/train_data/006_real_estate"
+    - "/home/student1/sensitive-info-detection/data/train_data/007_ecommerce"
+    - "/home/student1/sensitive-info-detection/data/train_data/008_travel"
+    - "/home/student1/sensitive-info-detection/data/train_data/009_telecom"
+    - "/home/student1/sensitive-info-detection/data/train_data/010_hospitality"
+    - "/home/student1/sensitive-info-detection/data/train_data/011_transportation"
+    - "/home/student1/sensitive-info-detection/data/train_data/012_energy"
+    - "/home/student1/sensitive-info-detection/data/train_data/013_human_services"
+    - "/home/student1/sensitive-info-detection/data/train_data/014_education"
+    # - "/home/student1/sensitive-info-detection/data/train_data/015_agriculture"
+    # - "/home/student1/sensitive-info-detection/data/train_data/016_manufacturing_industry"
+    # - "/home/student1/sensitive-info-detection/data/train_data/017_cyber_security"
 
   
   # [Train Mode용] 이어서 학습할 체크포인트 (없으면 null)
-  resume_checkpoint: null
+  resume_checkpoint: "/home/student1/sensitive-info-detection/outputs/checkpoints/260105_22/260105_22_epoch_1.pt"
   # 예: "outputs/checkpoints/EXP_PREV/epoch_5.pt"
   
   # [Test Mode용] 추론에 사용할 학습된 모델 (run_mode: test일 때 필수)
