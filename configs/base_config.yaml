@@ -22,7 +22,7 @@ train:
   # 입력 시퀀스 최대 길이
   max_len: 256
   # 학습 device
-  device: "cuda:1"
+  device: "cuda:0"
   
 # 3. [중요] 프로젝트 전체에서 공유하는 라벨 맵
 # (NER 학습 및 검증 시 ID 변환에 사용됨)
