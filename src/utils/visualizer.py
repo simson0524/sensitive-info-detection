@@ -151,7 +151,7 @@ def plot_z_score_distribution(df: pd.DataFrame, save_dir: str):
 
     # 1. Binning 설정 (0.2 단위)
     # 범위: -2.0 ~ 3.0, 그 외 구간은 < -2.0, 3.0+ 로 처리
-    bin_edges = np.arange(-2.0, 3.2, 0.2) 
+    bin_edges = np.arange(-2.0, 3.2, 0.05) 
     bins = [-float('inf')] + list(bin_edges) + [float('inf')]
     
     labels = ['< -2.0']

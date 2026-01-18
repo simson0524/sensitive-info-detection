@@ -39,12 +39,14 @@ def main():
     # 1. Argument Parsing
     parser = argparse.ArgumentParser(description="DB-based TF-IDF & Z-Score Update Pipeline")
     parser.add_argument("--config", type=str, default="configs/base_config.yaml", help="Path to config file")
+    parser.add_argument("--running_mode", type=str, default="configs/z_score_config.yaml", help="Path to running mode config file")
     args = parser.parse_args()
 
     # 2. Config & Path 로드 (기존 스타일 유지)
     model_name = "klue/roberta-base"
     train_data_root = "data/train_data"
 
+    # Base Config 로드
     if os.path.exists(args.config):
         try:
             config = load_yaml(args.config)
@@ -55,6 +57,23 @@ def main():
             logger.info(f"[Config] Loaded - Model: {model_name}, Data Root: {train_data_root}")
         except Exception as e:
             logger.warning(f"[Config] Failed to load config, using defaults: {e}")
+
+    # Z-score 관련 Config 로드
+    if os.path.exists(args.running_mode):
+        try:
+            running_mode = load_yaml(args.running_mode)
+            if "mode" in running_mode:
+                mode = running_mode['mode']
+                if mode not in {'raw_count', 'presence_count'}:
+                    logger.warning(f"[Running Mode] Invalid Running Mode: {mode}")
+                    return
+            if "db_truncate" not in running_mode:
+                logger.warning(f"[Running Mode] Invalid Running Mode: No 'db_truncate'")
+                return
+            logger.info(f"[Running Mode] Mode: {running_mode}")
+        except Exception as e:
+            logger.warning(f"[Running Mode] Failed to load running mode")
+            return
 
     # 상대 경로를 절대 경로로 변환
     if not os.path.isabs(train_data_root):
@@ -72,7 +91,7 @@ def main():
         # --- [Phase 1] DTM Initialization & Data Scanning ---
         logger.info("[Phase 1] Initializing Tables & Scanning train_data...")
         p1_start = time.time()
-        initializer = DTMInitializer(session, model_name=model_name)
+        initializer = DTMInitializer(session, running_mode=running_mode, model_name=model_name)
         initializer.initialize_and_scan(train_data_root)
         session.commit() # 트랜잭션 확정
         logger.info(f"✅ Phase 1 Completed ({time.time() - p1_start:.2f}s)")

@@ -48,7 +48,7 @@ def run_process_1(config: dict, context: dict):
     path_conf = config['path']
 
     logger = logging.getLogger(experiment_code)
-    logger.info(f"🚀 [Process 1] 엔티티 레벨 학습 및 검증 루프 시작")
+    logger.info(f"🚀 [Process 1] Start Training Loop for {experiment_code}")
 
     # ==============================================================================
     # [Step 2] 실행 모듈 초기화
@@ -69,6 +69,8 @@ def run_process_1(config: dict, context: dict):
     best_f1 = 0.0
     min_valid_loss = float('inf')
     best_f1_epoch = -1
+    min_loss_epoch = -1
+
 
     train_losses, valid_losses = [], []
     
@@ -86,11 +88,15 @@ def run_process_1(config: dict, context: dict):
         for epoch in range(1, train_conf['epochs'] + 1):
             logger.info(f"=== Epoch {epoch}/{train_conf['epochs']} ===")
             
-            # 3-1. 학습 수행
+            # -----------------------------------------------------------
+            # 3-1. 학습 (Train Phase)
+            # -----------------------------------------------------------
             train_result = trainer.train_epoch(train_loader, epoch)
             train_losses.append(train_result['loss'])
             
-            # 3-2. 검증 수행 (엔티티 단위 메트릭 산출)
+            # -----------------------------------------------------------
+            # 3-2. 검증 (Validation Phase)
+            # -----------------------------------------------------------
             # v_metrics['f1']은 이제 토큰 단위가 아닌 '엔티티 단위'의 F1임
             valid_result = evaluator.evaluate(valid_loader, mode="valid")
             v_metrics = valid_result['metrics']
@@ -104,9 +110,12 @@ def run_process_1(config: dict, context: dict):
             if 'label_accuracy_distribution' in v_metrics:
                 accuracy_history.append(v_metrics['label_accuracy_distribution'])
             
-            # 3-3. 에포크 결과 DB 적재 (JSONB 컬럼에 상세 지표 포함)
+            # -----------------------------------------------------------
+            # 3-3. 결과 통합 및 DB 저장 (Epoch 단위 요약)
+            # -----------------------------------------------------------
             epoch_summary = {
                 "train_loss": train_result['loss'],
+                "train_time": train_result['duration'],
                 "valid_loss": v_metrics['loss'],
                 "valid_f1": v_metrics['f1'],           # Entity-level F1
                 "valid_precision": v_metrics['precision'],
@@ -128,24 +137,38 @@ def run_process_1(config: dict, context: dict):
                 "process_results": epoch_summary 
             })
             
-            logger.info(f"Epoch {epoch} 종료 - F1: {v_metrics['f1']:.4f} (Entity-level)")
+            logger.info(f"Epoch {epoch} Result Saved. (Train Loss: {train_result['loss']:.4f} | Valid Loss: {v_metrics['loss']:.4f} | Valid F1: {v_metrics['f1']:.4f})")
 
-            # 3-4. 상세 추론 로그 보관 (DB 및 CSV 추출)
+            # -----------------------------------------------------------
+            # 3-3-2. 문장 단위 추론 결과 저장 (DB + CSV) [UPDATED]
+            # -----------------------------------------------------------
+            # FK 정보 주입
             valid_logs = valid_result['logs']
             for log in valid_logs:
                 log.update({"experiment_code": experiment_code, "process_code": "process_1", "process_epoch": epoch})
             
+            # (1) DB Bulk Insert
             crud.bulk_insert_inference_sentences(session, valid_logs)
-            save_logs_to_csv(valid_logs, os.path.join(log_save_dir, f"{experiment_code}_ep{epoch}_inference.csv"))
+            logger.info(f"Saved {len(valid_logs)} inference logs to DB.")
 
-            # 3-5. 베스트 모델 관리
+            # (2) [NEW] CSV 파일 추출 및 저장( 유틸리티 함수 호출 (JSON 필드는 문자열로 변환되어 저장됨) )
+            save_logs_to_csv(valid_logs, os.path.join(log_save_dir, f"{experiment_code}_process_1_{epoch}_inference_sentences.csv"))
+
+            # -----------------------------------------------------------
+            # 3-4. 체크포인트 저장 (Model Checkpoint)
+            # -----------------------------------------------------------
             save_path = os.path.join(ckpt_save_dir, f"{experiment_code}_epoch_{epoch}.pt")
             torch.save(model.state_dict(), save_path)
             
             if v_metrics['f1'] > best_f1:
                 best_f1 = v_metrics['f1']
                 best_f1_epoch = epoch
-                logger.info(f"✨ Best F1 갱신: {best_f1:.4f}")
+                logger.info(f"✨ Current Best F1: {best_f1:.4f} (Epoch {epoch})")
+
+            if v_metrics['loss'] < min_valid_loss:
+                min_valid_loss = v_metrics['loss']
+                min_loss_epoch = epoch
+                logger.info(f"📉 Current Min Loss: {min_valid_loss:.4f} (Epoch {epoch})")
 
         # ==============================================================================
         # [Step 4] 실험 마스터 정보 갱신 (최종 성능 기록)
@@ -177,9 +200,7 @@ def run_process_1(config: dict, context: dict):
         )
 
     # 3. 최적 Epoch (Min Valid Loss) 기준 상세 시각화
-    # loss가 가장 낮았던 시점의 인덱스 추출 (0-based index)
-    best_idx = valid_losses.index(min(valid_losses))
-    min_loss_epoch = best_idx+1
+    best_idx = min_loss_epoch-1
 
     if 0 <= best_idx < len(cm_history):
         logger.info(f"✨ 최적 Epoch({min_loss_epoch})의 상세 분석 그래프를 생성합니다.")

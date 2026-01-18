@@ -14,12 +14,13 @@ from src.database import crud
 from src.utils.logger import setup_experiment_logger
 
 class DTMInitializer:
-    def __init__(self, session: Session, model_name: str = "klue/roberta-base"):
+    def __init__(self, session: Session, running_mode: dict, model_name: str = "klue/roberta-base"):
         """
         [Phase 1: 데이터 초기화 및 기초 통계 적재 모듈]
         - DB를 완전히 비우고, 로컬 파일을 스캔하여 도메인/단어/빈도 정보를 구축합니다.
         """
         self.session = session
+        self.running_mode = running_mode
         self.logger = setup_experiment_logger(experiment_code="DTM_INITIALIZER")
         
         # 1. BERT Tokenizer 로드 (Subword 분해 및 재결합용)
@@ -78,17 +79,23 @@ class DTMInitializer:
         5. 정답지 포함 여부에 따른 is_sensitive_label 설정 및 DB 적재
         """
         
-        # --- [Step 1] DB 완전 초기화 ---
-        # CASCADE를 사용하여 외래 키 관계에 있는 테이블들을 모두 깨끗이 비웁니다.
-        self.logger.info("Initializing tables: Truncating domain, term, and DTM...")
+        # --- [Step 1] Running Mode에 따른 DB 초기화 ---
+        self.logger.info("Initializing tables: Truncating 'domain_term_matrix'")
         self.session.execute(text("TRUNCATE TABLE domain_term_matrix CASCADE"))
-        self.session.execute(text("TRUNCATE TABLE domain CASCADE"))
-        self.session.execute(text("TRUNCATE TABLE term CASCADE"))
+
+        if self.running_mode['db_truncate']:
+            self.logger.info("Initializing tables: Truncating 'domain', 'term'")
+            self.session.execute(text("TRUNCATE TABLE domain CASCADE"))
+            self.session.execute(text("TRUNCATE TABLE term CASCADE"))
+        
         self.session.commit()
 
         abs_train_path = os.path.abspath(train_data_path)
         # {domain_id}_{domain_name} 구조의 폴더 목록을 가져옵니다.
         domain_dirs = [d for d in os.listdir(abs_train_path) if os.path.isdir(os.path.join(abs_train_path, d))]
+
+        # 전체 단어장을 한 번만 로드 (도메인 루프가 돌아도 재사용)
+        full_vocabulary_map = {t['term']: t for t in crud.get_all_terms_streaming(self.session)}    
 
         # [진행바] 도메인 단위로 스캔을 시작합니다.
         for d_dir in tqdm(domain_dirs, desc="[Step 1] Initializing & Scanning Domains", unit="domain"):
@@ -113,9 +120,10 @@ class DTMInitializer:
                         # 정답지의 단어도 본문 분석과 동일한 토크나이저를 거쳐 일관성을 유지합니다.
                         target_vocab.add(w.strip())
 
-                # --- [Step 3] 문서 데이터(JSON) 통합 로드 ---
-                all_text = ""
-                # 폴더 내 모든 JSON 파일을 찾아 문장을 합칩니다.
+                # --- [Step 3] 문서 데이터(JSON) 통합 로드 ---      
+                """ all_text(str) -> all_documents_text(list[str]) 변경한 점 주의하기!! """
+                all_documents_text = []
+                # 폴더 내 모든 JSON 파일을 찾아 문장을 all_documents_text에 append 합니다.
                 file_list = [f for f in os.listdir(domain_full_path) if f.endswith('.json')]
                 for file_name in file_list:
                     if file_name == 'z_score.json': continue # 결과 파일은 제외
@@ -124,58 +132,72 @@ class DTMInitializer:
                             root_data = json.load(f)
                             items = root_data.get('data', []) # {"data": [{"sentence": "..."}]}
                             if isinstance(items, list):
-                                all_text += " " + " ".join([it.get('sentence', '') for it in items if isinstance(it, dict)])
+                                all_documents_text.append( " ".join([it.get('sentence', '') for it in items if isinstance(it, dict)]) )
                         except json.JSONDecodeError: continue
                 
                 # --- [Step 4] 단어 빈도(TF) 계산 ---
                 # 본문에서 추출된 모든 단어의 개수를 세어 딕셔너리 형태로 만듭니다.
-                tokens = self._smart_tokenizer(all_text)
-                tf_counts = Counter(tokens)
+                tf_counts = Counter()
 
-                # [중요] 정답지 단어 보정: 본문에는 없지만 정답지에는 있는 단어들을 TF 0으로 추가합니다.
-                # 형태소 분석기가 놓치거나 다르게 분석했을 수 있는 '정답 단어'들을 본문에서 직접 찾습니다.
-                for v_word in target_vocab:
-                    # 1. 본문 텍스트 내에서 해당 단어가 단순히 몇 번 출현하는지 count
-                    # (정규표현식이나 단순 count를 사용할 수 있습니다.)
-                    appearance_count = all_text.count(v_word)
-                    
-                    # 2. 만약 형태소 분석 결과(tf_counts)보다 직접 센 횟수가 더 많다면 갱신
-                    # (이미 tf_counts에 있다면 더 큰 값을 취하고, 없다면 새로 등록)
-                    if appearance_count > tf_counts.get(v_word, 0):
-                        tf_counts[v_word] = appearance_count
-                    
-                    # 3. 본문에도 아예 없더라도 DTM에는 존재해야 하므로 최소 0 유지
-                    if v_word not in tf_counts:
-                        tf_counts[v_word] = 0
+                for all_text in all_documents_text:
+                    tokens = self._smart_tokenizer(all_text)
+                    current_counts = Counter(tokens)
 
-                dtm_inserts = []
-                # --- [Step 5] DTM(7번) 및 Term(9번) 마스터 업데이트 ---
+                    for v_word in target_vocab:
+                        # 1. 본문 텍스트 내에서 해당 단어가 단순히 몇 번 출현하는지 count
+                        # (정규표현식이나 단순 count를 사용할 수 있습니다.)
+                        appearance_count = all_text.count(v_word)
+
+                        # 2. 만약 형태소 분석 결과(current_counts)보다 직접 센 횟수가 더 많다면 갱신
+                        # (이미 current_counts에 있다면 더 큰 값을 취하고, 없다면 새로 등록)
+                        if appearance_count > current_counts.get(v_word, 0):
+                            current_counts[v_word] = appearance_count
+
+                    # 만약 실행모드가 "presence_count"면, 출현한 문서 개수만 파악해야 하므로 
+                    if self.running_mode['mode'] == "presence_count":
+                        current_counts = Counter({key: 1 for key in current_counts})
+
+                    tf_counts += current_counts
+
+                # --- [Step 5] domain_term_matrix 및 term 테이블 업데이트 ---
+                dtm_inserts = []                
+                term_updates = []
+                term_inserts = []
+
                 for term, count in tf_counts.items():
-                    # 9번 테이블(Term) 업데이트: 해당 단어가 시스템 전체에서 몇 개의 도메인에 등장했는지 기록
-                    term_info = crud.get_term_stats(self.session, term)
-                    if not term_info:
-                        # 처음 발견된 단어면 새로 등록
-                        crud.bulk_insert_terms(self.session, [{'term': term, 'included_domain_counts': 1}])
+                    if term in full_vocabulary_map:
+                        # 기존 단어: count만 업데이트 (통계치는 나중에 ZScoreUpdater에서 계산)
+                        full_vocabulary_map[term]['included_domain_counts'] += 1
+                        term_updates.append({
+                            'term': term,
+                            'included_domain_counts': full_vocabulary_map[term]['included_domain_counts']
+                        })
                     else:
-                        # 이미 있는 단어면 도메인 카운트만 +1
-                        crud.bulk_update_terms(self.session, [{'term': term, 'included_domain_counts': term_info['included_domain_counts'] + 1}])
-                    
-                    # 7번 테이블(DTM) 삽입용 데이터 리스트 구성
+                        # 신규 단어
+                        new_term = {
+                            'term': term,
+                            'included_domain_counts': 1,
+                            'avg_tfidf': 0.0, 'stddev_tfidf': 0.0,
+                            'sum_tfidf': 0.0, 'sum_square_tfidf': 0.0
+                        }
+                        # [핵심] 메모리 맵에도 즉시 반영하여 동일 실행 주기 내 중복 INSERT 방지
+                        full_vocabulary_map[term] = new_term
+                        term_inserts.append(new_term)
+
                     dtm_inserts.append({
                         'domain_id': domain_id,
                         'term': term,
                         'tf_score': float(count),
-                        'idf_score': 0.0,
-                        'tfidf_score': 0.0,
-                        'z_score': 0.0,
-                        # [핵심 로직] 현재 단어가 정답지(target_vocab)에 있으면 True, 아니면 False
+                        'idf_score': 0.0, 'tfidf_score': 0.0, 'z_score': 0.0,
                         'is_sensitive_label': term in target_vocab 
                     })
                 
-                # 도메인 단위로 데이터를 DB에 일괄 삽입(Bulk Insert)합니다.
+                # 도메인 단위로 DB 반영
+                if term_inserts: crud.bulk_insert_terms(self.session, term_inserts)
+                if term_updates: crud.bulk_update_terms(self.session, term_updates)
                 crud.bulk_insert_dtm_items(self.session, dtm_inserts)
-                
+                self.session.commit() # 도메인 단위 커밋 권장
+
             except Exception as e:
-                # 오류 발생 시 로그를 남기고 다음 도메인으로 넘어갑니다.
-                self.logger.error(f"Error processing {d_dir}: {e}")
-                continue
+                self.logger.error(f"Error in {d_dir}: {e}")
+                self.session.rollback()

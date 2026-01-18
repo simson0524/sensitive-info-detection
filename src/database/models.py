@@ -193,6 +193,10 @@ class Term(Base):
     term = Column(Text, primary_key=True)
 
     included_domain_counts = Column(Integer)
+    avg_tfidf = Column(Float)
+    stddev_tfidf = Column(Float)
+    sum_tfidf = Column(Float)
+    sum_square_tfidf = Column(Float)
 
     # 관계 설정 (선택 사항: Term 객체에서 이 단어가 쓰인 DTM 기록들에 접근 가능)
     term_matrices = relationship("DomainTermMatrix", back_populates="term_info", cascade="all, delete-orphan")

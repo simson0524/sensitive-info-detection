@@ -6,7 +6,7 @@
 
 # 1. 실험 메타 정보
 experiment:
-  experiment_code: "260105_23"   # 실험 고유 코드 (DB 키, 폴더명으로 사용됨)
+  experiment_code: "raw_count_20"   # 실험 고유 코드 (DB 키, 폴더명으로 사용됨)
   previous_experiment_code: null       # 이전 실험을 잇는 경우 (옵션)
   data_category: "personal_data"       # "personal_data" or "confidential_data" (전처리기 필터링용)
   
@@ -24,7 +24,7 @@ experiment:
 # 2. 학습 하이퍼파라미터 (Base Config의 train 섹션을 덮어쓰거나 추가)
 train:
   seed: 42                   # 재현성을 위한 랜덤 시드
-  epochs: 5                 # 학습 반복 횟수
+  epochs: 7                 # 학습 반복 횟수
   batch_size: 32             # 배치 크기
   learning_rate: 5e-5        # 학습률
   validation_split: 0.2      # 전체 데이터 중 검증셋 비율 (0.2 = 20%)
@@ -34,9 +34,11 @@ train:
 path:
   # 학습에 사용할 데이터셋 폴더 "List" (JSON 파일들이 들어있는 곳)
   data_dir: 
-    # - "/home/student1/sensitive-info-detection/data/train_data/002_medical"
-    # - "/home/student1/sensitive-info-detection/data/train_data/003_finance"
-    # - "/home/student1/sensitive-info-detection/data/train_data/004_insurance"
+    # - "/home/student1/sensitive-info-detection/data/train_data/000_call_speech" 
+    - "/home/student1/sensitive-info-detection/data/train_data/001_virtual_company"
+    - "/home/student1/sensitive-info-detection/data/train_data/002_medical"
+    - "/home/student1/sensitive-info-detection/data/train_data/003_finance"
+    - "/home/student1/sensitive-info-detection/data/train_data/004_insurance"
     - "/home/student1/sensitive-info-detection/data/train_data/005_legal"
     - "/home/student1/sensitive-info-detection/data/train_data/006_real_estate"
     - "/home/student1/sensitive-info-detection/data/train_data/007_ecommerce"
@@ -47,13 +49,46 @@ path:
     - "/home/student1/sensitive-info-detection/data/train_data/012_energy"
     - "/home/student1/sensitive-info-detection/data/train_data/013_human_services"
     - "/home/student1/sensitive-info-detection/data/train_data/014_education"
-    # - "/home/student1/sensitive-info-detection/data/train_data/015_agriculture"
-    # - "/home/student1/sensitive-info-detection/data/train_data/016_manufacturing_industry"
-    # - "/home/student1/sensitive-info-detection/data/train_data/017_cyber_security"
+    - "/home/student1/sensitive-info-detection/data/train_data/015_agriculture"
+    - "/home/student1/sensitive-info-detection/data/train_data/016_manufacturing_industry"
+    - "/home/student1/sensitive-info-detection/data/train_data/017_cyber_security"
+    - "/home/student1/sensitive-info-detection/data/train_data/018_construction"
+    - "/home/student1/sensitive-info-detection/data/train_data/019_environmental_monitoring"
+    - "/home/student1/sensitive-info-detection/data/train_data/020_media_and_entertainment"
+    # - "/home/student1/sensitive-info-detection/data/train_data/021_sports_and_recreation"
+    # - "/home/student1/sensitive-info-detection/data/train_data/022_aerospace_and_defense"
+    # - "/home/student1/sensitive-info-detection/data/train_data/023_pharmaceuticals_and_drug_development"
+    # - "/home/student1/sensitive-info-detection/data/train_data/024_logistics_and_supply_chain"
+    # - "/home/student1/sensitive-info-detection/data/train_data/025_public_safety_and_emergency_services"
+    # - "/home/student1/sensitive-info-detection/data/train_data/026_blockchain_and_cryptocurrency"
+    # - "/home/student1/sensitive-info-detection/data/train_data/027_fashion_and_apparel"
+    # # - "/home/student1/sensitive-info-detection/data/train_data/028_food_and_beverage"
+    # - "/home/student1/sensitive-info-detection/data/train_data/029_internet_of_things"
+    # - "/home/student1/sensitive-info-detection/data/train_data/030_urban_planning_and_smart_cities"
+    # - "/home/student1/sensitive-info-detection/data/train_data/031_waste_management_and_recycling"
+    # - "/home/student1/sensitive-info-detection/data/train_data/032_gaming_and_interactive_entertainment"
+    # - "/home/student1/sensitive-info-detection/data/train_data/033_quantum_computing"
+    # - "/home/student1/sensitive-info-detection/data/train_data/034_semiconductor_and_microelectronics"
+    # - "/home/student1/sensitive-info-detection/data/train_data/035_cultural_heritage_and_museum_sciences"
+    # - "/home/student1/sensitive-info-detection/data/train_data/036_maritime_and_port_operations"
+    # - "/home/student1/sensitive-info-detection/data/train_data/037_veterinary_medicine_and_animal_health"
+    # - "/home/student1/sensitive-info-detection/data/train_data/038_genomics_and_bioinformatics"
+    # - "/home/student1/sensitive-info-detection/data/train_data/039_advertising_and_marketing_technology"
+    # - "/home/student1/sensitive-info-detection/data/train_data/040_human_resources_and_talent_management"
+    # - "/home/student1/sensitive-info-detection/data/train_data/041_space_tourism_and_commercial_spaceflight"
+    # - "/home/student1/sensitive-info-detection/data/train_data/042_augmented_reality_and_mixed_reality"
+    # - "/home/student1/sensitive-info-detection/data/train_data/043_wearable_technology_and_personal_health_devices"
+    # - "/home/student1/sensitive-info-detection/data/train_data/044_intellectual_property_and_patent_management"
+    # - "/home/student1/sensitive-info-detection/data/train_data/045_nanotechnology_and_nanomanufacturing"
+    # - "/home/student1/sensitive-info-detection/data/train_data/046_carbon_markets_and_emissions_trading"
+    # - "/home/student1/sensitive-info-detection/data/train_data/047_art_market_and_auction_house"
+    # - "/home/student1/sensitive-info-detection/data/train_data/048_aquaculture_and_fisheries"
+    # - "/home/student1/sensitive-info-detection/data/train_data/049_drone_delivery_and_urban_air_mobility"
+    # - "/home/student1/sensitive-info-detection/data/train_data/050_meteorology_and_climate_modeling"
 
   
   # [Train Mode용] 이어서 학습할 체크포인트 (없으면 null)
-  resume_checkpoint: "/home/student1/sensitive-info-detection/outputs/checkpoints/260105_22/260105_22_epoch_1.pt"
+  resume_checkpoint: null
   # 예: "outputs/checkpoints/EXP_PREV/epoch_5.pt"
   
   # [Test Mode용] 추론에 사용할 학습된 모델 (run_mode: test일 때 필수)

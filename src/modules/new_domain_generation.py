@@ -37,7 +37,7 @@ def new_domain_generation(
     os.makedirs(zip_storage_dir, exist_ok=True)
 
     with open(metadata_path, 'r', encoding='utf-8') as f:
-        if metadata_rel_path=='new_domain_generation_metadata/generated_domain_form.json':
+        if metadata_rel_path=='src/modules/new_domain_generation_metadata/generated_domain_form.json':
             new_domains_data = json.load(f)
         else:
             new_domains_history_data = json.load(f)

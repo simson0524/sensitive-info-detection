@@ -99,6 +99,68 @@ class Evaluator:
                                 label_relation_counts[self.o_label][pr_ent['label']] += 1
 
                     # (참고) DB 로깅용 logs 생성 로직은 기존 코드와 동일하게 유지 가능
+                    # --- [Logic 2] 개별 문장 단위 로깅 (DB용 JSON 생성) ---
+                    # 메타 데이터 추출
+                    sentence_id = batch['sentence_id'][i]
+                    original_sentence = batch['sentence'][i]
+                    file_name = batch['file_name'][i]
+                    
+                    # Tensor -> Item 변환
+                    seq_val = batch['sentence_seq'][i]
+                    sentence_seq = seq_val.item() if hasattr(seq_val, 'item') else seq_val
+
+                    # 토큰 변환 & Offset Mapping 재계산 (문장 내 위치 추적용)
+                    tokens = self.tokenizer.convert_ids_to_tokens(current_input_ids[i])
+                    # (Dataset에서 offset_mapping을 제공하지 않는 경우 재계산 필요)
+                    encoding = self.tokenizer(original_sentence, return_offsets_mapping=True, add_special_tokens=True)
+                    offset_mapping = encoding['offset_mapping']
+                    
+                    # A. 스팬(Entity) 파싱: BIO 태그 -> 원본 단어 추출
+                    pred_entities = self._parse_bio_to_entities(
+                        tokens, batch_preds[i], offset_mapping, original_sentence
+                    )
+                    
+                    # B. [NEW] 토큰 레벨 상세 비교 (Confusion 분석용)
+                    # Valid 모드일 때만 생성
+                    token_comparison = []
+                    if mode == "valid" and batch_labels:
+                        gt_ids = batch_labels[i]
+                        pr_ids = batch_preds[i]
+                        
+                        for t_str, g_id, p_id in zip(tokens, gt_ids, pr_ids):
+                            if g_id == -100: continue # 스페셜 토큰 생략
+                            
+                            token_comparison.append({
+                                "token": t_str,
+                                "gt": self.id2label.get(g_id, "UNK"),
+                                "pred": self.id2label.get(p_id, "UNK"),
+                                "is_correct": (g_id == p_id)
+                            })
+
+                    # C. 최종 JSON 생성 (DB의 sentence_inference_result 컬럼에 저장됨)
+                    sentence_inference_result = {
+                        # 1. 메타 정보
+                        "sentence_id": sentence_id,
+                        "source_file_name": file_name,
+                        "sequence_in_file": sentence_seq,
+                        "origin_sentence": original_sentence,
+                        
+                        # 2. 추론 결과 (Entity List)
+                        "inference_results": pred_entities,
+                        
+                        # 3. 토큰별 상세 비교 (오답 분석용 - Valid Only)
+                        "token_comparison": token_comparison,
+                        
+                        "entity_count": len(pred_entities)
+                    }
+
+                    # DB 로그 엔트리 구성
+                    log_entry = {
+                        "sentence_id": sentence_id, 
+                        "sentence_inference_result": sentence_inference_result, 
+                        "confidence_score": 1.0 # (추후 Logits 기반 확률 계산 가능)
+                    }
+                    inference_logs.append(log_entry)
 
         # 4. 엔티티 기반 메트릭 계산
         metrics = {}
@@ -117,8 +179,16 @@ class Evaluator:
                 "values": [[label_relation_counts[g][p] for p in self.cm_labels] for g in self.cm_labels]
             }
         
-        metrics['duration'] = (datetime.now() - start_time).total_seconds()
-        return {'metrics': metrics, 'logs': inference_logs}
+        end_time = datetime.now()
+        duration = (end_time - start_time).total_seconds()
+
+        return {
+            'metrics': metrics,
+            'start_time': start_time,
+            'end_time': end_time,
+            'duration': duration, 
+            'logs': inference_logs
+        }
 
     def _calculate_entity_metrics(self, relation_counts: Dict) -> Dict:
         """
@@ -177,10 +247,16 @@ class Evaluator:
         entities, current_entity = [], None
         for idx, (token, tag_id, (start, end)) in enumerate(zip(tokens, tag_ids, offset_mapping)):
             if start == 0 and end == 0: continue
+
             tag_name = self.id2label.get(tag_id, "O")
+
+            # Case 1: B- 태그 (새로운 개체명 시작)
             if tag_name.startswith("B-"):
-                if current_entity: entities.append(current_entity)
-                current_entity = {"label": tag_name[2:], "start": start, "end": end, "token_indices": [idx]}
+                if current_entity: 
+                    entities.append(current_entity)
+                current_entity = {"label": tag_name[2:], "start": start, "end": end, "token_indices": [idx], "word": original_sentence[start:end]}
+            
+            # Case 2: I- 태그 (이전 개체명과 연결)
             elif tag_name.startswith("I-") and current_entity:
                 label = tag_name[2:]
                 if current_entity["label"] == label:
@@ -188,9 +264,13 @@ class Evaluator:
                     current_entity["token_indices"].append(idx)
                 else:
                     entities.append(current_entity)
-                    current_entity = {"label": label, "start": start, "end": end, "token_indices": [idx]}
+                    current_entity = {"label": label, "start": start, "end": end, "token_indices": [idx], "word": original_sentence[start:end]}
+            
+            # Case 3: O 태그 (개체명 아님)
             else:
                 if current_entity: entities.append(current_entity)
                 current_entity = None
+       
+        # 마지막에 남아있는 엔티티 저장
         if current_entity: entities.append(current_entity)
         return entities

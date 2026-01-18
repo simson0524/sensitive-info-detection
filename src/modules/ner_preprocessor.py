@@ -262,6 +262,7 @@ class NerPreprocessor:
                     try:
                         # 파일 전체를 하나의 JSON 리스트로 로드
                         json_list = json.load(f)
+                        json_list = json_list['data']
                         
                         # 파일 하나가 리스트가 아니라 단일 객체일 경우 리스트로 감싸줌
                         if isinstance(json_list, dict):
@@ -277,8 +278,6 @@ class NerPreprocessor:
                             samples[sent_id] = {
                                 'sentence': item.get('sentence', ''),
                                 'id': sent_id,
-                                'filename': item.get('filename', ''),
-                                'sequence': item.get('sequence', 0)
                             }
                             
                             # 2. Annotation 정보 저장
