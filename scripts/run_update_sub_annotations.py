@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from src.database.connection import SessionLocal
 from src.database.crud import get_dtm_by_domain
 from tqdm import tqdm
+import pandas as pd
 
 def load_z_score_config(config_path="configs/z_score_config.yaml"):
     """
@@ -36,13 +37,54 @@ def remove_existing_label_suffix(label, thresholds, default_suffix):
     label 명 뒤에 붙은 기존 접미사를 제거합니다.
     예: "개인정보_3" -> "개인정보"
     """
-    # 설정에 정의된 모든 접미사 패턴 추출
-    all_suffixes = [t['suffix'] for t in thresholds] + [default_suffix]
+    # # 설정에 정의된 모든 접미사 패턴 추출
+    # all_suffixes = [t['suffix'] for t in thresholds] + [default_suffix]
     
-    # 정규표현식: ( _3|_2|_1)$ 매칭
-    suffix_pattern = f"({'|'.join(map(re.escape, all_suffixes))})$"
+    # # 정규표현식: ( _3|_2|_1)$ 매칭
+    # suffix_pattern = f"({'|'.join(map(re.escape, all_suffixes))})$"
     
-    return re.sub(suffix_pattern, "", label)
+    # return re.sub(suffix_pattern, "", label)
+    return label.split('_')[0]
+
+def get_all_ground_truth(train_data_root, domain_dir):
+    domain_path = os.path.join(train_data_root, domain_dir)
+    json_files = [f for f in os.listdir(domain_path) if f.endswith(".json")]
+
+    curr_df_dict = {
+        'sentence': [],
+        'sentence_id': [],
+        'gt_label': [],
+        'word': [],
+        'start': [],
+        'end': []
+    }
+
+    for json_file in tqdm(json_files, desc=f"GT 추출 중"):
+        file_path = os.path.join(domain_path, json_file)
+        
+        with open(file_path, 'r', encoding='utf-8') as f:
+            doc_data = json.load(f)
+
+        for item in doc_data.get('data', []):
+            curr_item_sentence = item['sentence']
+            curr_item_id = item['id']
+            for anno in item.get('annotations', []):
+                curr_anno_word = anno['word']
+                curr_anno_start = anno['start']
+                curr_anno_end = anno['end']
+                curr_anno_label = anno['label']
+
+                curr_df_dict['sentence'].append( curr_item_sentence )
+                curr_df_dict['sentence_id'].append( curr_item_id )
+                curr_df_dict['gt_label'].append( curr_anno_label )
+                curr_df_dict['word'].append( curr_anno_word )
+                curr_df_dict['start'].append( curr_anno_start )
+                curr_df_dict['end'].append( curr_anno_end )
+        
+    curr_df = pd.DataFrame(curr_df_dict)
+
+    return curr_df
+
 
 def run():
     # 1. 설정 로드
@@ -58,6 +100,9 @@ def run():
 
     train_data_root = "data/train_data"
     db: Session = SessionLocal()
+
+    # GT값 모으는 DF list
+    dfs = []
     
     try:
         # 2. 도메인 디렉토리 순회
@@ -116,6 +161,13 @@ def run():
                 # 5. 저장
                 with open(file_path, 'w', encoding='utf-8') as f:
                     json.dump(doc_data, f, ensure_ascii=False, indent=4)
+
+            curr_df = get_all_ground_truth(train_data_root, domain_dir)
+            dfs.append( curr_df )
+
+        final_df = pd.concat(dfs, ignore_index=True)
+        log_path = os.path.join(train_data_root, 'gt_label_log.csv')
+        final_df.to_csv(log_path, index=False, encoding='utf-8-sig')
 
     except Exception as e:
         print(f"[Error] 실행 중 오류: {e}")

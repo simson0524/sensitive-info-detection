@@ -176,11 +176,13 @@ def run_process_1(config: dict, context: dict):
         crud.update_experiment(session, experiment_code, {
             "experiment_config": {
                 "best_f1": best_f1,
-                "best_epoch": best_f1_epoch,
-                "best_model_path": os.path.join(ckpt_save_dir, f"{experiment_code}_epoch_{best_f1_epoch}.pt")
+                "best_epoch": min_loss_epoch,
+                "best_model_path": os.path.join(ckpt_save_dir, f"{experiment_code}_epoch_{min_loss_epoch}.pt")
             }
         })
 
+        context['best_epoch'] = min_loss_epoch
+        
     # ==============================================================================
     # [Step 5] 시각화 리포트 생성 (학습 종료 후 일괄 생성)
     # ==============================================================================

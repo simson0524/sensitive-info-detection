@@ -66,6 +66,8 @@ class Evaluator:
 
                     # 1. BIO -> 엔티티 리스트 변환 (GT, Pred)
                     pred_entities = self._parse_bio_to_entities(tokens, batch_preds[i], offset_mapping, original_sentence)
+
+                    preds = []
                     
                     if mode == "valid" and batch_labels:
                         gt_entities = self._parse_bio_to_entities(tokens, batch_labels[i], offset_mapping, original_sentence)
@@ -80,18 +82,23 @@ class Evaluator:
                             for p_idx, pr_ent in enumerate(pred_entities):
                                 if self._is_overlapping(gt_ent, pr_ent):
                                     score = self._calculate_entity_score(gt_ent, batch_preds[i])
-                                    candidate_preds.append({"p_idx": p_idx, "label": pr_ent['label'], "score": score})
+                                    candidate_preds.append({"p_idx": p_idx, "gt_label": gt_label, "gt_entity": gt_ent, "pred_label": pr_ent['label'], "pred_entity": pr_ent, "score": score})
                             
                             if candidate_preds:
                                 # 최고 점수 예측 하나만 대표로 선정 (Winner-takes-all)
                                 best_pred = max(candidate_preds, key=lambda x: x['score'])
-                                label_relation_counts[gt_label][best_pred['label']] += 1
+                                label_relation_counts[gt_label][best_pred['pred_label']] += 1
                                 label_accuracy_distribution[gt_label].append(best_pred['score'])
                                 processed_pred_idx.add(best_pred['p_idx'])
+                                
+                                # 그리고 로그는 전부 더해야함
+                                # preds.append(best_pred)
+                                preds.extend(candidate_preds)
                             else:
                                 # 미탐 (False Negative)
                                 label_relation_counts[gt_label][self.o_label] += 1
                                 label_accuracy_distribution[gt_label].append(0.0)
+                                preds.append({"p_idx": 0, "gt_label": gt_label, "gt_entity": gt_ent, "pred_label": "일반정보", "pred_entity": {'label':'일반정보', 'start':0, 'end':0, 'token_indices':[], 'word':""}, "score": 0.0})
 
                         # 3. 오탐 (False Positive): GT와 겹치지 않는 나머지 예측들
                         for p_idx, pr_ent in enumerate(pred_entities):
@@ -119,23 +126,25 @@ class Evaluator:
                     pred_entities = self._parse_bio_to_entities(
                         tokens, batch_preds[i], offset_mapping, original_sentence
                     )
-                    
+
+                    ##### 여기꺼 지금 pred_entities에 합쳐봐야 할 것 같음. 아래에서 if mode=="valid"는 삭제하고 batch_labels만 살려둬야 할 듯? 아니다 그냥 process_4에서 valid모드를 없애버리는게 나을 것 같은데..?
                     # B. [NEW] 토큰 레벨 상세 비교 (Confusion 분석용)
                     # Valid 모드일 때만 생성
-                    token_comparison = []
-                    if mode == "valid" and batch_labels:
-                        gt_ids = batch_labels[i]
-                        pr_ids = batch_preds[i]
+                    token_comparison = preds
+                    # token_comparison = []
+                    # if mode == "valid" and batch_labels:
+                    #     gt_ids = batch_labels[i]
+                    #     pr_ids = batch_preds[i]
                         
-                        for t_str, g_id, p_id in zip(tokens, gt_ids, pr_ids):
-                            if g_id == -100: continue # 스페셜 토큰 생략
+                    #     for t_str, g_id, p_id in zip(tokens, gt_ids, pr_ids):
+                    #         if g_id == -100: continue # 스페셜 토큰 생략
                             
-                            token_comparison.append({
-                                "token": t_str,
-                                "gt": self.id2label.get(g_id, "UNK"),
-                                "pred": self.id2label.get(p_id, "UNK"),
-                                "is_correct": (g_id == p_id)
-                            })
+                    #         token_comparison.append({
+                    #             "token": t_str,
+                    #             "gt": self.id2label.get(g_id, "UNK"),
+                    #             "pred": self.id2label.get(p_id, "UNK"),
+                    #             "is_correct": (g_id == p_id)
+                    #         })
 
                     # C. 최종 JSON 생성 (DB의 sentence_inference_result 컬럼에 저장됨)
                     sentence_inference_result = {
@@ -148,7 +157,7 @@ class Evaluator:
                         # 2. 추론 결과 (Entity List)
                         "inference_results": pred_entities,
                         
-                        # 3. 토큰별 상세 비교 (오답 분석용 - Valid Only)
+                        # 3. 토큰별 상세 비교 (오답 분석용 - Valid Only) 가 아니라 전체 확대
                         "token_comparison": token_comparison,
                         
                         "entity_count": len(pred_entities)
@@ -158,7 +167,7 @@ class Evaluator:
                     log_entry = {
                         "sentence_id": sentence_id, 
                         "sentence_inference_result": sentence_inference_result, 
-                        "confidence_score": 1.0 # (추후 Logits 기반 확률 계산 가능)
+                        "inferenced_counts": sentence_inference_result['entity_count'] # (추후 Logits 기반 확률 계산 가능)
                     }
                     inference_logs.append(log_entry)
 
@@ -262,6 +271,7 @@ class Evaluator:
                 if current_entity["label"] == label:
                     current_entity["end"] = end
                     current_entity["token_indices"].append(idx)
+                    current_entity['word'] = original_sentence[current_entity['start']:current_entity['end']]
                 else:
                     entities.append(current_entity)
                     current_entity = {"label": label, "start": start, "end": end, "token_indices": [idx], "word": original_sentence[start:end]}

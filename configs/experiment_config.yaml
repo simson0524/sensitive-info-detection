@@ -6,7 +6,7 @@
 
 # 1. 실험 메타 정보
 experiment:
-  experiment_code: "presence_count_00_inference_999"   # 실험 고유 코드 (DB 키, 폴더명으로 사용됨)
+  experiment_code: "260206_exp_8_personal_inference"   # 실험 고유 코드 (DB 키, 폴더명으로 사용됨)
   previous_experiment_code: null       # 이전 실험을 잇는 경우 (옵션)
   data_category: "personal_data"       # "personal_data" or "confidential_data" (전처리기 필터링용)
   
@@ -18,13 +18,13 @@ experiment:
   # 프로세스 실행 여부 (On/Off Switch)
   run_process_1: false  # 모델 학습 및 검증
   run_process_2: false  # 사전 매칭 검증
-  run_process_3: true  # 정규식 매칭 검증
+  run_process_3: false  # 정규식 매칭 검증
   run_process_4: true  # 모델 보완(Hybrid) 추론
 
 # 2. 학습 하이퍼파라미터 (Base Config의 train 섹션을 덮어쓰거나 추가)
 train:
   seed: 42                   # 재현성을 위한 랜덤 시드
-  epochs: 5                 # 학습 반복 횟수
+  epochs: 5                  # 학습 반복 횟수
   batch_size: 32             # 배치 크기
   learning_rate: 5e-5        # 학습률
   validation_split: 0.2      # 전체 데이터 중 검증셋 비율 (0.2 = 20%)
@@ -85,11 +85,62 @@ path:
     # - "/home/student1/sensitive-info-detection/data/train_data/048_aquaculture_and_fisheries"
     # - "/home/student1/sensitive-info-detection/data/train_data/049_drone_delivery_and_urban_air_mobility"
     # - "/home/student1/sensitive-info-detection/data/train_data/050_meteorology_and_climate_modeling"
+    # - "/home/student1/sensitive-info-detection/data/train_data/051_ai_ethics_and_governance"
+    # - "/home/student1/sensitive-info-detection/data/train_data/052_synthetic_biology_and_biofoundry_operations"
+    # - "/home/student1/sensitive-info-detection/data/train_data/053_election_and_voter_management"
+    # - "/home/student1/sensitive-info-detection/data/train_data/054_translation_and_localization_services"
+    # - "/home/student1/sensitive-info-detection/data/train_data/055_chemical_process_and_plant_operations"
+    # - "/home/student1/sensitive-info-detection/data/train_data/056_philanthropy_and_grant_management"
+    # - "/home/student1/sensitive-info-detection/data/train_data/057_elder_care_and_assisted_living"
+    # - "/home/student1/sensitive-info-detection/data/train_data/058_materials_science_and_advanced_materials"
+    # - "/home/student1/sensitive-info-detection/data/train_data/059_forensic_science_and_crime_lab_operations"
+    # - "/home/student1/sensitive-info-detection/data/train_data/060_mental_health_and_psychotherapy_services"
+    # - "/home/student1/sensitive-info-detection/data/train_data/061_acoustic_engineering_and_noise_control"
+    # - "/home/student1/sensitive-info-detection/data/train_data/062_event_planning_and_live_events"
+    # - "/home/student1/sensitive-info-detection/data/train_data/063_longevity_and_anti_aging_research"
+    # - "/home/student1/sensitive-info-detection/data/train_data/064_biobanking_and_biospecimen_management"
+    # - "/home/student1/sensitive-info-detection/data/train_data/065_circular_economy_and_product_lifecycle_management"
+    # - "/home/student1/sensitive-info-detection/data/train_data/066_autonomous_vehicle_fleet_management"
+    # - "/home/student1/sensitive-info-detection/data/train_data/067_self_sovereign_identity_and_personal_data_wallets"
+    # - "/home/student1/sensitive-info-detection/data/train_data/068_personalized_nutrition_and_dietary_genomics"
+    # - "/home/student1/sensitive-info-detection/data/train_data/069_forestry_and_forest_management"
+    # - "/home/student1/sensitive-info-detection/data/train_data/070_digital_twin_and_simulation_platforms"
+    # - "/home/student1/sensitive-info-detection/data/train_data/071_green_hydrogen_and_hydrogen_infrastructure"
+    # - "/home/student1/sensitive-info-detection/data/train_data/072_social_impact_and_impact_investing"
+    # - "/home/student1/sensitive-info-detection/data/train_data/073_neurotechnology_and_brain_computer_interfaces"
+    # - "/home/student1/sensitive-info-detection/data/train_data/074_beauty_and_personal_care"
+    # - "/home/student1/sensitive-info-detection/data/train_data/075_sustainable_packaging_and_materials"
+    # - "/home/student1/sensitive-info-detection/data/train_data/076_indoor_farming_and_hydroponics"
+    # - "/home/student1/sensitive-info-detection/data/train_data/077_open_source_software_licensing_and_governance"
+    # - "/home/student1/sensitive-info-detection/data/train_data/078_behavioral_science_and_nudge_technology"
+    # - "/home/student1/sensitive-info-detection/data/train_data/079_smart_textiles_and_e_textiles"
+    # - "/home/student1/sensitive-info-detection/data/train_data/080_deathcare_and_funeral_services"
+    # - "/home/student1/sensitive-info-detection/data/train_data/081_remote_work_and_digital_nomad_services"
+    # - "/home/student1/sensitive-info-detection/data/train_data/082_deepfake_forensics_and_synthetic_media_detection"
+    # - "/home/student1/sensitive-info-detection/data/train_data/083_scent_and_fragrance_industry"
+    # - "/home/student1/sensitive-info-detection/data/train_data/084_data_center_and_cloud_infrastructure_operations"
+    # - "/home/student1/sensitive-info-detection/data/train_data/085_occupational_health_and_safety"
+    # - "/home/student1/sensitive-info-detection/data/train_data/086_subscription_and_recurring_revenue_management"
+    # - "/home/student1/sensitive-info-detection/data/train_data/087_precision_mining_and_geometallurgy"
+    # - "/home/student1/sensitive-info-detection/data/train_data/088_micro_mobility_and_electric_scooter_operations"
+    # - "/home/student1/sensitive-info-detection/data/train_data/089_water_resource_management_and_hydrology"
+    # - "/home/student1/sensitive-info-detection/data/train_data/090_cross_border_trade_and_customs_compliance"
+    # - "/home/student1/sensitive-info-detection/data/train_data/091_anti_money_laundering_and_financial_crime_compliance"
+    # - "/home/student1/sensitive-info-detection/data/train_data/092_music_rights_and_royalty_management"
+    # - "/home/student1/sensitive-info-detection/data/train_data/093_anti_counterfeiting_and_brand_protection"
+    # - "/home/student1/sensitive-info-detection/data/train_data/094_dental_clinic_and_oral_health"
+    # - "/home/student1/sensitive-info-detection/data/train_data/095_crowdfunding_platforms_and_campaign_management"
+    # - "/home/student1/sensitive-info-detection/data/train_data/096_executive_protection_and_personal_security"
+    # - "/home/student1/sensitive-info-detection/data/train_data/097_cannabis_and_hemp_industry"
+    # - "/home/student1/sensitive-info-detection/data/train_data/098_superyacht_and_yachting_industry"
+    # - "/home/student1/sensitive-info-detection/data/train_data/099_prosthetics_and_orthotics"
+    - "/home/student1/sensitive-info-detection/data/train_data/100_digital_preservation_and_web_archiving"
+  test_data_dir: # 없으면 null
     - "/home/student1/sensitive-info-detection/data/train_data/999_contract_sheet"
 
   
   # [Train Mode용] 이어서 학습할 체크포인트 (없으면 null)
-  resume_checkpoint: "/home/student1/sensitive-info-detection/outputs/checkpoints/presence_count_00/presence_count_00_epoch_5.pt"
+  resume_checkpoint: "/home/student1/sensitive-info-detection/outputs/checkpoints/260206_exp_8_personal/260206_exp_8_personal_epoch_2.pt"
   # 예: "outputs/checkpoints/EXP_PREV/epoch_5.pt"
   
   # [Test Mode용] 추론에 사용할 학습된 모델 (run_mode: test일 때 필수)

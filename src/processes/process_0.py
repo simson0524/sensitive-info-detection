@@ -82,12 +82,12 @@ def run_process_0(config: dict) -> dict:
         label2id=current_label_map # [수정됨] 동적으로 선택된 맵 사용
     )
     
-    # 2-2. 전체 Raw Data 로드
+    # 2-2. 전체 All(train, valid) Data + Test Data로드
     all_samples, all_annos = preprocessor.load_data(path_conf['data_dir'])
     
     total_count = len(all_samples)
     if total_count == 0:
-        # 데이터가 없으면 더 이상 진행할 수 없으므로 에러 발생
+        # 학습 데이터가 없으면 더 이상 진행할 수 없으므로 에러 발생
         raise ValueError(f"❌ No data found in {path_conf['data_dir']}")
 
     # 2-3. Train / Valid 자동 분할
@@ -101,13 +101,23 @@ def run_process_0(config: dict) -> dict:
         shuffle=True
     )
     
+    # 학습 데이터
     train_samples = {uid: all_samples[uid] for uid in train_ids}
     train_annos = {uid: all_annos[uid] for uid in train_ids}
     
+    # 검증 데이터
     valid_samples = {uid: all_samples[uid] for uid in valid_ids}
     valid_annos = {uid: all_annos[uid] for uid in valid_ids}
 
+    # 테스트 데이터
+    if path_conf['test_data_dir']:
+        test_samples, test_annos = preprocessor.load_data(path_conf['test_data_dir'])
+    else:
+        test_samples = valid_samples
+        test_annos = valid_annos
+
     logger.info(f"📊 Data Split Result: Total({total_count}) -> Train({len(train_ids)}) / Valid({len(valid_ids)})")
+    logger.info(f"📊 Test Data Result: Test({len(test_annos)})")
 
     # 2-4. Dataset 객체 생성
     # data_category를 전달하여 해당 카테고리에 맞는 라벨만 필터링하도록 함
@@ -116,10 +126,14 @@ def run_process_0(config: dict) -> dict:
     
     logger.info("Creating Valid Dataset...")
     valid_dataset = preprocessor.create_dataset(valid_samples, valid_annos, data_category=data_category)
+
+    logger.info("Creating Test Dataset...")
+    test_dataset = preprocessor.create_dataset(test_samples, test_annos, data_category=data_category)
     
     # 2-5. DataLoader 생성
     train_loader = DataLoader(train_dataset, batch_size=train_conf['batch_size'], shuffle=True, collate_fn=smart_collate_fn)
     valid_loader = DataLoader(valid_dataset, batch_size=train_conf['batch_size'], shuffle=False, collate_fn=smart_collate_fn)
+    test_loader  = DataLoader(test_dataset, batch_size=train_conf['batch_size'], shuffle=False, collate_fn=smart_collate_fn)
 
 
     # ==============================================================================
@@ -193,9 +207,12 @@ def run_process_0(config: dict) -> dict:
         "scheduler": scheduler,
         "train_loader": train_loader,
         "valid_loader": valid_loader,
+        "test_loader": test_loader,
         "preprocessor": preprocessor, 
         "train_dataset": train_dataset, 
-        "valid_dataset": valid_dataset
+        "valid_dataset": valid_dataset,
+        "test_dataset": test_dataset,
+        "best_epoch": 0
     }
     
     return context

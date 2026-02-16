@@ -106,10 +106,11 @@ class NerDataset(Dataset):
                     # 개인정보 데이터셋: '기밀정보'는 제외
                     if norm_label == "기밀정보": continue
                 elif self.data_category == "confidential_data":
-                    # 기밀정보 데이터셋: '개인정보', '준식별자'는 제외
-                    if norm_label in ["준식별자", "개인정보"]: continue
+                    # 기밀정보 데이터셋: '개인정보'는 제외
+                    if norm_label == "개인정보": continue
                 
-                if norm_label == "일반정보": continue
+                # 모든 데이터셋: '일반정보', '준식별자'는 제외
+                if norm_label in ["일반정보", "준식별자"]: continue
 
                 # BIO 태그 이름 생성
                 b_label_name = f"B-{ann_label}"

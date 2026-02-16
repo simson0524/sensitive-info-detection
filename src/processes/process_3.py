@@ -44,7 +44,7 @@ def run_process_3(config: dict, context: dict):
     # ==============================================================================
     # [Step 2] 데이터 및 도구 준비
     # ==============================================================================
-    valid_loader = context['valid_loader']
+    test_loader = context['test_loader']
     preprocessor = context['preprocessor']
     tokenizer = preprocessor.tokenizer
     
@@ -66,7 +66,7 @@ def run_process_3(config: dict, context: dict):
     log_save_dir = os.path.join(path_conf['log_dir'], experiment_code)
     ensure_dir(log_save_dir)
     
-    for batch in tqdm(valid_loader, desc="Regex Matching"):
+    for batch in tqdm(test_loader, desc="Regex Matching"):
         batch_size = len(batch['sentence'])
         
         input_ids_batch = batch['input_ids'].cpu().tolist()
