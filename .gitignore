@@ -1,5 +1,4 @@
-data/db_storage/*
-data/train_data/*
+data/*
 outputs/*
 __pycache__/*
 *.pyc
