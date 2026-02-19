@@ -34,3 +34,4 @@ python-dotenv
 streamlit
 konlpy
 python-mecab-ko
+torch-geometric
