@@ -91,7 +91,8 @@ sensitive-info-detector/
 │   │   └── crud.py        # 데이터 IO(CRUD) 로직 및 타입 변환 (ORM↔Dict) ✅
 │   │
 │   ├── models/  # 모델 아키텍처
-│   │   └── ner_roberta.py ✅
+│   │   ├── ner_roberta.py ✅
+│   │   └── ner_gat_roberta.py ✅
 │   │
 │   ├── modules/  # 각 로직의 핵심 모듈
 │   │   ├── dtm_initializer.py               # Z-score을 위한 Domain-Term Matrix 및 관련 테이블 초기화 모듈 ✅
@@ -105,6 +106,9 @@ sensitive-info-detector/
 │   │   ├── ner_preprocessor.py              # [NER모델]데이터 전처리 및 로드 모듈 ✅
 │   │   ├── ner_trainer.py                   # [NER모델]학습 모듈 ✅
 │   │   ├── ner_evaluator.py                 # [NER모델]검증 모듈 ✅
+│   │   ├── ner_gat_preprocessor.py          # [NER_GAT모델]데이터 전처리 및 로드 모듈 ✅
+│   │   ├── ner_gat_trainer.py               # [NER_GAT모델]학습 모듈 ✅
+│   │   ├── ner_gat_evaluator.py             # [NER_GAT모델]검증 모듈 ✅
 │   │   ├── dictionary_matcher.py            # 사전 매칭 모듈 ✅ ⚠️
 │   │   ├── dictionary_updater.py            # 사전 업데이트 모듈 ❌ ⚠️
 │   │   ├── regex_matcher.py                 # 정규표현식 매칭 모듈 ✅

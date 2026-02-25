@@ -46,6 +46,7 @@ def run_process_1(config: dict, context: dict):
 
     train_conf = config['train']
     path_conf = config['path']
+    model_type = train_conf.get('model_type', 'ner')
 
     logger = logging.getLogger(experiment_code)
     logger.info(f"🚀 [Process 1] Start Training Loop for {experiment_code}")
@@ -53,15 +54,25 @@ def run_process_1(config: dict, context: dict):
     # ==============================================================================
     # [Step 2] 실행 모듈 초기화
     # ==============================================================================
-    trainer = Trainer(model, optimizer, scheduler, device)
-    
-    # Evaluator는 내부적으로 BIO를 분리하여 의미 단위(Entity) 분석을 수행함
-    evaluator = Evaluator(
-        model, 
-        device, 
-        preprocessor.tokenizer, 
-        preprocessor.ner_id2label
-    )
+    if model_type == 'ner':
+        trainer = Trainer(model, optimizer, scheduler, device)
+        evaluator = Evaluator(
+            model, 
+            device, 
+            preprocessor.tokenizer, 
+            preprocessor.ner_id2label
+        )
+        logger.info("✅ NER Trainer & Evaluator initialized.")
+
+    elif model_type == 'ner_gat':
+        trainer = NerGatTrainer(model, optimizer, scheduler, device)
+        evaluator = NerGatEvaluator(
+            model, 
+            device, 
+            preprocessor.tokenizer, 
+            preprocessor.ner_id2label
+        )
+        logger.info("✅ GAT-specific Trainer & Evaluator initialized.")
 
     # ==============================================================================
     # [Step 3] 에포크 반복 (Training & Evaluation Loop)

@@ -19,6 +19,8 @@ path:
 train:
   # 사용할 Pretrained Model (HuggingFace Hub)
   model_name: "klue/roberta-base"
+  # 학습할 모델 타입 []"ner", "ner_gat"]
+  model_type: "ner_gat"
   # 입력 시퀀스 최대 길이
   max_len: 256
   # 학습 device

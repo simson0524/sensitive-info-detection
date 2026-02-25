@@ -3,13 +3,21 @@
 import torch
 import os
 from torch.utils.data import DataLoader
+from torch_geometric.loader import DataLoader as PyGDataLoader
 from transformers import AutoTokenizer, AutoModel, get_linear_schedule_with_warmup
 from torch.optim import AdamW
 from sklearn.model_selection import train_test_split
 
+from src.database import crud
+from src.database.connection import db_manager
+
 # Modules: Ner모델과 해당 모델에 데이터셋을 로드하기 위한 전처리 모듈
 from src.modules.ner_preprocessor import NerPreprocessor
 from src.models.ner_roberta import RobertaNerModel
+
+# Modules: Ner-GAT모델과 해당 모델에 데이터셋을 로드하기 위한 전처리 모듈
+from src.modules.ner_gat_preprocessor import NerGatPreprocessor
+from src.models.ner_gat_roberta import RobertaNerGatModel
 
 # Utils: 공통 유틸리티 함수
 from src.utils.common import set_seed
@@ -73,14 +81,41 @@ def run_process_0(config: dict) -> dict:
     
     # HuggingFace Tokenizer 로드
     tokenizer = AutoTokenizer.from_pretrained(train_conf['model_name'])
-    
+    model_type = train_conf.get('model_type', 'ner')
+
+    # z-score 로드
+    z_score_map = {}
+    if model_type == 'ner_gat':
+        logger.info("📡 Loading domain-specific z-score data from Database...")
+        with db_manager.get_db() as session:
+            # 모든 도메인의 DTM 데이터를 로드 (도메인별 차별화 반영)
+            all_dtm_records = crud.get_all_dtm_records(session) # [NEW] 모든 기록 로드 함수 가정
+            
+            for record in all_dtm_records:
+                d_id = str(record.domain_id) # 도메인 식별자
+                if d_id not in z_score_map:
+                    z_score_map[d_id] = {}
+                z_score_map[d_id][record.term] = record.z_score # 도메인별 단어 점수 저장
+                
+        logger.info(f"✅ Loaded z-scores for {len(z_score_map)} domains.")
+
     # 2-1. 전처리기(Preprocessor) 초기화
+    # model_type에 맞는 모델 전처리기를 선택합니다.
     # 선택된 라벨 맵(current_label_map)을 주입하여 BIO 태깅 규칙을 생성합니다.
-    preprocessor = NerPreprocessor(
-        tokenizer=tokenizer, 
-        max_len=train_conf['max_len'], 
-        label2id=current_label_map # [수정됨] 동적으로 선택된 맵 사용
-    )
+    if model_type == 'ner':
+        logger.info("📡 Loading NER model...")
+        preprocessor = NerPreprocessor(
+            tokenizer=tokenizer, 
+            max_len=train_conf['max_len'], 
+            label2id=current_label_map
+        )
+    elif model_type == 'ner_gat':
+        logger.info("📡 Loading NER-GAT model...")
+        preprocessor = NerGatPreprocessor(
+            tokenizer=tokenizer,
+            max_len=train_conf['max_len'],
+            label2id=current_label_map
+        )
     
     # 2-2. 전체 All(train, valid) Data + Test Data로드
     all_samples, all_annos = preprocessor.load_data(path_conf['data_dir'])
@@ -121,20 +156,36 @@ def run_process_0(config: dict) -> dict:
 
     # 2-4. Dataset 객체 생성
     # data_category를 전달하여 해당 카테고리에 맞는 라벨만 필터링하도록 함
-    logger.info("Creating Train Dataset...")
-    train_dataset = preprocessor.create_dataset(train_samples, train_annos, data_category=data_category)
-    
-    logger.info("Creating Valid Dataset...")
-    valid_dataset = preprocessor.create_dataset(valid_samples, valid_annos, data_category=data_category)
+    if model_type == 'ner':
+        logger.info("Creating Train Dataset...")
+        train_dataset = preprocessor.create_dataset(train_samples, train_annos, data_category=data_category)
+        
+        logger.info("Creating Valid Dataset...")
+        valid_dataset = preprocessor.create_dataset(valid_samples, valid_annos, data_category=data_category)
 
-    logger.info("Creating Test Dataset...")
-    test_dataset = preprocessor.create_dataset(test_samples, test_annos, data_category=data_category)
-    
+        logger.info("Creating Test Dataset...")
+        test_dataset = preprocessor.create_dataset(test_samples, test_annos, data_category=data_category)
+
+    elif model_type == 'ner_gat':
+        logger.info("Creating Train Dataset...")
+        train_dataset = preprocessor.create_dataset(train_samples, train_annos, z_score_map=z_score_map, data_category=data_category)
+        
+        logger.info("Creating Valid Dataset...")
+        valid_dataset = preprocessor.create_dataset(valid_samples, valid_annos, z_score_map=z_score_map, data_category=data_category)
+
+        logger.info("Creating Test Dataset...")
+        test_dataset = preprocessor.create_dataset(test_samples, test_annos, z_score_map=z_score_map, data_category=data_category)
+        
     # 2-5. DataLoader 생성
-    train_loader = DataLoader(train_dataset, batch_size=train_conf['batch_size'], shuffle=True, collate_fn=smart_collate_fn)
-    valid_loader = DataLoader(valid_dataset, batch_size=train_conf['batch_size'], shuffle=False, collate_fn=smart_collate_fn)
-    test_loader  = DataLoader(test_dataset, batch_size=train_conf['batch_size'], shuffle=False, collate_fn=smart_collate_fn)
+    if model_type == 'ner':
+        train_loader = DataLoader(train_dataset, batch_size=train_conf['batch_size'], shuffle=True, collate_fn=smart_collate_fn)
+        valid_loader = DataLoader(valid_dataset, batch_size=train_conf['batch_size'], shuffle=False, collate_fn=smart_collate_fn)
+        test_loader  = DataLoader(test_dataset, batch_size=train_conf['batch_size'], shuffle=False, collate_fn=smart_collate_fn)
 
+    elif model_type == 'ner_gat':
+        train_loader = PyGDataLoader(train_dataset, batch_size=train_conf['batch_size'], shuffle=True)
+        valid_loader = PyGDataLoader(valid_dataset, batch_size=train_conf['batch_size'], shuffle=False)
+        test_loader  = PyGDataLoader(test_dataset, batch_size=train_conf['batch_size'], shuffle=False)
 
     # ==============================================================================
     # [Step 3] 모델 초기화 및 가중치 로드 (Model Setup)
@@ -145,11 +196,19 @@ def run_process_0(config: dict) -> dict:
     num_labels = len(preprocessor.ner_label2id) # BIO 태그 개수 (자동 계산됨)
     
     # Custom NER 모델 생성 (출력 클래스 개수는 num_labels에 맞춰짐)
-    model = RobertaNerModel(
-        encoder=encoder,
-        num_classes=num_labels,
-        use_focal=train_conf.get('use_focal', False)
-    ).to(device)
+    # train_conf['model_type']에 맞는 모델을 선택
+    if train_conf['model_type'] == 'ner':
+        model = RobertaNerModel(
+            encoder=encoder,
+            num_classes=num_labels,
+            use_focal=train_conf.get('use_focal', False)
+        ).to(device)
+    elif train_conf['model_type'] == 'ner_gat':
+        model = RobertaNerGatModel(
+            encoder=encoder,
+            num_classes=num_labels,
+            use_focal=train_conf.get('use_focal', False)
+        ).to(device)
 
     # --------------------------------------------------------------------------
     # [중요] 가중치 로드 통합 로직 (Train/Test 공통)
