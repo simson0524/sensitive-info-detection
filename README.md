@@ -109,8 +109,6 @@ sensitive-info-detector/
 │   │   ├── ner_gat_preprocessor.py          # [NER_GAT모델]데이터 전처리 및 로드 모듈 ✅
 │   │   ├── ner_gat_trainer.py               # [NER_GAT모델]학습 모듈 ✅
 │   │   ├── ner_gat_evaluator.py             # [NER_GAT모델]검증 모듈 ✅
-│   │   ├── dictionary_matcher.py            # 사전 매칭 모듈 ✅ ⚠️
-│   │   ├── dictionary_updater.py            # 사전 업데이트 모듈 ❌ ⚠️
 │   │   ├── regex_matcher.py                 # 정규표현식 매칭 모듈 ✅
 │   │   └── regex_logics/                    # 정규표현식 매칭 모듈에서 사용하는 로직 ✅
 │   │
@@ -125,13 +123,6 @@ sensitive-info-detector/
 │       ├── common.py      # YAML 로드, 시드 고정, 디렉토리 생성 등 공통 함수 ✅
 │       ├── logger.py      # 로깅 ✅
 │       └── visualizer.py  # 그래프 그리는 친구 ✅
-│
-├── tools/  # 도구
-│   └── dashboard/  # Streamlit 앱 폴더
-│       ├── app.py  # 대쉬보드 메인 진입점 ❌
-│       └── pages/  # 기능별 페이지 분리 (Streamlit 표준 구조)
-│           ├── 01_metric_viewer.py      # experiment 개요 표시(단일 실험 + 여러 실험 경과에 따른 변화 함께 표시) ❌
-│           └── 02_candidate_labeler.py  # 사전에 들어갈 친구들 라벨링하는 것 ❌
 │
 ├── scripts/  # 실제 실행 진입점 (Entry Points)
 │   ├── run_init_project.py            # DB 생성 및 초기 사전 구축 ✅
