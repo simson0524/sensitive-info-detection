@@ -129,7 +129,8 @@ sensitive-info-detector/
 │   ├── run_experiment.py              # 실험 전체 파이프라인 실행 ✅
 │   ├── run_update_z_score.py          # 전체 도메인의 z_score를 업데이트 ✅
 │   ├── run_update_sub_annotations.py  # z-score or confidence score에 따라 sub_label을 추가 ✅
-│   └── run_new_domain_generation.py   # 신도메인 데이터 생성만 따로 돌릴 때 ✅
+│   ├── run_new_domain_generation.py   # 신도메인 데이터 생성만 따로 돌릴 때 ✅
+│   └── run_export_table.py            # 특정 테이블을 추출하고 싶을 때 ✅
 │
 ├── .env  # DB 접속 정보, 비밀키 ✅
 ├── .gitignore ✅

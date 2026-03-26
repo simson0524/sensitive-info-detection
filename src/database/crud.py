@@ -13,6 +13,8 @@ from src.database.models import (
     Domain,
     Term
 )
+import csv
+import os
 
 # ==============================================================================
 # 0. 유틸리티 (ORM -> Dict 변환)
@@ -747,3 +749,72 @@ def get_all_terms_streaming(session: Session, batch_size: int = 5000):
     query = session.query(Term)
     for row in query.yield_per(batch_size):
         yield row_to_dict(row)
+
+
+# ==============================================================================
+# 10. 테이블 추출
+# ==============================================================================
+def export_table_to_csv(session: Session, model, file_path: str, batch_size: int = 1000) -> str:
+    """
+    특정 SQLAlchemy 모델(테이블)의 전체 데이터를 CSV 파일로 저장합니다.
+    
+    Args:
+        session: DB 세션
+        model: SQLAlchemy 모델 클래스 (예: Experiment, Term 등)
+        file_path: 저장할 파일 경로 (예: './exports/terms.csv')
+        batch_size: 한 번에 불러올 행 수 (메모리 관리용)
+        
+    Returns:
+        str: 저장된 파일의 절대 경로
+    """
+    # 디렉토리가 없으면 생성
+    os.makedirs(os.path.dirname(os.path.abspath(file_path)), exist_ok=True)
+    
+    # 모델에서 컬럼명 추출
+    columns = [c.name for c in model.__table__.columns]
+    
+    with open(file_path, mode='w', encoding='utf-8-sig', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=columns)
+        writer.writeheader()
+        
+        # 스트리밍 쿼리 실행
+        query = session.query(model)
+        for row in query.yield_per(batch_size):
+            # row_to_dict를 사용하여 딕셔너리로 변환 후 쓰기
+            writer.writerow(row_to_dict(row))
+            
+    return os.path.abspath(file_path)
+
+
+def export_query_to_csv(session: Session, query, file_path: str, batch_size: int = 1000) -> str:
+    """
+    특정 쿼리 결과(필터링된 데이터 등)를 CSV 파일로 저장합니다.
+    
+    Args:
+        session: DB 세션
+        query: 필터 등이 적용된 SQLAlchemy Query 객체
+        file_path: 저장할 파일 경로
+    """
+    os.makedirs(os.path.dirname(os.path.abspath(file_path)), exist_ok=True)
+    
+    # 첫 번째 결과로부터 헤더 추출
+    first_row = query.first()
+    if not first_row:
+        return None
+    
+    # 모델 객체인지 KeyedTuple인지 판별하여 컬럼 추출
+    if hasattr(first_row, '__table__'):
+        columns = [c.name for c in first_row.__table__.columns]
+    else:
+        columns = first_row._fields
+
+    with open(file_path, mode='w', encoding='utf-8-sig', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=columns)
+        writer.writeheader()
+        
+        for row in query.yield_per(batch_size):
+            # row가 모델 객체면 dict로 변환, 아니면 _asdict() 사용
+            row_data = row_to_dict(row) if hasattr(row, '__table__') else row._asdict()
+            writer.writerow(row_data)
+            
+    return os.path.abspath(file_path)
