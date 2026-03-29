@@ -20,7 +20,7 @@ train:
   # 사용할 Pretrained Model (HuggingFace Hub)
   model_name: "klue/roberta-base"
   # 학습할 모델 타입 []"ner", "ner_gat"]
-  model_type: "ner_gat"
+  model_type: "ner"
   # 입력 시퀀스 최대 길이
   max_len: 256
   # 학습 device
@@ -34,9 +34,9 @@ label_settings:
       일반정보: 0
       # [개인정보]
       개인정보_1: 1
-      # 개인정보_2: 2
-      # 개인정보_3: 3
-      # 개인정보_4: 4
+      개인정보_2: 2
+      개인정보_3: 3
+      개인정보_4: 4
       # 개인정보_5: 5
       # # [준식별자]
       # 준식별자_1: 4
@@ -48,9 +48,9 @@ label_settings:
       일반정보: 0
       # [기밀정보]
       기밀정보_1: 1
-      # 기밀정보_2: 2
-      # 기밀정보_3: 3
-      # 기밀정보_4: 4
+      기밀정보_2: 2
+      기밀정보_3: 3
+      기밀정보_4: 4
       # 기밀정보_5: 5
 
 # 4. 사전(Dictionary) 설정

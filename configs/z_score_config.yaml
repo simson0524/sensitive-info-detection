@@ -5,7 +5,11 @@ mode: "presence_count"
 db_truncate: true
 
 annotation_edit:
-  thresholds:     
-    - threshold: 1000
-      suffix: "_2"    
+  thresholds:      
+    - threshold: 3.5
+      suffix: "_4"    
+    - threshold: 3.0
+      suffix: "_3"     
+    - threshold: 2.5
+      suffix: "_2" 
   default_suffix: "_1"

@@ -1,365 +1,247 @@
-2026-02-23 13:33:49.797 KST [9102] 로그:  PostgreSQL 15.13 (Ubuntu 15.13-1.pgdg20.04+1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, 64-bit 서버를 시작합니다.
-2026-02-23 13:33:49.798 KST [9102] 로그:  IPv4, 주소: "127.0.0.1", 포트 55432 번으로 접속을 허용합니다
-2026-02-23 13:33:49.803 KST [9102] 로그:  "/home/student1/sensitive-info-detection/data/db_storage/.s.PGSQL.55432" 유닉스 도메인 소켓으로 접속을 허용합니다
-2026-02-23 13:33:49.813 KST [9107] 로그:  데이터베이스 시스템이 비정상적으로 종료되었음; 마지막 운영시간: 2026-02-09 06:36:48 KST
-2026-02-23 13:33:49.887 KST [9107] 로그:  데이터베이스 시스템이 정상적으로 종료되지 못했습니다, 자동 복구 작업을 진행합니다
-2026-02-23 13:33:49.891 KST [9107] 로그:  2/DDB3BEB0에서 redo 작업 시작됨
-2026-02-23 13:33:49.891 KST [9107] 로그:  잘못된 레코드 길이: 2/DDB3BF98, 기대값 24, 실재값 0
-2026-02-23 13:33:49.891 KST [9107] 로그:  2/DDB3BF60에서 redo 작업 완료, 시스템 사용량: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
-2026-02-23 13:33:49.899 KST [9105] 로그:  체크포인트 시작: end-of-recovery immediate wait
-2026-02-23 13:33:49.921 KST [9105] 로그:  채크포인트 작업완료: 3개(0.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 0.007 s, 동기화시간: 0.002 s, 전체시간: 0.025 s; 동기화 파일 개수: 2, 최장시간: 0.001 s, 평균시간: 0.001 s; 실제작업량: 0 kB, 예상한작업량: 0 kB
-2026-02-23 13:33:49.926 KST [9102] 로그:  이제 데이터베이스 서버로 접속할 수 있습니다
-2026-02-23 13:34:13.016 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.016 KST [9243] 상세정보:  (domain_id)=(44) 키가 이미 있습니다.
-2026-02-23 13:34:13.016 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (44, 'intellectual_property_and_patent_management')
-2026-02-23 13:34:13.017 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.017 KST [9243] 상세정보:  (domain_id)=(81) 키가 이미 있습니다.
-2026-02-23 13:34:13.017 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (81, 'remote_work_and_digital_nomad_services')
-2026-02-23 13:34:13.018 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.018 KST [9243] 상세정보:  (domain_id)=(58) 키가 이미 있습니다.
-2026-02-23 13:34:13.018 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (58, 'materials_science_and_advanced_materials')
-2026-02-23 13:34:13.019 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.019 KST [9243] 상세정보:  (domain_id)=(100) 키가 이미 있습니다.
-2026-02-23 13:34:13.019 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (100, 'digital_preservation_and_web_archiving')
-2026-02-23 13:34:13.020 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.020 KST [9243] 상세정보:  (domain_id)=(78) 키가 이미 있습니다.
-2026-02-23 13:34:13.020 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (78, 'behavioral_science_and_nudge_technology')
-2026-02-23 13:34:13.020 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.020 KST [9243] 상세정보:  (domain_id)=(8) 키가 이미 있습니다.
-2026-02-23 13:34:13.020 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (8, 'travel')
-2026-02-23 13:34:13.021 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.021 KST [9243] 상세정보:  (domain_id)=(14) 키가 이미 있습니다.
-2026-02-23 13:34:13.021 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (14, 'education')
-2026-02-23 13:34:13.022 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.022 KST [9243] 상세정보:  (domain_id)=(15) 키가 이미 있습니다.
-2026-02-23 13:34:13.022 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (15, 'agriculture')
-2026-02-23 13:34:13.023 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.023 KST [9243] 상세정보:  (domain_id)=(18) 키가 이미 있습니다.
-2026-02-23 13:34:13.023 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (18, 'construction')
-2026-02-23 13:34:13.024 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.024 KST [9243] 상세정보:  (domain_id)=(77) 키가 이미 있습니다.
-2026-02-23 13:34:13.024 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (77, 'open_source_software_licensing_and_governance')
-2026-02-23 13:34:13.024 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.024 KST [9243] 상세정보:  (domain_id)=(89) 키가 이미 있습니다.
-2026-02-23 13:34:13.024 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (89, 'water_resource_management_and_hydrology')
-2026-02-23 13:34:13.025 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.025 KST [9243] 상세정보:  (domain_id)=(61) 키가 이미 있습니다.
-2026-02-23 13:34:13.025 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (61, 'acoustic_engineering_and_noise_control')
-2026-02-23 13:34:13.026 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.026 KST [9243] 상세정보:  (domain_id)=(13) 키가 이미 있습니다.
-2026-02-23 13:34:13.026 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (13, 'human_services')
-2026-02-23 13:34:13.026 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.026 KST [9243] 상세정보:  (domain_id)=(35) 키가 이미 있습니다.
-2026-02-23 13:34:13.026 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (35, 'cultural_heritage_and_museum_sciences')
-2026-02-23 13:34:13.027 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.027 KST [9243] 상세정보:  (domain_id)=(31) 키가 이미 있습니다.
-2026-02-23 13:34:13.027 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (31, 'waste_management_and_recycling')
-2026-02-23 13:34:13.028 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.028 KST [9243] 상세정보:  (domain_id)=(98) 키가 이미 있습니다.
-2026-02-23 13:34:13.028 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (98, 'superyacht_and_yachting_industry')
-2026-02-23 13:34:13.029 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.029 KST [9243] 상세정보:  (domain_id)=(52) 키가 이미 있습니다.
-2026-02-23 13:34:13.029 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (52, 'synthetic_biology_and_biofoundry_operations')
-2026-02-23 13:34:13.030 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.030 KST [9243] 상세정보:  (domain_id)=(82) 키가 이미 있습니다.
-2026-02-23 13:34:13.030 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (82, 'deepfake_forensics_and_synthetic_media_detection')
-2026-02-23 13:34:13.031 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.031 KST [9243] 상세정보:  (domain_id)=(36) 키가 이미 있습니다.
-2026-02-23 13:34:13.031 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (36, 'maritime_and_port_operations')
-2026-02-23 13:34:13.032 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.032 KST [9243] 상세정보:  (domain_id)=(64) 키가 이미 있습니다.
-2026-02-23 13:34:13.032 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (64, 'biobanking_and_biospecimen_management')
-2026-02-23 13:34:13.034 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.034 KST [9243] 상세정보:  (domain_id)=(40) 키가 이미 있습니다.
-2026-02-23 13:34:13.034 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (40, 'human_resources_and_talent_management')
-2026-02-23 13:34:13.035 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.035 KST [9243] 상세정보:  (domain_id)=(999) 키가 이미 있습니다.
-2026-02-23 13:34:13.035 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (999, 'contract_sheet')
-2026-02-23 13:34:13.037 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.037 KST [9243] 상세정보:  (domain_id)=(7) 키가 이미 있습니다.
-2026-02-23 13:34:13.037 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (7, 'ecommerce')
-2026-02-23 13:34:13.038 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.038 KST [9243] 상세정보:  (domain_id)=(65) 키가 이미 있습니다.
-2026-02-23 13:34:13.038 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (65, 'circular_economy_and_product_lifecycle_management')
-2026-02-23 13:34:13.039 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.039 KST [9243] 상세정보:  (domain_id)=(90) 키가 이미 있습니다.
-2026-02-23 13:34:13.039 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (90, 'cross_border_trade_and_customs_compliance')
-2026-02-23 13:34:13.041 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.041 KST [9243] 상세정보:  (domain_id)=(10) 키가 이미 있습니다.
-2026-02-23 13:34:13.041 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (10, 'hospitality')
-2026-02-23 13:34:13.042 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.042 KST [9243] 상세정보:  (domain_id)=(57) 키가 이미 있습니다.
-2026-02-23 13:34:13.042 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (57, 'elder_care_and_assisted_living')
-2026-02-23 13:34:13.043 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.043 KST [9243] 상세정보:  (domain_id)=(47) 키가 이미 있습니다.
-2026-02-23 13:34:13.043 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (47, 'art_market_and_auction_house')
-2026-02-23 13:34:13.044 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.044 KST [9243] 상세정보:  (domain_id)=(39) 키가 이미 있습니다.
-2026-02-23 13:34:13.044 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (39, 'advertising_and_marketing_technology')
-2026-02-23 13:34:13.045 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.045 KST [9243] 상세정보:  (domain_id)=(16) 키가 이미 있습니다.
-2026-02-23 13:34:13.045 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (16, 'manufacturing_industry')
-2026-02-23 13:34:13.047 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.047 KST [9243] 상세정보:  (domain_id)=(56) 키가 이미 있습니다.
-2026-02-23 13:34:13.047 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (56, 'philanthropy_and_grant_management')
-2026-02-23 13:34:13.048 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.048 KST [9243] 상세정보:  (domain_id)=(59) 키가 이미 있습니다.
-2026-02-23 13:34:13.048 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (59, 'forensic_science_and_crime_lab_operations')
-2026-02-23 13:34:13.049 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.049 KST [9243] 상세정보:  (domain_id)=(67) 키가 이미 있습니다.
-2026-02-23 13:34:13.049 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (67, 'self_sovereign_identity_and_personal_data_wallets')
-2026-02-23 13:34:13.050 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.050 KST [9243] 상세정보:  (domain_id)=(83) 키가 이미 있습니다.
-2026-02-23 13:34:13.050 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (83, 'scent_and_fragrance_industry')
-2026-02-23 13:34:13.051 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.051 KST [9243] 상세정보:  (domain_id)=(88) 키가 이미 있습니다.
-2026-02-23 13:34:13.051 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (88, 'micro_mobility_and_electric_scooter_operations')
-2026-02-23 13:34:13.052 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.052 KST [9243] 상세정보:  (domain_id)=(1) 키가 이미 있습니다.
-2026-02-23 13:34:13.052 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (1, 'virtual_company')
-2026-02-23 13:34:13.053 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.053 KST [9243] 상세정보:  (domain_id)=(25) 키가 이미 있습니다.
-2026-02-23 13:34:13.053 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (25, 'public_safety_and_emergency_services')
-2026-02-23 13:34:13.054 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.054 KST [9243] 상세정보:  (domain_id)=(62) 키가 이미 있습니다.
-2026-02-23 13:34:13.054 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (62, 'event_planning_and_live_events')
-2026-02-23 13:34:13.055 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.055 KST [9243] 상세정보:  (domain_id)=(3) 키가 이미 있습니다.
-2026-02-23 13:34:13.055 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (3, 'finance')
-2026-02-23 13:34:13.056 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.056 KST [9243] 상세정보:  (domain_id)=(23) 키가 이미 있습니다.
-2026-02-23 13:34:13.056 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (23, 'pharmaceuticals_and_drug_development')
-2026-02-23 13:34:13.057 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.057 KST [9243] 상세정보:  (domain_id)=(92) 키가 이미 있습니다.
-2026-02-23 13:34:13.057 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (92, 'music_rights_and_royalty_management')
-2026-02-23 13:34:13.058 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.058 KST [9243] 상세정보:  (domain_id)=(68) 키가 이미 있습니다.
-2026-02-23 13:34:13.058 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (68, 'personalized_nutrition_and_dietary_genomics')
-2026-02-23 13:34:13.059 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.059 KST [9243] 상세정보:  (domain_id)=(17) 키가 이미 있습니다.
-2026-02-23 13:34:13.059 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (17, 'cyber_security')
-2026-02-23 13:34:13.060 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.060 KST [9243] 상세정보:  (domain_id)=(24) 키가 이미 있습니다.
-2026-02-23 13:34:13.060 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (24, 'logistics_and_supply_chain')
-2026-02-23 13:34:13.061 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.061 KST [9243] 상세정보:  (domain_id)=(45) 키가 이미 있습니다.
-2026-02-23 13:34:13.061 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (45, 'nanotechnology_and_nanomanufacturing')
-2026-02-23 13:34:13.061 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.061 KST [9243] 상세정보:  (domain_id)=(55) 키가 이미 있습니다.
-2026-02-23 13:34:13.061 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (55, 'chemical_process_and_plant_operations')
-2026-02-23 13:34:13.062 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.062 KST [9243] 상세정보:  (domain_id)=(96) 키가 이미 있습니다.
-2026-02-23 13:34:13.062 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (96, 'executive_protection_and_personal_security')
-2026-02-23 13:34:13.063 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.063 KST [9243] 상세정보:  (domain_id)=(30) 키가 이미 있습니다.
-2026-02-23 13:34:13.063 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (30, 'urban_planning_and_smart_cities')
-2026-02-23 13:34:13.064 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.064 KST [9243] 상세정보:  (domain_id)=(11) 키가 이미 있습니다.
-2026-02-23 13:34:13.064 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (11, 'transportation')
-2026-02-23 13:34:13.065 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.065 KST [9243] 상세정보:  (domain_id)=(5) 키가 이미 있습니다.
-2026-02-23 13:34:13.065 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (5, 'legal')
-2026-02-23 13:34:13.065 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.065 KST [9243] 상세정보:  (domain_id)=(85) 키가 이미 있습니다.
-2026-02-23 13:34:13.065 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (85, 'occupational_health_and_safety')
-2026-02-23 13:34:13.067 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.067 KST [9243] 상세정보:  (domain_id)=(37) 키가 이미 있습니다.
-2026-02-23 13:34:13.067 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (37, 'veterinary_medicine_and_animal_health')
-2026-02-23 13:34:13.069 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.069 KST [9243] 상세정보:  (domain_id)=(74) 키가 이미 있습니다.
-2026-02-23 13:34:13.069 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (74, 'beauty_and_personal_care')
-2026-02-23 13:34:13.070 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.070 KST [9243] 상세정보:  (domain_id)=(9) 키가 이미 있습니다.
-2026-02-23 13:34:13.070 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (9, 'telecom')
-2026-02-23 13:34:13.072 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.072 KST [9243] 상세정보:  (domain_id)=(41) 키가 이미 있습니다.
-2026-02-23 13:34:13.072 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (41, 'space_tourism_and_commercial_spaceflight')
-2026-02-23 13:34:13.073 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.073 KST [9243] 상세정보:  (domain_id)=(63) 키가 이미 있습니다.
-2026-02-23 13:34:13.073 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (63, 'longevity_and_anti_aging_research')
-2026-02-23 13:34:13.075 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.075 KST [9243] 상세정보:  (domain_id)=(6) 키가 이미 있습니다.
-2026-02-23 13:34:13.075 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (6, 'real_estate')
-2026-02-23 13:34:13.076 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.076 KST [9243] 상세정보:  (domain_id)=(33) 키가 이미 있습니다.
-2026-02-23 13:34:13.076 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (33, 'quantum_computing')
-2026-02-23 13:34:13.078 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.078 KST [9243] 상세정보:  (domain_id)=(73) 키가 이미 있습니다.
-2026-02-23 13:34:13.078 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (73, 'neurotechnology_and_brain_computer_interfaces')
-2026-02-23 13:34:13.080 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.080 KST [9243] 상세정보:  (domain_id)=(71) 키가 이미 있습니다.
-2026-02-23 13:34:13.080 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (71, 'green_hydrogen_and_hydrogen_infrastructure')
-2026-02-23 13:34:13.081 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.081 KST [9243] 상세정보:  (domain_id)=(48) 키가 이미 있습니다.
-2026-02-23 13:34:13.081 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (48, 'aquaculture_and_fisheries')
-2026-02-23 13:34:13.082 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.082 KST [9243] 상세정보:  (domain_id)=(94) 키가 이미 있습니다.
-2026-02-23 13:34:13.082 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (94, 'dental_clinic_and_oral_health')
-2026-02-23 13:34:13.084 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.084 KST [9243] 상세정보:  (domain_id)=(12) 키가 이미 있습니다.
-2026-02-23 13:34:13.084 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (12, 'energy')
-2026-02-23 13:34:13.085 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.085 KST [9243] 상세정보:  (domain_id)=(86) 키가 이미 있습니다.
-2026-02-23 13:34:13.085 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (86, 'subscription_and_recurring_revenue_management')
-2026-02-23 13:34:13.087 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.087 KST [9243] 상세정보:  (domain_id)=(99) 키가 이미 있습니다.
-2026-02-23 13:34:13.087 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (99, 'prosthetics_and_orthotics')
-2026-02-23 13:34:13.088 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.088 KST [9243] 상세정보:  (domain_id)=(80) 키가 이미 있습니다.
-2026-02-23 13:34:13.088 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (80, 'deathcare_and_funeral_services')
-2026-02-23 13:34:13.089 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.089 KST [9243] 상세정보:  (domain_id)=(50) 키가 이미 있습니다.
-2026-02-23 13:34:13.089 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (50, 'meteorology_and_climate_modeling')
-2026-02-23 13:34:13.090 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.090 KST [9243] 상세정보:  (domain_id)=(34) 키가 이미 있습니다.
-2026-02-23 13:34:13.090 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (34, 'semiconductor_and_microelectronics')
-2026-02-23 13:34:13.091 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.091 KST [9243] 상세정보:  (domain_id)=(79) 키가 이미 있습니다.
-2026-02-23 13:34:13.091 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (79, 'smart_textiles_and_e_textiles')
-2026-02-23 13:34:13.092 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.092 KST [9243] 상세정보:  (domain_id)=(2) 키가 이미 있습니다.
-2026-02-23 13:34:13.092 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (2, 'medical')
-2026-02-23 13:34:13.094 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.094 KST [9243] 상세정보:  (domain_id)=(93) 키가 이미 있습니다.
-2026-02-23 13:34:13.094 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (93, 'anti_counterfeiting_and_brand_protection')
-2026-02-23 13:34:13.095 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.095 KST [9243] 상세정보:  (domain_id)=(76) 키가 이미 있습니다.
-2026-02-23 13:34:13.095 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (76, 'indoor_farming_and_hydroponics')
-2026-02-23 13:34:13.096 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.096 KST [9243] 상세정보:  (domain_id)=(66) 키가 이미 있습니다.
-2026-02-23 13:34:13.096 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (66, 'autonomous_vehicle_fleet_management')
-2026-02-23 13:34:13.098 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.098 KST [9243] 상세정보:  (domain_id)=(27) 키가 이미 있습니다.
-2026-02-23 13:34:13.098 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (27, 'fashion_and_apparel')
-2026-02-23 13:34:13.099 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.099 KST [9243] 상세정보:  (domain_id)=(54) 키가 이미 있습니다.
-2026-02-23 13:34:13.099 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (54, 'translation_and_localization_services')
-2026-02-23 13:34:13.101 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.101 KST [9243] 상세정보:  (domain_id)=(38) 키가 이미 있습니다.
-2026-02-23 13:34:13.101 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (38, 'genomics_and_bioinformatics')
-2026-02-23 13:34:13.103 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.103 KST [9243] 상세정보:  (domain_id)=(46) 키가 이미 있습니다.
-2026-02-23 13:34:13.103 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (46, 'carbon_markets_and_emissions_trading')
-2026-02-23 13:34:13.105 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.105 KST [9243] 상세정보:  (domain_id)=(21) 키가 이미 있습니다.
-2026-02-23 13:34:13.105 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (21, 'sports_and_recreation')
-2026-02-23 13:34:13.106 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.106 KST [9243] 상세정보:  (domain_id)=(70) 키가 이미 있습니다.
-2026-02-23 13:34:13.106 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (70, 'digital_twin_and_simulation_platforms')
-2026-02-23 13:34:13.108 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.108 KST [9243] 상세정보:  (domain_id)=(26) 키가 이미 있습니다.
-2026-02-23 13:34:13.108 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (26, 'blockchain_and_cryptocurrency')
-2026-02-23 13:34:13.109 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.109 KST [9243] 상세정보:  (domain_id)=(29) 키가 이미 있습니다.
-2026-02-23 13:34:13.109 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (29, 'internet_of_things')
-2026-02-23 13:34:13.110 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.110 KST [9243] 상세정보:  (domain_id)=(60) 키가 이미 있습니다.
-2026-02-23 13:34:13.110 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (60, 'mental_health_and_psychotherapy_services')
-2026-02-23 13:34:13.112 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.112 KST [9243] 상세정보:  (domain_id)=(22) 키가 이미 있습니다.
-2026-02-23 13:34:13.112 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (22, 'aerospace_and_defense')
-2026-02-23 13:34:13.113 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.113 KST [9243] 상세정보:  (domain_id)=(75) 키가 이미 있습니다.
-2026-02-23 13:34:13.113 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (75, 'sustainable_packaging_and_materials')
-2026-02-23 13:34:13.115 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.115 KST [9243] 상세정보:  (domain_id)=(42) 키가 이미 있습니다.
-2026-02-23 13:34:13.115 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (42, 'augmented_reality_and_mixed_reality')
-2026-02-23 13:34:13.116 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.116 KST [9243] 상세정보:  (domain_id)=(28) 키가 이미 있습니다.
-2026-02-23 13:34:13.116 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (28, 'food_and_bevarage_DOUBLE')
-2026-02-23 13:34:13.117 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.117 KST [9243] 상세정보:  (domain_id)=(95) 키가 이미 있습니다.
-2026-02-23 13:34:13.117 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (95, 'crowdfunding_platforms_and_campaign_management')
-2026-02-23 13:34:13.118 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.118 KST [9243] 상세정보:  (domain_id)=(91) 키가 이미 있습니다.
-2026-02-23 13:34:13.118 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (91, 'anti_money_laundering_and_financial_crime_compliance')
-2026-02-23 13:34:13.120 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.120 KST [9243] 상세정보:  (domain_id)=(84) 키가 이미 있습니다.
-2026-02-23 13:34:13.120 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (84, 'data_center_and_cloud_infrastructure_operations')
-2026-02-23 13:34:13.121 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.121 KST [9243] 상세정보:  (domain_id)=(0) 키가 이미 있습니다.
-2026-02-23 13:34:13.121 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (0, 'call_speech')
-2026-02-23 13:34:13.123 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.123 KST [9243] 상세정보:  (domain_id)=(69) 키가 이미 있습니다.
-2026-02-23 13:34:13.123 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (69, 'forestry_and_forest_management')
-2026-02-23 13:34:13.124 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.124 KST [9243] 상세정보:  (domain_id)=(72) 키가 이미 있습니다.
-2026-02-23 13:34:13.124 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (72, 'social_impact_and_impact_investing')
-2026-02-23 13:34:13.125 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.125 KST [9243] 상세정보:  (domain_id)=(4) 키가 이미 있습니다.
-2026-02-23 13:34:13.125 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (4, 'insurance')
-2026-02-23 13:34:13.126 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.126 KST [9243] 상세정보:  (domain_id)=(32) 키가 이미 있습니다.
-2026-02-23 13:34:13.126 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (32, 'gaming_and_interactive_entertainment')
-2026-02-23 13:34:13.127 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.127 KST [9243] 상세정보:  (domain_id)=(51) 키가 이미 있습니다.
-2026-02-23 13:34:13.127 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (51, 'ai_ethics_and_governance')
-2026-02-23 13:34:13.128 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.128 KST [9243] 상세정보:  (domain_id)=(87) 키가 이미 있습니다.
-2026-02-23 13:34:13.128 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (87, 'precision_mining_and_geometallurgy')
-2026-02-23 13:34:13.130 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.130 KST [9243] 상세정보:  (domain_id)=(43) 키가 이미 있습니다.
-2026-02-23 13:34:13.130 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (43, 'wearable_technology_and_personal_health_devices')
-2026-02-23 13:34:13.131 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.131 KST [9243] 상세정보:  (domain_id)=(20) 키가 이미 있습니다.
-2026-02-23 13:34:13.131 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (20, 'media_and_entertainment')
-2026-02-23 13:34:13.132 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.132 KST [9243] 상세정보:  (domain_id)=(53) 키가 이미 있습니다.
-2026-02-23 13:34:13.132 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (53, 'election_and_voter_management')
-2026-02-23 13:34:13.133 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.133 KST [9243] 상세정보:  (domain_id)=(49) 키가 이미 있습니다.
-2026-02-23 13:34:13.133 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (49, 'drone_delivery_and_urban_air_mobility')
-2026-02-23 13:34:13.134 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.134 KST [9243] 상세정보:  (domain_id)=(97) 키가 이미 있습니다.
-2026-02-23 13:34:13.134 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (97, 'cannabis_and_hemp_industry')
-2026-02-23 13:34:13.135 KST [9243] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
-2026-02-23 13:34:13.135 KST [9243] 상세정보:  (domain_id)=(19) 키가 이미 있습니다.
-2026-02-23 13:34:13.135 KST [9243] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (19, 'environmental_monitoring')
-2026-02-23 13:38:49.422 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 13:43:19.099 KST [9105] 로그:  채크포인트 작업완료: 6967개(42.5%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 20개 재활용; 쓰기시간: 269.587 s, 동기화시간: 0.009 s, 전체시간: 269.677 s; 동기화 파일 개수: 32, 최장시간: 0.007 s, 평균시간: 0.001 s; 실제작업량: 330307 kB, 예상한작업량: 330307 kB
-2026-02-23 13:47:38.696 KST [9105] 로그:  체크포인트 시작: wal
-2026-02-23 13:51:53.559 KST [9105] 로그:  채크포인트 작업완료: 5520개(33.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 33개 재활용; 쓰기시간: 254.715 s, 동기화시간: 0.020 s, 전체시간: 254.864 s; 동기화 파일 개수: 29, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 527175 kB, 예상한작업량: 527175 kB
-2026-02-23 13:52:38.604 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 13:57:08.194 KST [9105] 로그:  채크포인트 작업완료: 15127개(92.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 28개 재활용; 쓰기시간: 269.471 s, 동기화시간: 0.008 s, 전체시간: 269.590 s; 동기화 파일 개수: 16, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 473396 kB, 예상한작업량: 521797 kB
-2026-02-23 14:02:38.286 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 14:02:39.219 KST [9105] 로그:  채크포인트 작업완료: 10개(0.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 0.905 s, 동기화시간: 0.011 s, 전체시간: 0.934 s; 동기화 파일 개수: 8, 최장시간: 0.010 s, 평균시간: 0.002 s; 실제작업량: 35 kB, 예상한작업량: 469621 kB
-2026-02-23 14:47:38.958 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 14:52:08.072 KST [9105] 로그:  채크포인트 작업완료: 5256개(32.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.076 s, 동기화시간: 0.009 s, 전체시간: 269.115 s; 동기화 파일 개수: 13, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 46019 kB, 예상한작업량: 427261 kB
-2026-02-23 15:32:38.800 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 15:37:08.115 KST [9105] 로그:  채크포인트 작업완료: 5327개(32.5%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.265 s, 동기화시간: 0.011 s, 전체시간: 269.316 s; 동기화 파일 개수: 11, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 46550 kB, 예상한작업량: 389190 kB
-2026-02-23 16:17:38.510 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 16:22:08.128 KST [9105] 로그:  채크포인트 작업완료: 5311개(32.4%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.571 s, 동기화시간: 0.012 s, 전체시간: 269.618 s; 동기화 파일 개수: 12, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 46428 kB, 예상한작업량: 354913 kB
-2026-02-23 16:57:38.808 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 17:02:08.098 KST [9105] 로그:  채크포인트 작업완료: 5243개(32.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.251 s, 동기화시간: 0.008 s, 전체시간: 269.290 s; 동기화 파일 개수: 11, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 45938 kB, 예상한작업량: 324016 kB
-2026-02-23 17:27:43.522 KST [12281] 로그:  열린 트랜잭션과 함께 클라이언트 연결에서 예상치 않은 EOF 발견됨
-2026-02-23 17:32:38.607 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 17:32:38.631 KST [9105] 로그:  채크포인트 작업완료: 1개(0.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 0.004 s, 동기화시간: 0.001 s, 전체시간: 0.024 s; 동기화 파일 개수: 1, 최장시간: 0.001 s, 평균시간: 0.001 s; 실제작업량: 0 kB, 예상한작업량: 291614 kB
-2026-02-23 17:47:38.861 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 17:47:39.492 KST [9105] 로그:  채크포인트 작업완료: 7개(0.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 0.605 s, 동기화시간: 0.011 s, 전체시간: 0.632 s; 동기화 파일 개수: 6, 최장시간: 0.010 s, 평균시간: 0.002 s; 실제작업량: 27 kB, 예상한작업량: 262456 kB
-2026-02-23 18:32:39.286 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 18:37:09.117 KST [9105] 로그:  채크포인트 작업완료: 5353개(32.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.788 s, 동기화시간: 0.008 s, 전체시간: 269.831 s; 동기화 파일 개수: 12, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 46772 kB, 예상한작업량: 240887 kB
-2026-02-23 19:17:39.842 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 19:22:09.089 KST [9105] 로그:  채크포인트 작업완료: 5391개(32.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 2개 지웠음, 0개 재활용; 쓰기시간: 269.203 s, 동기화시간: 0.012 s, 전체시간: 269.248 s; 동기화 파일 개수: 11, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 47045 kB, 예상한작업량: 221503 kB
-2026-02-23 20:02:39.650 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 20:07:09.088 KST [9105] 로그:  채크포인트 작업완료: 5359개(32.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.388 s, 동기화시간: 0.011 s, 전체시간: 269.438 s; 동기화 파일 개수: 9, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 46842 kB, 예상한작업량: 204037 kB
-2026-02-23 20:42:39.818 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 20:47:09.106 KST [9105] 로그:  채크포인트 작업완료: 5300개(32.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.239 s, 동기화시간: 0.012 s, 전체시간: 269.289 s; 동기화 파일 개수: 11, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 46321 kB, 예상한작업량: 188265 kB
-2026-02-23 21:27:39.854 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 21:32:09.076 KST [9105] 로그:  채크포인트 작업완료: 5360개(32.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.174 s, 동기화시간: 0.012 s, 전체시간: 269.222 s; 동기화 파일 개수: 14, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 46820 kB, 예상한작업량: 174121 kB
-2026-02-23 21:37:39.240 KST [9105] 로그:  체크포인트 시작: time
-2026-02-23 21:42:09.024 KST [9105] 로그:  채크포인트 작업완료: 9210개(56.2%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 269.757 s, 동기화시간: 0.008 s, 전체시간: 269.784 s; 동기화 파일 개수: 11, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 5 kB, 예상한작업량: 156709 kB
-2026-02-24 15:42:57.751 KST [9105] 로그:  체크포인트 시작: time
-2026-02-24 15:47:27.189 KST [9105] 로그:  채크포인트 작업완료: 6516개(39.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 9개 지웠음, 3개 재활용; 쓰기시간: 269.334 s, 동기화시간: 0.024 s, 전체시간: 269.438 s; 동기화 파일 개수: 49, 최장시간: 0.007 s, 평균시간: 0.001 s; 실제작업량: 197557 kB, 예상한작업량: 197557 kB
-2026-02-24 15:47:57.218 KST [9105] 로그:  체크포인트 시작: time
-2026-02-24 15:52:27.099 KST [9105] 로그:  채크포인트 작업완료: 3595개(21.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 19개 재활용; 쓰기시간: 269.795 s, 동기화시간: 0.009 s, 전체시간: 269.881 s; 동기화 파일 개수: 26, 최장시간: 0.007 s, 평균시간: 0.001 s; 실제작업량: 307252 kB, 예상한작업량: 307252 kB
-2026-02-24 15:55:12.292 KST [134638] 로그:  "term" 분석 건너뜀 --- 잠글 수 없음
-2026-02-24 15:57:57.198 KST [9105] 로그:  체크포인트 시작: time
-2026-02-24 16:02:08.917 KST [9105] 로그:  채크포인트 작업완료: 1055개(6.4%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 31개 재활용; 쓰기시간: 251.593 s, 동기화시간: 0.011 s, 전체시간: 251.719 s; 동기화 파일 개수: 64, 최장시간: 0.007 s, 평균시간: 0.001 s; 실제작업량: 515436 kB, 예상한작업량: 515436 kB
-2026-02-24 16:12:40.926 KST [9105] 로그:  체크포인트 시작: wal
-2026-02-24 16:17:10.175 KST [9105] 로그:  채크포인트 작업완료: 4251개(25.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 33개 재활용; 쓰기시간: 269.091 s, 동기화시간: 0.048 s, 전체시간: 269.250 s; 동기화 파일 개수: 53, 최장시간: 0.009 s, 평균시간: 0.001 s; 실제작업량: 528340 kB, 예상한작업량: 528340 kB
-2026-02-24 16:17:40.206 KST [9105] 로그:  체크포인트 시작: time
-2026-02-24 16:22:10.121 KST [9105] 로그:  채크포인트 작업완료: 3813개(23.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 24개 재활용; 쓰기시간: 269.813 s, 동기화시간: 0.009 s, 전체시간: 269.916 s; 동기화 파일 개수: 21, 최장시간: 0.007 s, 평균시간: 0.001 s; 실제작업량: 407485 kB, 예상한작업량: 516255 kB
-2026-02-25 00:22:46.540 KST [9105] 로그:  체크포인트 시작: time
-2026-02-25 00:27:16.130 KST [9105] 로그:  채크포인트 작업완료: 5276개(32.2%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 29개 재활용; 쓰기시간: 269.483 s, 동기화시간: 0.008 s, 전체시간: 269.590 s; 동기화 파일 개수: 28, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 474271 kB, 예상한작업량: 512056 kB
-2026-02-25 00:27:46.160 KST [9105] 로그:  체크포인트 시작: time
-2026-02-25 00:32:16.155 KST [9105] 로그:  채크포인트 작업완료: 6640개(40.5%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 28개 재활용; 쓰기시간: 269.892 s, 동기화시간: 0.008 s, 전체시간: 269.995 s; 동기화 파일 개수: 13, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 450240 kB, 예상한작업량: 505875 kB
+2026-03-07 16:30:26.227 KST [53277] 로그:  PostgreSQL 15.13 (Ubuntu 15.13-1.pgdg20.04+1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, 64-bit 서버를 시작합니다.
+2026-03-07 16:30:26.227 KST [53277] 로그:  IPv4, 주소: "127.0.0.1", 포트 55432 번으로 접속을 허용합니다
+2026-03-07 16:30:26.234 KST [53277] 로그:  "/home/student1/sensitive-info-detection/data/db_storage/.s.PGSQL.55432" 유닉스 도메인 소켓으로 접속을 허용합니다
+2026-03-07 16:30:26.243 KST [53282] 로그:  데이터베이스 시스템이 비정상적으로 종료되었음; 마지막 운영시간: 2026-02-25 00:32:16 KST
+2026-03-07 16:30:26.316 KST [53282] 로그:  데이터베이스 시스템이 정상적으로 종료되지 못했습니다, 자동 복구 작업을 진행합니다
+2026-03-07 16:30:26.321 KST [53282] 로그:  3/F84FC0B0에서 redo 작업 시작됨
+2026-03-07 16:30:26.812 KST [53282] 로그:  잘못된 레코드 길이: 3/FE4CAEF0, 기대값 24, 실재값 0
+2026-03-07 16:30:26.812 KST [53282] 로그:  3/FE4CAEB8에서 redo 작업 완료, 시스템 사용량: CPU: user: 0.36 s, system: 0.12 s, elapsed: 0.49 s
+2026-03-07 16:30:26.820 KST [53280] 로그:  체크포인트 시작: end-of-recovery immediate wait
+2026-03-07 16:30:26.970 KST [53280] 로그:  채크포인트 작업완료: 16285개(99.4%) 버퍼 씀; 0개 WAL 파일 추가됨, 6개 지웠음, 0개 재활용; 쓰기시간: 0.091 s, 동기화시간: 0.018 s, 전체시간: 0.154 s; 동기화 파일 개수: 22, 최장시간: 0.012 s, 평균시간: 0.001 s; 실제작업량: 98107 kB, 예상한작업량: 98107 kB
+2026-03-07 16:30:26.982 KST [53277] 로그:  이제 데이터베이스 서버로 접속할 수 있습니다
+2026-03-07 16:35:26.529 KST [53280] 로그:  체크포인트 시작: time
+2026-03-07 16:39:56.123 KST [53280] 로그:  채크포인트 작업완료: 5580개(34.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 30개 재활용; 쓰기시간: 269.480 s, 동기화시간: 0.010 s, 전체시간: 269.594 s; 동기화 파일 개수: 28, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 490457 kB, 예상한작업량: 490457 kB
+2026-03-07 17:25:26.809 KST [53280] 로그:  체크포인트 시작: time
+2026-03-07 17:29:56.129 KST [53280] 로그:  채크포인트 작업완료: 5855개(35.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 10개 재활용; 쓰기시간: 269.264 s, 동기화시간: 0.008 s, 전체시간: 269.320 s; 동기화 파일 개수: 26, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 162739 kB, 예상한작업량: 457685 kB
+2026-03-07 18:10:26.825 KST [53280] 로그:  체크포인트 시작: time
+2026-03-07 18:14:56.053 KST [53280] 로그:  채크포인트 작업완료: 5274개(32.2%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 2개 재활용; 쓰기시간: 269.193 s, 동기화시간: 0.011 s, 전체시간: 269.229 s; 동기화 파일 개수: 11, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 46159 kB, 예상한작업량: 416532 kB
+2026-03-07 18:55:26.649 KST [53280] 로그:  체크포인트 시작: time
+2026-03-07 18:59:56.085 KST [53280] 로그:  채크포인트 작업완료: 5252개(32.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 3개 재활용; 쓰기시간: 269.400 s, 동기화시간: 0.008 s, 전체시간: 269.436 s; 동기화 파일 개수: 11, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 46030 kB, 예상한작업량: 379482 kB
+2026-03-07 22:06:57.366 KST [54717] 로그:  열린 트랜잭션과 함께 클라이언트 연결에서 예상치 않은 EOF 발견됨
+2026-03-07 22:10:29.533 KST [53280] 로그:  체크포인트 시작: time
+2026-03-07 22:10:29.558 KST [53280] 로그:  채크포인트 작업완료: 1개(0.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 0.004 s, 동기화시간: 0.002 s, 전체시간: 0.026 s; 동기화 파일 개수: 1, 최장시간: 0.002 s, 평균시간: 0.002 s; 실제작업량: 0 kB, 예상한작업량: 341534 kB
+2026-03-08 02:10:33.601 KST [53280] 로그:  체크포인트 시작: time
+2026-03-08 02:10:34.236 KST [53280] 로그:  채크포인트 작업완료: 7개(0.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 0.605 s, 동기화시간: 0.011 s, 전체시간: 0.636 s; 동기화 파일 개수: 6, 최장시간: 0.010 s, 평균시간: 0.002 s; 실제작업량: 26 kB, 예상한작업량: 307383 kB
+2026-03-08 02:55:33.990 KST [53280] 로그:  체크포인트 시작: time
+2026-03-08 03:00:03.107 KST [53280] 로그:  채크포인트 작업완료: 5221개(31.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.070 s, 동기화시간: 0.008 s, 전체시간: 269.118 s; 동기화 파일 개수: 13, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 45785 kB, 예상한작업량: 281223 kB
+2026-03-08 03:40:33.857 KST [53280] 로그:  체크포인트 시작: time
+2026-03-08 03:45:03.105 KST [53280] 로그:  채크포인트 작업완료: 5292개(32.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.196 s, 동기화시간: 0.011 s, 전체시간: 269.248 s; 동기화 파일 개수: 13, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 46297 kB, 예상한작업량: 257731 kB
+2026-03-08 04:25:33.862 KST [53280] 로그:  체크포인트 시작: time
+2026-03-08 04:30:03.116 KST [53280] 로그:  채크포인트 작업완료: 5293개(32.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.212 s, 동기화시간: 0.007 s, 전체시간: 269.255 s; 동기화 파일 개수: 11, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 46322 kB, 예상한작업량: 236590 kB
+2026-03-08 05:10:33.818 KST [53280] 로그:  체크포인트 시작: time
+2026-03-08 05:15:03.047 KST [53280] 로그:  채크포인트 작업완료: 5312개(32.4%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.188 s, 동기화시간: 0.012 s, 전체시간: 269.230 s; 동기화 파일 개수: 12, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 46417 kB, 예상한작업량: 217573 kB
+2026-03-08 05:50:33.690 KST [53280] 로그:  체크포인트 시작: time
+2026-03-08 05:55:03.109 KST [53280] 로그:  채크포인트 작업완료: 5271개(32.2%) 버퍼 씀; 0개 WAL 파일 추가됨, 2개 지웠음, 0개 재활용; 쓰기시간: 269.374 s, 동기화시간: 0.012 s, 전체시간: 269.420 s; 동기화 파일 개수: 14, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 46119 kB, 예상한작업량: 200427 kB
+2026-03-08 19:05:43.051 KST [53280] 로그:  체크포인트 시작: time
+2026-03-08 19:06:50.690 KST [53280] 로그:  채크포인트 작업완료: 675개(4.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 67.604 s, 동기화시간: 0.015 s, 전체시간: 67.639 s; 동기화 파일 개수: 24, 최장시간: 0.005 s, 평균시간: 0.001 s; 실제작업량: 10139 kB, 예상한작업량: 181398 kB
+2026-03-08 19:10:43.790 KST [53280] 로그:  체크포인트 시작: time
+2026-03-08 19:15:13.082 KST [53280] 로그:  채크포인트 작업완료: 5872개(35.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 9개 지웠음, 0개 재활용; 쓰기시간: 269.201 s, 동기화시간: 0.012 s, 전체시간: 269.292 s; 동기화 파일 개수: 16, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 144850 kB, 예상한작업량: 177744 kB
+2026-03-08 19:25:43.308 KST [53280] 로그:  체크포인트 시작: time
+2026-03-08 19:28:32.391 KST [53280] 로그:  채크포인트 작업완료: 1689개(10.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 169.053 s, 동기화시간: 0.005 s, 전체시간: 169.084 s; 동기화 파일 개수: 12, 최장시간: 0.003 s, 평균시간: 0.001 s; 실제작업량: 15498 kB, 예상한작업량: 161519 kB
+2026-03-08 19:40:43.677 KST [53280] 로그:  체크포인트 시작: time
+2026-03-08 19:43:44.407 KST [53280] 로그:  채크포인트 작업완료: 1807개(11.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 180.701 s, 동기화시간: 0.011 s, 전체시간: 180.731 s; 동기화 파일 개수: 11, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 15684 kB, 예상한작업량: 146935 kB
+2026-03-08 19:55:43.509 KST [53280] 로그:  체크포인트 시작: time
+2026-03-08 19:58:39.320 KST [53280] 로그:  채크포인트 작업완료: 1757개(10.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 175.777 s, 동기화시간: 0.012 s, 전체시간: 175.811 s; 동기화 파일 개수: 11, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 15272 kB, 예상한작업량: 133769 kB
+2026-03-08 20:05:43.520 KST [53280] 로그:  체크포인트 시작: time
+2026-03-08 20:08:42.011 KST [53280] 로그:  채크포인트 작업완료: 1784개(10.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 178.458 s, 동기화시간: 0.011 s, 전체시간: 178.491 s; 동기화 파일 개수: 13, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 15440 kB, 예상한작업량: 121936 kB
+2026-03-08 20:20:43.233 KST [53280] 로그:  체크포인트 시작: time
+2026-03-08 20:23:47.553 KST [53280] 로그:  채크포인트 작업완료: 1840개(11.2%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 184.282 s, 동기화시간: 0.012 s, 전체시간: 184.320 s; 동기화 파일 개수: 14, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 15914 kB, 예상한작업량: 111334 kB
+2026-03-09 02:00:47.920 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 02:05:17.160 KST [53280] 로그:  채크포인트 작업완료: 7803개(47.6%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 10개 재활용; 쓰기시간: 269.161 s, 동기화시간: 0.026 s, 전체시간: 269.240 s; 동기화 파일 개수: 38, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 163809 kB, 예상한작업량: 163809 kB
+2026-03-09 02:10:47.291 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 02:15:17.070 KST [53280] 로그:  채크포인트 작업완료: 9632개(58.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 12개 재활용; 쓰기시간: 269.699 s, 동기화시간: 0.026 s, 전체시간: 269.780 s; 동기화 파일 개수: 51, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 199045 kB, 예상한작업량: 199045 kB
+2026-03-09 02:15:47.100 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 02:20:17.120 KST [53280] 로그:  채크포인트 작업완료: 3323개(20.3%) 버퍼 씀; 1개 WAL 파일 추가됨, 6개 지웠음, 0개 재활용; 쓰기시간: 269.935 s, 동기화시간: 0.006 s, 전체시간: 270.021 s; 동기화 파일 개수: 23, 최장시간: 0.003 s, 평균시간: 0.001 s; 실제작업량: 101248 kB, 예상한작업량: 189266 kB
+2026-03-09 02:20:47.151 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 02:25:17.092 KST [53280] 로그:  채크포인트 작업완료: 2579개(15.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 28개 재활용; 쓰기시간: 269.838 s, 동기화시간: 0.008 s, 전체시간: 269.942 s; 동기화 파일 개수: 16, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 456865 kB, 예상한작업량: 456865 kB
+2026-03-09 02:30:47.241 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 02:35:17.034 KST [53280] 로그:  채크포인트 작업완료: 3732개(22.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 6개 재활용; 쓰기시간: 269.752 s, 동기화시간: 0.006 s, 전체시간: 269.794 s; 동기화 파일 개수: 29, 최장시간: 0.003 s, 평균시간: 0.001 s; 실제작업량: 107444 kB, 예상한작업량: 421923 kB
+2026-03-09 02:40:47.165 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 02:43:44.541 KST [53280] 로그:  채크포인트 작업완료: 1771개(10.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 1개 재활용; 쓰기시간: 177.345 s, 동기화시간: 0.011 s, 전체시간: 177.377 s; 동기화 파일 개수: 11, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 15404 kB, 예상한작업량: 381271 kB
+2026-03-09 02:55:47.841 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 02:58:38.031 KST [53280] 로그:  채크포인트 작업완료: 1703개(10.4%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 1개 재활용; 쓰기시간: 170.157 s, 동기화시간: 0.011 s, 전체시간: 170.190 s; 동기화 파일 개수: 11, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 14877 kB, 예상한작업량: 344631 kB
+2026-03-09 03:10:47.331 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 03:15:17.078 KST [53280] 로그:  채크포인트 작업완료: 6873개(41.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 4개 재활용; 쓰기시간: 269.709 s, 동기화시간: 0.012 s, 전체시간: 269.747 s; 동기화 파일 개수: 12, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 60310 kB, 예상한작업량: 316199 kB
+2026-03-09 03:25:47.615 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 03:30:17.032 KST [53280] 로그:  채크포인트 작업완료: 6981개(42.6%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 3개 재활용; 쓰기시간: 269.382 s, 동기화시간: 0.008 s, 전체시간: 269.417 s; 동기화 파일 개수: 19, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 53402 kB, 예상한작업량: 289920 kB
+2026-03-09 03:50:47.437 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 03:55:17.057 KST [53280] 로그:  채크포인트 작업완료: 5151개(31.4%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 3개 재활용; 쓰기시간: 269.580 s, 동기화시간: 0.012 s, 전체시간: 269.620 s; 동기화 파일 개수: 11, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 45213 kB, 예상한작업량: 265449 kB
+2026-03-09 04:35:47.842 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 04:40:17.069 KST [53280] 로그:  채크포인트 작업완료: 5171개(31.6%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 2개 재활용; 쓰기시간: 269.186 s, 동기화시간: 0.012 s, 전체시간: 269.228 s; 동기화 파일 개수: 13, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 45357 kB, 예상한작업량: 243440 kB
+2026-03-09 05:15:47.800 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 05:20:17.110 KST [53280] 로그:  채크포인트 작업완료: 5188개(31.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 2개 지웠음, 0개 재활용; 쓰기시간: 269.274 s, 동기화시간: 0.007 s, 전체시간: 269.310 s; 동기화 파일 개수: 9, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 45516 kB, 예상한작업량: 223647 kB
+2026-03-09 06:00:47.618 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 06:05:17.074 KST [53280] 로그:  채크포인트 작업완료: 7149개(43.6%) 버퍼 씀; 0개 WAL 파일 추가됨, 2개 지웠음, 1개 재활용; 쓰기시간: 269.413 s, 동기화시간: 0.008 s, 전체시간: 269.457 s; 동기화 파일 개수: 16, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 45820 kB, 예상한작업량: 205865 kB
+2026-03-09 09:55:50.417 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 10:00:20.136 KST [53280] 로그:  채크포인트 작업완료: 10713개(65.4%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 12개 재활용; 쓰기시간: 269.632 s, 동기화시간: 0.014 s, 전체시간: 269.719 s; 동기화 파일 개수: 40, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 201996 kB, 예상한작업량: 205478 kB
+2026-03-09 10:05:50.196 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 10:10:20.105 KST [53280] 로그:  채크포인트 작업완료: 4400개(26.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 2개 지웠음, 0개 재활용; 쓰기시간: 269.868 s, 동기화시간: 0.012 s, 전체시간: 269.909 s; 동기화 파일 개수: 16, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 38485 kB, 예상한작업량: 188778 kB
+2026-03-09 10:15:50.633 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 10:20:20.048 KST [53280] 로그:  채크포인트 작업완료: 12789개(78.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 10개 재활용; 쓰기시간: 269.354 s, 동기화시간: 0.010 s, 전체시간: 269.416 s; 동기화 파일 개수: 40, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 164056 kB, 예상한작업량: 186306 kB
+2026-03-09 10:20:50.078 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 10:20:51.414 KST [53280] 로그:  채크포인트 작업완료: 14개(0.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 1.307 s, 동기화시간: 0.011 s, 전체시간: 1.336 s; 동기화 파일 개수: 8, 최장시간: 0.010 s, 평균시간: 0.002 s; 실제작업량: 25 kB, 예상한작업량: 167678 kB
+2026-03-09 10:30:50.584 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 10:32:17.284 KST [53280] 로그:  채크포인트 작업완료: 866개(5.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 86.673 s, 동기화시간: 0.008 s, 전체시간: 86.700 s; 동기화 파일 개수: 10, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 7524 kB, 예상한작업량: 151663 kB
+2026-03-09 10:35:50.325 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 10:37:17.646 KST [53280] 로그:  채크포인트 작업완료: 872개(5.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 87.288 s, 동기화시간: 0.011 s, 전체시간: 87.321 s; 동기화 파일 개수: 8, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 7590 kB, 예상한작업량: 137255 kB
+2026-03-09 10:45:50.846 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 10:47:19.957 KST [53280] 로그:  채크포인트 작업완료: 891개(5.4%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 89.087 s, 동기화시간: 0.012 s, 전체시간: 89.111 s; 동기화 파일 개수: 9, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 7747 kB, 예상한작업량: 124305 kB
+2026-03-09 10:50:51.057 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 10:52:19.172 KST [53280] 로그:  채크포인트 작업완료: 879개(5.4%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 88.086 s, 동기화시간: 0.011 s, 전체시간: 88.115 s; 동기화 파일 개수: 9, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 7633 kB, 예상한작업량: 112637 kB
+2026-03-09 11:00:51.813 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 11:05:21.053 KST [53280] 로그:  채크포인트 작업완료: 7355개(44.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.192 s, 동기화시간: 0.012 s, 전체시간: 269.240 s; 동기화 파일 개수: 22, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 47255 kB, 예상한작업량: 106099 kB
+2026-03-09 11:10:51.170 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 11:15:21.114 KST [53280] 로그:  채크포인트 작업완료: 6157개(37.6%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 4개 재활용; 쓰기시간: 269.890 s, 동기화시간: 0.006 s, 전체시간: 269.945 s; 동기화 파일 개수: 34, 최장시간: 0.003 s, 평균시간: 0.001 s; 실제작업량: 124407 kB, 예상한작업량: 124407 kB
+2026-03-09 11:20:51.241 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 11:22:22.055 KST [53280] 로그:  채크포인트 작업완료: 906개(5.5%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 90.781 s, 동기화시간: 0.011 s, 전체시간: 90.814 s; 동기화 파일 개수: 8, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 7887 kB, 예상한작업량: 112755 kB
+2026-03-09 11:25:51.093 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 11:27:23.715 KST [53280] 로그:  채크포인트 작업완료: 924개(5.6%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 92.592 s, 동기화시간: 0.011 s, 전체시간: 92.622 s; 동기화 파일 개수: 8, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 8006 kB, 예상한작업량: 102280 kB
+2026-03-09 11:35:51.893 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 11:37:24.027 KST [53280] 로그:  채크포인트 작업완료: 922개(5.6%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 92.097 s, 동기화시간: 0.012 s, 전체시간: 92.134 s; 동기화 파일 개수: 6, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 8017 kB, 예상한작업량: 92854 kB
+2026-03-09 11:40:51.080 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 11:42:22.899 KST [53280] 로그:  채크포인트 작업완료: 916개(5.6%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 91.790 s, 동기화시간: 0.011 s, 전체시간: 91.820 s; 동기화 파일 개수: 6, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 7967 kB, 예상한작업량: 84365 kB
+2026-03-09 11:50:52.099 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 11:55:22.099 KST [53280] 로그:  채크포인트 작업완료: 2650개(16.2%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 269.965 s, 동기화시간: 0.009 s, 전체시간: 270.000 s; 동기화 파일 개수: 30, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 7968 kB, 예상한작업량: 76725 kB
+2026-03-09 12:05:52.273 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 12:10:22.094 KST [53280] 로그:  채크포인트 작업완료: 10536개(64.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 10개 재활용; 쓰기시간: 269.775 s, 동기화시간: 0.006 s, 전체시간: 269.822 s; 동기화 파일 개수: 35, 최장시간: 0.003 s, 평균시간: 0.001 s; 실제작업량: 160397 kB, 예상한작업량: 160397 kB
+2026-03-09 12:20:52.324 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 12:23:48.511 KST [53280] 로그:  채크포인트 작업완료: 1760개(10.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 176.162 s, 동기화시간: 0.006 s, 전체시간: 176.187 s; 동기화 파일 개수: 6, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 15443 kB, 예상한작업량: 145901 kB
+2026-03-09 12:25:52.574 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 12:27:22.093 KST [53280] 로그:  채크포인트 작업완료: 894개(5.5%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 1개 재활용; 쓰기시간: 89.491 s, 동기화시간: 0.007 s, 전체시간: 89.520 s; 동기화 파일 개수: 7, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 7804 kB, 예상한작업량: 132092 kB
+2026-03-09 12:35:52.294 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 12:40:22.096 KST [53280] 로그:  채크포인트 작업완료: 2642개(16.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 269.772 s, 동기화시간: 0.012 s, 전체시간: 269.802 s; 동기화 파일 개수: 13, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 7851 kB, 예상한작업량: 119668 kB
+2026-03-09 12:45:52.226 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 12:50:22.108 KST [53280] 로그:  채크포인트 작업완료: 9479개(57.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 11개 재활용; 쓰기시간: 269.826 s, 동기화시간: 0.009 s, 전체시간: 269.883 s; 동기화 파일 개수: 42, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 173011 kB, 예상한작업량: 173011 kB
+2026-03-09 12:55:52.238 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 12:57:25.045 KST [53280] 로그:  채크포인트 작업완료: 926개(5.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 92.785 s, 동기화시간: 0.007 s, 전체시간: 92.807 s; 동기화 파일 개수: 7, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 8061 kB, 예상한작업량: 156516 kB
+2026-03-09 13:00:52.146 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 13:02:27.572 KST [53280] 로그:  채크포인트 작업완료: 952개(5.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 1개 재활용; 쓰기시간: 95.398 s, 동기화시간: 0.011 s, 전체시간: 95.427 s; 동기화 파일 개수: 6, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 8260 kB, 예상한작업량: 141690 kB
+2026-03-09 13:10:52.773 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 13:12:27.400 KST [53280] 로그:  채크포인트 작업완료: 946개(5.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 94.598 s, 동기화시간: 0.011 s, 전체시간: 94.628 s; 동기화 파일 개수: 6, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 8200 kB, 예상한작업량: 128341 kB
+2026-03-09 13:15:52.497 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 13:17:26.116 KST [53280] 로그:  채크포인트 작업완료: 935개(5.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 1개 재활용; 쓰기시간: 93.590 s, 동기화시간: 0.007 s, 전체시간: 93.619 s; 동기화 파일 개수: 6, 최장시간: 0.004 s, 평균시간: 0.002 s; 실제작업량: 8129 kB, 예상한작업량: 116320 kB
+2026-03-09 13:25:52.276 KST [53280] 로그:  체크포인트 시작: time
+2026-03-09 13:30:22.058 KST [53280] 로그:  채크포인트 작업완료: 6280개(38.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 269.756 s, 동기화시간: 0.008 s, 전체시간: 269.783 s; 동기화 파일 개수: 12, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 8244 kB, 예상한작업량: 105513 kB
+2026-03-25 15:52:42.180 KST [53280] 로그:  체크포인트 시작: time
+2026-03-25 15:57:12.117 KST [53280] 로그:  채크포인트 작업완료: 5815개(35.5%) 버퍼 씀; 0개 WAL 파일 추가됨, 5개 지웠음, 12개 재활용; 쓰기시간: 269.842 s, 동기화시간: 0.009 s, 전체시간: 269.937 s; 동기화 파일 개수: 41, 최장시간: 0.003 s, 평균시간: 0.001 s; 실제작업량: 278612 kB, 예상한작업량: 278612 kB
+2026-03-25 16:47:42.718 KST [53280] 로그:  체크포인트 시작: time
+2026-03-25 16:52:12.133 KST [53280] 로그:  채크포인트 작업완료: 6216개(37.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 28개 재활용; 쓰기시간: 269.307 s, 동기화시간: 0.009 s, 전체시간: 269.416 s; 동기화 파일 개수: 30, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 450244 kB, 예상한작업량: 450244 kB
+2026-03-25 17:27:42.766 KST [53280] 로그:  체크포인트 시작: time
+2026-03-25 17:32:12.095 KST [53280] 로그:  채크포인트 작업완료: 5275개(32.2%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 3개 재활용; 쓰기시간: 269.290 s, 동기화시간: 0.011 s, 전체시간: 269.329 s; 동기화 파일 개수: 10, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 46174 kB, 예상한작업량: 409837 kB
+2026-03-25 18:12:42.758 KST [53280] 로그:  체크포인트 시작: time
+2026-03-25 18:17:12.080 KST [53280] 로그:  채크포인트 작업완료: 5279개(32.2%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 3개 재활용; 쓰기시간: 269.288 s, 동기화시간: 0.007 s, 전체시간: 269.323 s; 동기화 파일 개수: 9, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 46231 kB, 예상한작업량: 373477 kB
+2026-03-25 18:57:42.758 KST [53280] 로그:  체크포인트 시작: time
+2026-03-25 19:02:12.071 KST [53280] 로그:  채크포인트 작업완료: 5212개(31.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 2개 재활용; 쓰기시간: 269.282 s, 동기화시간: 0.008 s, 전체시간: 269.314 s; 동기화 파일 개수: 11, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 45799 kB, 예상한작업량: 340709 kB
+2026-03-25 19:42:42.885 KST [53280] 로그:  체크포인트 시작: time
+2026-03-25 19:47:12.104 KST [53280] 로그:  채크포인트 작업완료: 5260개(32.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 3개 재활용; 쓰기시간: 269.182 s, 동기화시간: 0.012 s, 전체시간: 269.219 s; 동기화 파일 개수: 12, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 46049 kB, 예상한작업량: 311243 kB
+2026-03-25 20:52:43.113 KST [53280] 로그:  체크포인트 시작: time
+2026-03-25 20:52:43.848 KST [53280] 로그:  채크포인트 작업완료: 8개(0.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 0.706 s, 동기화시간: 0.012 s, 전체시간: 0.735 s; 동기화 파일 개수: 8, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 39 kB, 예상한작업량: 280123 kB
+2026-03-25 21:02:43.977 KST [53280] 로그:  체크포인트 시작: time
+2026-03-25 21:02:44.610 KST [53280] 로그:  채크포인트 작업완료: 7개(0.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 0.605 s, 동기화시간: 0.011 s, 전체시간: 0.634 s; 동기화 파일 개수: 6, 최장시간: 0.009 s, 평균시간: 0.002 s; 실제작업량: 25 kB, 예상한작업량: 252113 kB
+2026-03-25 21:47:44.165 KST [53280] 로그:  체크포인트 시작: time
+2026-03-25 21:52:14.124 KST [53280] 로그:  채크포인트 작업완료: 5322개(32.5%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.914 s, 동기화시간: 0.007 s, 전체시간: 269.959 s; 동기화 파일 개수: 10, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 46533 kB, 예상한작업량: 231555 kB
+2026-03-25 22:32:44.945 KST [53280] 로그:  체크포인트 시작: time
+2026-03-25 22:37:14.070 KST [53280] 로그:  채크포인트 작업완료: 5315개(32.4%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.081 s, 동기화시간: 0.007 s, 전체시간: 269.125 s; 동기화 파일 개수: 9, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 46487 kB, 예상한작업량: 213048 kB
+2026-03-25 23:17:44.698 KST [53280] 로그:  체크포인트 시작: time
+2026-03-25 23:22:14.040 KST [53280] 로그:  채크포인트 작업완료: 5263개(32.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.300 s, 동기화시간: 0.007 s, 전체시간: 269.342 s; 동기화 파일 개수: 9, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 46079 kB, 예상한작업량: 196351 kB
+2026-03-25 23:32:44.241 KST [53280] 로그:  체크포인트 시작: time
+2026-03-25 23:32:44.876 KST [53280] 로그:  채크포인트 작업완료: 7개(0.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 0.605 s, 동기화시간: 0.011 s, 전체시간: 0.635 s; 동기화 파일 개수: 6, 최장시간: 0.010 s, 평균시간: 0.002 s; 실제작업량: 31 kB, 예상한작업량: 176719 kB
+2026-03-25 23:37:44.937 KST [53280] 로그:  체크포인트 시작: time
+2026-03-25 23:37:45.367 KST [53280] 로그:  채크포인트 작업완료: 5개(0.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 0.405 s, 동기화시간: 0.007 s, 전체시간: 0.431 s; 동기화 파일 개수: 5, 최장시간: 0.006 s, 평균시간: 0.002 s; 실제작업량: 21 kB, 예상한작업량: 159049 kB
+2026-03-26 00:02:44.765 KST [53280] 로그:  체크포인트 시작: time
+2026-03-26 00:07:14.098 KST [53280] 로그:  채크포인트 작업완료: 5240개(32.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.295 s, 동기화시간: 0.007 s, 전체시간: 269.333 s; 동기화 파일 개수: 10, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 45912 kB, 예상한작업량: 147736 kB
+2026-03-26 00:22:44.301 KST [53280] 로그:  체크포인트 시작: time
+2026-03-26 00:27:14.034 KST [53280] 로그:  채크포인트 작업완료: 4995개(30.5%) 버퍼 씀; 0개 WAL 파일 추가됨, 2개 지웠음, 0개 재활용; 쓰기시간: 269.693 s, 동기화시간: 0.008 s, 전체시간: 269.733 s; 동기화 파일 개수: 10, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 44052 kB, 예상한작업량: 137367 kB
+2026-03-26 00:47:44.473 KST [53280] 로그:  체크포인트 시작: time
+2026-03-26 00:52:14.086 KST [53280] 로그:  채크포인트 작업완료: 9414개(57.5%) 버퍼 씀; 0개 WAL 파일 추가됨, 5개 지웠음, 0개 재활용; 쓰기시간: 269.557 s, 동기화시간: 0.008 s, 전체시간: 269.613 s; 동기화 파일 개수: 18, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 82640 kB, 예상한작업량: 131895 kB
+2026-03-26 01:02:44.229 KST [53280] 로그:  체크포인트 시작: time
+2026-03-26 01:07:14.047 KST [53280] 로그:  채크포인트 작업완료: 4904개(29.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 2개 재활용; 쓰기시간: 269.783 s, 동기화시간: 0.008 s, 전체시간: 269.818 s; 동기화 파일 개수: 12, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 43311 kB, 예상한작업량: 123036 kB
+2026-03-26 01:47:44.613 KST [53280] 로그:  체크포인트 시작: time
+2026-03-26 01:52:14.053 KST [53280] 로그:  채크포인트 작업완료: 5038개(30.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 2개 지웠음, 1개 재활용; 쓰기시간: 269.397 s, 동기화시간: 0.012 s, 전체시간: 269.440 s; 동기화 파일 개수: 12, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 44361 kB, 예상한작업량: 115169 kB
+2026-03-26 02:32:44.623 KST [53280] 로그:  체크포인트 시작: time
+2026-03-26 02:37:14.039 KST [53280] 로그:  채크포인트 작업완료: 4990개(30.5%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 2개 재활용; 쓰기시간: 269.381 s, 동기화시간: 0.012 s, 전체시간: 269.417 s; 동기화 파일 개수: 10, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 44016 kB, 예상한작업량: 108053 kB
+2026-03-26 03:12:44.962 KST [53280] 로그:  체크포인트 시작: time
+2026-03-26 03:17:14.139 KST [53280] 로그:  채크포인트 작업완료: 6187개(37.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 3개 재활용; 쓰기시간: 269.124 s, 동기화시간: 0.020 s, 전체시간: 269.177 s; 동기화 파일 개수: 23, 최장시간: 0.007 s, 평균시간: 0.001 s; 실제작업량: 59783 kB, 예상한작업량: 103226 kB
+2026-03-26 23:13:03.954 KST [53280] 로그:  체크포인트 시작: time
+2026-03-26 23:17:33.161 KST [53280] 로그:  채크포인트 작업완료: 1536개(9.4%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 29개 재활용; 쓰기시간: 269.091 s, 동기화시간: 0.010 s, 전체시간: 269.207 s; 동기화 파일 개수: 41, 최장시간: 0.007 s, 평균시간: 0.001 s; 실제작업량: 474767 kB, 예상한작업량: 474767 kB
+2026-03-26 23:21:29.469 KST [53280] 로그:  체크포인트 시작: wal
+2026-03-26 23:25:59.189 KST [53280] 로그:  채크포인트 작업완료: 2021개(12.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 33개 재활용; 쓰기시간: 269.593 s, 동기화시간: 0.015 s, 전체시간: 269.720 s; 동기화 파일 개수: 40, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 534487 kB, 예상한작업량: 534487 kB
+2026-03-26 23:26:29.219 KST [53280] 로그:  체크포인트 시작: time
+2026-03-26 23:30:59.151 KST [53280] 로그:  채크포인트 작업완료: 2148개(13.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 30개 재활용; 쓰기시간: 269.808 s, 동기화시간: 0.012 s, 전체시간: 269.932 s; 동기화 파일 개수: 22, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 496457 kB, 예상한작업량: 530684 kB
+2026-03-26 23:36:29.161 KST [53280] 로그:  체크포인트 시작: time
+2026-03-26 23:37:00.709 KST [53280] 로그:  채크포인트 작업완료: 315개(1.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 12개 재활용; 쓰기시간: 31.494 s, 동기화시간: 0.006 s, 전체시간: 31.548 s; 동기화 파일 개수: 16, 최장시간: 0.003 s, 평균시간: 0.001 s; 실제작업량: 195093 kB, 예상한작업량: 497125 kB
+2026-03-26 23:41:29.809 KST [53280] 로그:  체크포인트 시작: time
+2026-03-26 23:45:54.597 KST [53280] 로그:  채크포인트 작업완료: 2665개(16.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 2개 재활용; 쓰기시간: 264.752 s, 동기화시간: 0.012 s, 전체시간: 264.789 s; 동기화 파일 개수: 31, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 43292 kB, 예상한작업량: 451742 kB
+2026-03-27 00:01:29.870 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 00:05:59.066 KST [53280] 로그:  채크포인트 작업완료: 8288개(50.6%) 버퍼 씀; 0개 WAL 파일 추가됨, 4개 지웠음, 6개 재활용; 쓰기시간: 269.128 s, 동기화시간: 0.008 s, 전체시간: 269.197 s; 동기화 파일 개수: 29, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 154282 kB, 예상한작업량: 421996 kB
+2026-03-27 00:11:29.169 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 00:14:21.560 KST [53280] 로그:  채크포인트 작업완료: 1721개(10.5%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 172.358 s, 동기화시간: 0.011 s, 전체시간: 172.391 s; 동기화 파일 개수: 10, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 14591 kB, 예상한작업량: 381255 kB
+2026-03-27 00:26:29.860 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 00:30:36.115 KST [53280] 로그:  채크포인트 작업완료: 2465개(15.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 246.209 s, 동기화시간: 0.012 s, 전체시간: 246.255 s; 동기화 파일 개수: 12, 최장시간: 0.007 s, 평균시간: 0.001 s; 실제작업량: 61583 kB, 예상한작업량: 349288 kB
+2026-03-27 00:41:29.329 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 00:44:28.337 KST [53280] 로그:  채크포인트 작업완료: 1788개(10.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 178.975 s, 동기화시간: 0.012 s, 전체시간: 179.008 s; 동기화 파일 개수: 11, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 15096 kB, 예상한작업량: 315869 kB
+2026-03-27 00:51:29.537 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 00:55:59.063 KST [53280] 로그:  채크포인트 작업완료: 7917개(48.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 269.495 s, 동기화시간: 0.005 s, 전체시간: 269.526 s; 동기화 파일 개수: 16, 최장시간: 0.003 s, 평균시간: 0.001 s; 실제작업량: 14669 kB, 예상한작업량: 285749 kB
+2026-03-27 00:56:29.089 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 01:00:59.040 KST [53280] 로그:  채크포인트 작업완료: 4393개(26.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.911 s, 동기화시간: 0.009 s, 전체시간: 269.951 s; 동기화 파일 개수: 34, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 50158 kB, 예상한작업량: 262190 kB
+2026-03-27 01:06:29.091 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 01:10:59.127 KST [53280] 로그:  채크포인트 작업완료: 6435개(39.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 9개 지웠음, 0개 재활용; 쓰기시간: 269.951 s, 동기화시간: 0.009 s, 전체시간: 270.036 s; 동기화 파일 개수: 30, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 145172 kB, 예상한작업량: 250488 kB
+2026-03-27 01:16:29.223 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 01:20:59.067 KST [53280] 로그:  채크포인트 작업완료: 6345개(38.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.797 s, 동기화시간: 0.007 s, 전체시간: 269.844 s; 동기화 파일 개수: 12, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 54160 kB, 예상한작업량: 230855 kB
+2026-03-27 01:31:29.201 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 01:34:28.890 KST [53280] 로그:  채크포인트 작업완료: 1794개(10.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 179.659 s, 동기화시간: 0.008 s, 전체시간: 179.690 s; 동기화 파일 개수: 9, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 15312 kB, 예상한작업량: 209301 kB
+2026-03-27 01:36:29.991 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 01:38:18.968 KST [53280] 로그:  채크포인트 작업완료: 1089개(6.6%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 108.933 s, 동기화시간: 0.018 s, 전체시간: 108.978 s; 동기화 파일 개수: 29, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 9096 kB, 예상한작업량: 189280 kB
+2026-03-27 01:41:30.065 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 01:46:00.096 KST [53280] 로그:  채크포인트 작업완료: 8977개(54.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 7개 지웠음, 2개 재활용; 쓰기시간: 269.949 s, 동기화시간: 0.008 s, 전체시간: 270.032 s; 동기화 파일 개수: 24, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 154497 kB, 예상한작업량: 185802 kB
+2026-03-27 01:51:30.207 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 01:53:10.157 KST [53280] 로그:  채크포인트 작업완료: 986개(6.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 99.918 s, 동기화시간: 0.013 s, 전체시간: 99.950 s; 동기화 파일 개수: 11, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 8400 kB, 예상한작업량: 168062 kB
+2026-03-27 01:56:30.212 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 02:01:00.052 KST [53280] 로그:  채크포인트 작업완료: 6371개(38.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.798 s, 동기화시간: 0.008 s, 전체시간: 269.841 s; 동기화 파일 개수: 11, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 55272 kB, 예상한작업량: 156783 kB
+2026-03-27 02:01:30.081 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 02:03:08.120 KST [53280] 로그:  채크포인트 작업완료: 978개(6.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 98.006 s, 동기화시간: 0.011 s, 전체시간: 98.039 s; 동기화 파일 개수: 7, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 8289 kB, 예상한작업량: 141933 kB
+2026-03-27 02:11:30.241 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 02:13:05.061 KST [53280] 로그:  채크포인트 작업완료: 946개(5.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 94.790 s, 동기화시간: 0.011 s, 전체시간: 94.821 s; 동기화 파일 개수: 8, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 8048 kB, 예상한작업량: 128545 kB
+2026-03-27 02:16:30.161 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 02:18:05.493 KST [53280] 로그:  채크포인트 작업완료: 952개(5.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 95.296 s, 동기화시간: 0.011 s, 전체시간: 95.333 s; 동기화 파일 개수: 10, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 8072 kB, 예상한작업량: 116498 kB
+2026-03-27 02:36:30.797 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 02:41:00.035 KST [53280] 로그:  채크포인트 작업완료: 5604개(34.2%) 버퍼 씀; 0개 WAL 파일 추가됨, 3개 지웠음, 0개 재활용; 쓰기시간: 269.196 s, 동기화시간: 0.008 s, 전체시간: 269.238 s; 동기화 파일 개수: 11, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 47573 kB, 예상한작업량: 109605 kB
+2026-03-27 03:21:30.038 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 03:26:00.114 KST [53280] 로그:  채크포인트 작업완료: 13047개(79.6%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 7개 재활용; 쓰기시간: 270.028 s, 동기화시간: 0.011 s, 전체시간: 270.077 s; 동기화 파일 개수: 28, 최장시간: 0.006 s, 평균시간: 0.001 s; 실제작업량: 126959 kB, 예상한작업량: 126959 kB
+2026-03-27 07:41:34.361 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 07:46:04.044 KST [53280] 로그:  채크포인트 작업완료: 8387개(51.2%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 9개 재활용; 쓰기시간: 269.630 s, 동기화시간: 0.008 s, 전체시간: 269.683 s; 동기화 파일 개수: 29, 최장시간: 0.006 s, 평균시간: 0.001 s; 실제작업량: 140222 kB, 예상한작업량: 140222 kB
+2026-03-27 07:46:34.045 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 07:48:08.978 KST [53280] 로그:  채크포인트 작업완료: 947개(5.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 94.903 s, 동기화시간: 0.011 s, 전체시간: 94.933 s; 동기화 파일 개수: 8, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 8218 kB, 예상한작업량: 127022 kB
+2026-03-27 07:56:35.177 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 07:58:10.513 KST [53280] 로그:  채크포인트 작업완료: 951개(5.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 1개 재활용; 쓰기시간: 95.304 s, 동기화시간: 0.013 s, 전체시간: 95.337 s; 동기화 파일 개수: 7, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 8248 kB, 예상한작업량: 115144 kB
+2026-03-27 08:01:35.609 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 08:03:09.043 KST [53280] 로그:  채크포인트 작업완료: 934개(5.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 93.404 s, 동기화시간: 0.011 s, 전체시간: 93.434 s; 동기화 파일 개수: 7, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 8114 kB, 예상한작업량: 104441 kB
+2026-03-27 08:11:35.243 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 08:13:11.172 KST [53280] 로그:  채크포인트 작업완료: 957개(5.8%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 95.891 s, 동기화시간: 0.013 s, 전체시간: 95.929 s; 동기화 파일 개수: 7, 최장시간: 0.010 s, 평균시간: 0.002 s; 실제작업량: 8297 kB, 예상한작업량: 94827 kB
+2026-03-27 08:16:35.272 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 08:18:09.541 KST [53280] 로그:  채크포인트 작업완료: 942개(5.7%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 94.239 s, 동기화시간: 0.012 s, 전체시간: 94.269 s; 동기화 파일 개수: 10, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 8182 kB, 예상한작업량: 86162 kB
+2026-03-27 08:41:36.041 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 08:46:06.122 KST [53280] 로그:  채크포인트 작업완료: 7023개(42.9%) 버퍼 씀; 0개 WAL 파일 추가됨, 2개 지웠음, 4개 재활용; 쓰기시간: 270.029 s, 동기화시간: 0.012 s, 전체시간: 270.081 s; 동기화 파일 개수: 24, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 91839 kB, 예상한작업량: 91839 kB
+2026-03-27 08:51:36.193 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 08:56:06.120 KST [53280] 로그:  채크포인트 작업완료: 6125개(37.4%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 7개 재활용; 쓰기시간: 269.876 s, 동기화시간: 0.012 s, 전체시간: 269.927 s; 동기화 파일 개수: 23, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 118348 kB, 예상한작업량: 118348 kB
+2026-03-27 09:01:36.232 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 09:03:15.661 KST [53280] 로그:  채크포인트 작업완료: 992개(6.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 1개 재활용; 쓰기시간: 99.402 s, 동기화시간: 0.006 s, 전체시간: 99.430 s; 동기화 파일 개수: 8, 최장시간: 0.003 s, 평균시간: 0.001 s; 실제작업량: 8528 kB, 예상한작업량: 107366 kB
+2026-03-27 09:06:36.762 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 09:08:15.994 KST [53280] 로그:  채크포인트 작업완료: 992개(6.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 99.207 s, 동기화시간: 0.006 s, 전체시간: 99.232 s; 동기화 파일 개수: 7, 최장시간: 0.003 s, 평균시간: 0.001 s; 실제작업량: 8542 kB, 예상한작업량: 97484 kB
+2026-03-27 09:16:37.083 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 09:18:16.623 KST [53280] 로그:  채크포인트 작업완료: 993개(6.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 1개 지웠음, 0개 재활용; 쓰기시간: 99.512 s, 동기화시간: 0.007 s, 전체시간: 99.541 s; 동기화 파일 개수: 7, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 8559 kB, 예상한작업량: 88592 kB
+2026-03-27 09:21:37.724 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 09:23:16.696 KST [53280] 로그:  채크포인트 작업완료: 990개(6.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 0개 재활용; 쓰기시간: 98.942 s, 동기화시간: 0.012 s, 전체시간: 98.973 s; 동기화 파일 개수: 10, 최장시간: 0.008 s, 평균시간: 0.002 s; 실제작업량: 8524 kB, 예상한작업량: 80585 kB
+2026-03-27 10:40:25.750 KST [776786] 오류:  중복된 키 값이 "domain_pkey" 고유 제약 조건을 위반함
+2026-03-27 10:40:25.750 KST [776786] 상세정보:  (domain_id)=(999) 키가 이미 있습니다.
+2026-03-27 10:40:25.750 KST [776786] 명령 구문:  INSERT INTO domain (domain_id, domain_name) VALUES (999, 'contract_sheet')
+2026-03-27 10:41:39.033 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 10:46:09.136 KST [53280] 로그:  채크포인트 작업완료: 1460개(8.9%) 버퍼 씀; 1개 WAL 파일 추가됨, 4개 지웠음, 0개 재활용; 쓰기시간: 270.015 s, 동기화시간: 0.020 s, 전체시간: 270.103 s; 동기화 파일 개수: 32, 최장시간: 0.008 s, 평균시간: 0.001 s; 실제작업량: 66074 kB, 예상한작업량: 79134 kB
+2026-03-27 10:46:39.166 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 10:51:09.205 KST [53280] 로그:  채크포인트 작업완료: 1799개(11.0%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 24개 재활용; 쓰기시간: 269.904 s, 동기화시간: 0.015 s, 전체시간: 270.040 s; 동기화 파일 개수: 17, 최장시간: 0.002 s, 평균시간: 0.001 s; 실제작업량: 385528 kB, 예상한작업량: 385528 kB
+2026-03-27 10:56:39.323 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 11:01:09.162 KST [53280] 로그:  채크포인트 작업완료: 5617개(34.3%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 19개 재활용; 쓰기시간: 269.758 s, 동기화시간: 0.006 s, 전체시간: 269.839 s; 동기화 파일 개수: 28, 최장시간: 0.003 s, 평균시간: 0.001 s; 실제작업량: 306884 kB, 예상한작업량: 377663 kB
+2026-03-27 11:06:39.289 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 11:11:09.088 KST [53280] 로그:  채크포인트 작업완료: 9356개(57.1%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 5개 재활용; 쓰기시간: 269.739 s, 동기화시간: 0.030 s, 전체시간: 269.799 s; 동기화 파일 개수: 17, 최장시간: 0.015 s, 평균시간: 0.002 s; 실제작업량: 85399 kB, 예상한작업량: 348437 kB
+2026-03-27 11:11:39.118 KST [53280] 로그:  체크포인트 시작: time
+2026-03-27 11:16:09.134 KST [53280] 로그:  채크포인트 작업완료: 12489개(76.2%) 버퍼 씀; 0개 WAL 파일 추가됨, 0개 지웠음, 8개 재활용; 쓰기시간: 269.964 s, 동기화시간: 0.008 s, 전체시간: 270.016 s; 동기화 파일 개수: 17, 최장시간: 0.004 s, 평균시간: 0.001 s; 실제작업량: 126060 kB, 예상한작업량: 326199 kB

@@ -70,7 +70,12 @@ class ZScoreUpdater:
                 # 3) Z-score 산출: (현재값 - 나를 제외한 평균) / 나를 제외한 표준편차
                 if std_prime == 0:
                     # 모든 도메인에서 동일한 TF-IDF 값을 갖거나 나 외에 데이터가 없는 경우
-                    z = 0.0
+                    if curr_val == 0:
+                        z = 0.0
+                    else:
+                        epsilon = 1e-3
+                        z = (curr_val - mu_prime) / (std_prime + epsilon)
+
                 else:
                     z = (curr_val - mu_prime) / std_prime
                 
