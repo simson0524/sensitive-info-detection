@@ -177,35 +177,35 @@ python scripts/run_init_project.py
 <br>
 
 ## 🚀 Usage (Pipeline)
-첫 실행의 경우 파이프라인 실행을 위한 초기화를 꼭 진행해주세요.
+### 1. 첫 실행의 경우 파이프라인 실행을 위한 초기화를 꼭 진행해주세요.
 
 ```bash
 python scripts/run_init_project.py
 ```
 
 
-OpenAI API를 이용해 학습에 사용할 데이터셋을 생성해야하는 경우 `new_domain_generation_config.yaml`에 설정값을 설정 후 진행해주세요.
+### 2. OpenAI API를 이용해 학습에 사용할 데이터셋을 생성해야하는 경우 `new_domain_generation_config.yaml`에 설정값을 설정 후 진행해주세요.
 
 ```bash
 python scripts/run_new_domain_generation.py
 ```
 
 
-존재하는 데이터셋들(전체 도메인 문서)을 바탕으로 Z-score를 계산하기 위해 실행해주세요.
+### 3. 존재하는 데이터셋들(전체 도메인 문서)을 바탕으로 Z-score를 계산하기 위해 실행해주세요.
 
 ```bash
 python scripts/run_update_z_score.py
 ```
 
 
-계산된 Z-score를 바탕으로 증폭 라벨을 달아주기 위해 실행해주세요.
+### 4. 계산된 Z-score를 바탕으로 증폭 라벨을 달아주기 위해 실행해주세요.
 
 ```bash
 python scripts/run_update_sub_annotations.py
 ```
 
 
-전체 파이프라인을 실행합니다. 설정된 `run_mode`에 따라 학습 또는 추론이 자동으로 진행됩니다.
+### 5. 전체 파이프라인을 실행합니다. 설정된 `run_mode`에 따라 학습 또는 추론이 자동으로 진행됩니다.
 
 ```bash
 python scripts/run_experiment.py
@@ -231,7 +231,7 @@ python scripts/run_experiment.py
     * **Model Complement:** 규칙이 놓친 것을 모델이 탐지한 경우 (모델의 효용성 입증).
 
 
-실험 로그를 csv로 추출하기 위해 실행해주세요.
+### 6. 실험 로그를 csv로 추출하기 위해 실행해주세요.
 
 ```bash
 python scripts/run_export_table.py
