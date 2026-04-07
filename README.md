@@ -1,6 +1,5 @@
 # 🛡️ Sensitive Info Detector
-![GPU](https://img.shields.io/badge/GPU-2x%20RTX%203090-76B900?style=flat&logo=nvidia&logoColor=white)
-![CUDA](https://img.shields.io/badge/CUDA-12.1-76B900?style=flat&logo=nvidia&logoColor=white)
+![GPU](https://img.shields.io/badge/GPU-%20RTX%203090-76B900?style=flat&logo=nvidia&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat&logo=python&logoColor=white)
 > **BERT 기반 민감정보(개인정보/기밀정보) 탐지 프로젝트**
 
