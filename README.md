@@ -168,7 +168,7 @@ python scripts/run_init_project.py
 | **`init_project_config.yaml`** | **프로젝트 초기화 설정**. 실험 진행을 위해 정의된 데이터베이스를 생성하고, 각 도메인의 정답지 기반 사전을 구축합니다.|
 | **`base_config.yaml`** | **불변 공통 설정**. 데이터/로그 저장 경로, 모델 아키텍처(RoBERTa), 라벨 맵 등 프로젝트 전반에 걸친 고정값을 관리합니다. |
 | **`experiment_config.yaml`** | **가변 실험 설정**. 실험 코드를 정의하고, 학습률(LR), 배치 크기, 실행 모드 등을 변경할 때 사용합니다. |
-| **`new_domain_generation_config.yaml`** | **신도메인 데이터셋 생성 파이프라인 설정**. OpenAI API를 활용한 신도메인 생성을 위해 신규 생성 도메인 설정과 저장/참조 파일 경로를 설정합니다. |
+| **`new_domain_generation_config.yaml`** | **신도메인 데이터셋 생성 파이프라인 설정**. OpenAI API를 활용한 신도메인 생성을 위해 신규 생성 도메인 설정과 저장/참조 파일 경로를 설정합니다. 보안을 위해 API key는 환경변수에 직접 설정해주세요(OPENAI_API_KEY) |
 | **`z_score_config.yaml`** | **Z-score 계산 설정**. Z-score 계산 방법(도메인 내 출현 횟수 or 출현 여부), 새로 계산하기 여부, Z-score값 기반 증폭 Threshold를 설정합니다. |
 
 세부 설정 옵션은 각 `config.yaml`파일 내에 상세히 설명되어 있습니다.
@@ -247,4 +247,5 @@ python scripts/run_export_table.py
 | **Report** | `{experiment_code}_all_process_results.txt` | 실험 설정, Epoch별 성능, 프로세스별 요약 통계가 담긴 **최종 성적표**. |
 | **Log** | `{experiment_code}_experiment_log.txt` | 파이프라인 실행 중 발생한 모든 시스템 로그 및 에러 메시지. |
 | **Graph** | `{experiment_code}_loss_graph.png` | 학습/검증 Loss 변화 추이를 시각화한 그래프. |
+| **Plot** | `{GT_LABEL}_inference_results.png` | 추론 결과 추세 를 확인하는 plot |
 | **Data** | `{experiment_code}_inference_sentences.csv` | 각 프로세스 및 Epoch별 **문장 단위 상세 추론 결과**. 정탐/오탐/미탐 분석 용도. |
