@@ -4,31 +4,29 @@
 # [Base Config] 프로젝트 공통 불변 설정
 # ============================================================
 
-# 1. 경로 설정 (상대 경로 권장)
-path:
-  # 로그 저장소
-  log_dir: "outputs/logs"
-  # 체크포인트(모델 가중치) 저장소
-  checkpoint_dir: "outputs/checkpoints"
-  # 원본 데이터 저장소 (압축 파일 등)
-  raw_data_dir: "data/zip_raw_data"
-  # 학습 데이터 저장소
-  train_data_root: "data/train_data"
+### [필독] ###
+# 설정값 수정 전 주의사항 🚨
+# 1. 실험 진행에 따라 임의 수정 가능한 설정값은 ✅, 수정 불가능한 설정값은 ❌로 주석처리 되어 있습니다.
+# 2. 수정 불가능한 설정값(❌)을 수정할 경우 로그 저장경로 변동 등으로 인해 실험결과/진행이 어려울 수 있습니다.           
+# 3. 임의 수정 가능한 설정값(✅)의 경우 입력 가능한 경우가 정해져 있는 경우가 있으니 해당 항목의 주석을 참고하시기 바랍니다. 
+# ----------------------------------------------------------------------------------------------
 
-# 2. 학습 기본 설정 (변하지 않는 것들)
+# 1. 경로 설정
+path:
+  log_dir: "outputs/logs"               # ❌ 로그 저장소
+  checkpoint_dir: "outputs/checkpoints" # ❌ 체크포인트(모델 가중치) 저장소
+  raw_data_dir: "data/zip_raw_data"     # ❌ 원본 데이터 저장소 (압축 파일 등)
+  train_data_root: "data/train_data"    # ❌ 학습 데이터 저장소
+
+# 2. 학습 기본 설정
 train:
-  # 사용할 Pretrained Model (HuggingFace Hub)
-  model_name: "klue/roberta-base"
-  # 학습할 모델 타입 []"ner", "ner_gat"]
-  model_type: "ner"
-  # 입력 시퀀스 최대 길이
-  max_len: 256
-  # 학습 device
-  device: "cuda:0"
+  model_name: "klue/roberta-base" # ✅ 사용할 Pretrained Model (HuggingFace Hub)
+  model_type: "ner"               # ✅ 학습할 모델 타입 ["ner"]
+  max_len: 256                    # ✅ 입력 시퀀스 최대 길이
+  device: "cuda:0"                # ✅ 학습 device
   
 # 3. [중요] 프로젝트 전체에서 공유하는 라벨 맵
-# (NER 학습 및 검증 시 ID 변환에 사용됨)
-label_settings:
+label_settings: # ✅ NER 학습 및 검증 시 ID 변환에 사용됨
   personal_data:
     label_map:
       일반정보: 0
@@ -55,5 +53,5 @@ label_settings:
 
 # 4. 사전(Dictionary) 설정
 dictionary_init:
-  # Process_2에서 로드할 도메인 ID 목록 (기본값)
+  # ✅ 생성한 사전의 도메인
   domain_ids: ['2']

@@ -15,10 +15,6 @@ from src.database.connection import db_manager
 from src.modules.ner_preprocessor import NerPreprocessor
 from src.models.ner_roberta import RobertaNerModel
 
-# Modules: Ner-GAT모델과 해당 모델에 데이터셋을 로드하기 위한 전처리 모듈
-from src.modules.ner_gat_preprocessor import NerGatPreprocessor
-from src.models.ner_gat_roberta import RobertaNerGatModel
-
 # Utils: 공통 유틸리티 함수
 from src.utils.common import set_seed
 from src.utils.logger import setup_experiment_logger

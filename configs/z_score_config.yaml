@@ -1,15 +1,31 @@
+# config/z_score_config.yaml
+
+# ============================================================
+# [Z-score Config] Z-score 계산 설정
+# ============================================================
+
+### [필독] ###
+# 설정값 수정 전 주의사항 🚨
+# 1. 실험 진행에 따라 임의 수정 가능한 설정값은 ✅, 수정 불가능한 설정값은 ❌로 주석처리 되어 있습니다.
+# 2. 수정 불가능한 설정값(❌)을 수정할 경우 로그 저장경로 변동 등으로 인해 실험결과/진행이 어려울 수 있습니다.           
+# 3. 임의 수정 가능한 설정값(✅)의 경우 입력 가능한 경우가 정해져 있는 경우가 있으니 해당 항목의 주석을 참고하시기 바랍니다. 
+# ----------------------------------------------------------------------------------------------
+
 # 실행 방식 "raw_count"(한 도메인에 대하여 출현한 절대 개수) or "presence_count"(한 도메인에 대하여 출현한 문서 개수/전체 문서 개수 비율)
-mode: "presence_count" 
+mode: "presence_count" # ✅
 
-# domain, term 테이블 초기화가 필요한 경우 true, 아닌경우(추가로 여러 도메인이 들어우는 경우) false / Default: false
-db_truncate: true
+# 새로 계산하기 설정 
+# domain, term 테이블 초기화가 필요한 경우 true(새로 계산하기), 아닌경우(추가로 여러 도메인으로 이어 계산하기) false / Default: false
+db_truncate: true # ✅
 
+# Label 증폭 Threshold 설정
+# [annotation_edit][threshold]의 값을 기준으로 해당 값 이상인 경우 [annotation_edit][threshold][suffix]값을 원본라벨 뒤에 추가
 annotation_edit:
   thresholds:      
-    - threshold: 3.5
-      suffix: "_4"    
-    - threshold: 3.0
-      suffix: "_3"     
-    - threshold: 2.5
-      suffix: "_2" 
-  default_suffix: "_1"
+    - threshold: 3.5   # ✅
+      suffix: "_4"     # ✅
+    - threshold: 3.0   # ✅
+      suffix: "_3"     # ✅
+    - threshold: 2.5   # ✅
+      suffix: "_2"     # ✅
+  default_suffix: "_1" # ❌

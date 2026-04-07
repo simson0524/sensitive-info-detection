@@ -1,18 +1,28 @@
 # configs/new_domain_generation_config.yaml
 
+# ============================================================
+# [New Domain Generation Config] 신도메인 데이터셋 생성 파이프라인 설정
+# ============================================================
+
+### [필독] ###
+# 설정값 수정 전 주의사항 🚨
+# 1. 실험 진행에 따라 임의 수정 가능한 설정값은 ✅, 수정 불가능한 설정값은 ❌로 주석처리 되어 있습니다.
+# 2. 수정 불가능한 설정값(❌)을 수정할 경우 로그 저장경로 변동 등으로 인해 실험결과/진행이 어려울 수 있습니다.           
+# 3. 임의 수정 가능한 설정값(✅)의 경우 입력 가능한 경우가 정해져 있는 경우가 있으니 해당 항목의 주석을 참고하시기 바랍니다. 
+# ----------------------------------------------------------------------------------------------
+
 # 신규 도메인 데이터 생성 설정
 generation_settings:
-  mode: true                 # true: 신규 생성(generated_domain_form.json), false: 전체 생성(domain_form_history.json)
-  target_count: 100          # 도메인당 생성할 문서 개수
-  new_domain_n: 10           # 병렬 처리할 최대 도메인 수
-  model_name: "gpt-5-mini"   # 사용할 LLM 모델명
-  temperature: 0.7           # 생성 다양성 조절
+  mode: true                 # ✅ true: 신규 생성(generated_domain_form.json), false: 전체 생성(domain_form_history.json)
+  target_count: 100          # ✅ 도메인당 생성할 문서 개수
+  new_domain_n: 10           # ✅ 병렬 처리할 최대 도메인 수(15 이하 권장, 과도할 경우 Rate Limit에 걸릴 수 있음)
+  model_name: "gpt-5-mini"   # ✅ 사용할 LLM 모델명
+  temperature: 0.7           # ✅ 생성 다양성 조절
 
-paths:
-  # 프로젝트 루트(root) 기준 상대 경로
-  new_metadata_rel_path: "src/modules/new_domain_generation_metadata/generated_domain_form.json"
-  history_metadata_rel_path: "src/modules/new_domain_generation_metadata/domain_form_history.json"
-  name_pool_rel_path: "src/modules/new_domain_generation_metadata/name_pool.json"
-  label_desc_rel_path: "src/modules/new_domain_generation_metadata/label_descriptions.json"
-  format_sample_rel_path: "src/modules/new_domain_generation_metadata/document_format.json"
-  zip_storage_rel_path: "data/zip_raw_data"
+paths: # 프로젝트 루트(root) 기준 상대 경로
+  new_metadata_rel_path: "src/modules/new_domain_generation_metadata/generated_domain_form.json"   # ❌
+  history_metadata_rel_path: "src/modules/new_domain_generation_metadata/domain_form_history.json" # ❌
+  name_pool_rel_path: "src/modules/new_domain_generation_metadata/name_pool.json"                  # ❌
+  label_desc_rel_path: "src/modules/new_domain_generation_metadata/label_descriptions.json"        # ❌
+  format_sample_rel_path: "src/modules/new_domain_generation_metadata/document_format.json"        # ❌
+  zip_storage_rel_path: "data/zip_raw_data"                                                        # ❌

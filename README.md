@@ -17,20 +17,21 @@
 ---
 
 ## 🧐 Project Overview
-이 프로젝트는 비정형 텍스트 내에 포함된 **개인정보(PII)** 및 **기업 기밀정보(Confidential Info)**를 탐지하기 위해 **Deep Learning(BERT)**과 **Rule-based(Dictionary, Regex)** 방식을 결합한 하이브리드 시스템입니다.
+이 프로젝트는 비정형 텍스트 내에 포함된 **개인정보(PII)** 및 **기업 기밀정보(Confidential Info)**를 탐지하기 위해 **Deep Learning(BERT)**과 **Rule-based(Regex)** 방식을 결합한 하이브리드 시스템입니다.
 
-* **이원화된 탐지:** 데이터 성격에 따라 `Personal Data` 모드와 `Confidential Data` 모드로 분리하여 동작합니다.
+* **이원화된 탐지:** 데이터 성격에 따라 `Personal Data(PII)` 모드와 `Confidential Data(Confidential Info)` 모드로 분리하여 동작합니다.
 * **하이브리드 검증:** 규칙 기반 탐지 결과와 모델 추론 결과를 교차 검증하여 **Double Check(신뢰도 향상)** 및 **Complement(누락 방지)**를 수행합니다.
 * **실험 관리:** 모든 실험 과정과 결과는 데이터베이스(PostgreSQL)에 기록되며, 상세 로그는 CSV 및 TXT 리포트로 자동 생성됩니다.
+* **통계쩍 유의성 검증** 전 도메인 문서의 단어 빈도 기반 Z-score를 산출하여, 통계적 지표와 실제 모델의 레이블 추세 간 정합성을 검증했습니다.
 
 <br>
 
 ## ⚙️ Development Environment
-본 프로젝트는 아래와 같은 **Multi-GPU 환경**에서 학습 및 테스트되었습니다. 대규모 언어 모델(RoBERTa-Large)의 원활한 학습을 위해 **48GB VRAM** 이상의 환경을 권장합니다.
+본 프로젝트는 아래와 같은 **GPU 환경**에서 학습 및 테스트되었습니다. 대규모 언어 모델(RoBERTa-base)의 원활한 학습을 위해 **24GB VRAM** 이상의 환경을 권장합니다.
 
 | Component | Specification | Description |
 | :--- | :--- | :--- |
-| **GPU** | **2ea** x NVIDIA GeForce RTX 3090 | 24GB VRAM per GPU (Total 48GB) |
+| **GPU** | NVIDIA GeForce RTX 3090 | 24GB VRAM per GPU |
 | **CUDA** | Version 12.1 | PyTorch Compatibility |
 | **Database** | PostgreSQL | 실험 로그 및 데이터셋 메타정보 관리 |
 | **OS** | Linux (Ubuntu 20.04) | |
@@ -75,11 +76,11 @@ sensitive-info-detector/
 │   └── logs/  # 실험단위로 관리되는 실험 로그
 │       └── {experiment_code}/
 │           ├── {experiment_code}_{process_code}_{process_epoch}_inference_sentences.csv  # 각 프로세스에서 문장 단위 추론 결과 ✅
-│           ├── {experiment_code}_all_process_results.txt                                 # 실험 + 모든 프로세스의 결과를 순서대로 작성한 txt ✅ (⚠️ 아래 사항들 추가하기)
+│           ├── {experiment_code}_all_process_results.txt                                 # 실험 + 모든 프로세스의 결과를 순서대로 작성한 txt ✅
 │           ├── {experiment_code}_loss_graph.png                                          # 모델 학습 중 train & valid loss 추이를 나타낸 그래프 ✅
-│           ├── {experiment_code}_label_count_graph.png                                   # 모델 학습 중 정탐오탐미탐 샘플 수 추이를 나타낸 그래프 ✅ (⚠️ BIO태깅은 혼합한 형태로 수정하기)
-│           ├── {experiment_code}_label_confusion_matrix.png                              # 모델 학습 중 최적 epoch(valid loss 최소)의 정탐오탐미탐 샘플 비율(수)를 나타낸 hit map ❌ (⚠️ BIO태깅은 혼합한 형태로 수정하기)
-│           ├── {experiment_code}_label_metric_distribution.png                           # 모델 학습 중 최적 epoch(valid loss 최소)의 라벨 별 정확도 분포를 나타낸 그래프 ❌ (⚠️ BIO태깅은 혼합한 형태로 수정하기)
+│           ├── {experiment_code}_label_count_graph.png                                   # 모델 학습 중 정탐오탐미탐 샘플 수 추이를 나타낸 그래프 ✅
+│           ├── {experiment_code}_label_confusion_matrix.png                              # 모델 학습 중 최적 epoch(valid loss 최소)의 정탐오탐미탐 샘플 비율(수)를 나타낸 hit map ✅
+│           ├── {experiment_code}_label_metric_distribution.png                           # 모델 학습 중 최적 epoch(valid loss 최소)의 라벨 별 정확도 분포를 나타낸 그래프 ✅
 │           └── {experiment_code}_experiment_log.txt                                      # 실험 파이프라인 실행 중 발생하는 모든 print log ✅
 │   
 ├── src/  # 소스 코드 (Package)
@@ -91,8 +92,7 @@ sensitive-info-detector/
 │   │   └── crud.py        # 데이터 IO(CRUD) 로직 및 타입 변환 (ORM↔Dict) ✅
 │   │
 │   ├── models/  # 모델 아키텍처
-│   │   ├── ner_roberta.py ✅
-│   │   └── ner_gat_roberta.py ✅
+│   │   └── ner_roberta.py ✅
 │   │
 │   ├── modules/  # 각 로직의 핵심 모듈
 │   │   ├── dtm_initializer.py               # Z-score을 위한 Domain-Term Matrix 및 관련 테이블 초기화 모듈 ✅
@@ -106,9 +106,6 @@ sensitive-info-detector/
 │   │   ├── ner_preprocessor.py              # [NER모델]데이터 전처리 및 로드 모듈 ✅
 │   │   ├── ner_trainer.py                   # [NER모델]학습 모듈 ✅
 │   │   ├── ner_evaluator.py                 # [NER모델]검증 모듈 ✅
-│   │   ├── ner_gat_preprocessor.py          # [NER_GAT모델]데이터 전처리 및 로드 모듈 ✅
-│   │   ├── ner_gat_trainer.py               # [NER_GAT모델]학습 모듈 ✅
-│   │   ├── ner_gat_evaluator.py             # [NER_GAT모델]검증 모듈 ✅
 │   │   ├── regex_matcher.py                 # 정규표현식 매칭 모듈 ✅
 │   │   └── regex_logics/                    # 정규표현식 매칭 모듈에서 사용하는 로직 ✅
 │   │
@@ -168,22 +165,45 @@ python scripts/run_init_project.py
 
 | 파일명 | 역할 및 설명 |
 | :--- | :--- |
+| **`init_project_config.yaml`** | **프로젝트 초기화 설정**. 실험 진행을 위해 정의된 데이터베이스를 생성하고, 각 도메인의 정답지 기반 사전을 구축합니다.|
 | **`base_config.yaml`** | **불변 공통 설정**. 데이터/로그 저장 경로, 모델 아키텍처(RoBERTa), 라벨 맵 등 프로젝트 전반에 걸친 고정값을 관리합니다. |
 | **`experiment_config.yaml`** | **가변 실험 설정**. 실험 코드를 정의하고, 학습률(LR), 배치 크기, 실행 모드 등을 변경할 때 사용합니다. |
+| **`new_domain_generation_config.yaml`** | **신도메인 데이터셋 생성 파이프라인 설정**. OpenAI API를 활용한 신도메인 생성을 위해 신규 생성 도메인 설정과 저장/참조 파일 경로를 설정합니다. |
+| **`z_score_config.yaml`** | **Z-score 계산 설정**. Z-score 계산 방법(도메인 내 출현 횟수 or 출현 여부), 새로 계산하기 여부, Z-score값 기반 증폭 Threshold를 설정합니다. |
 
-### 주요 설정 옵션 (`experiment_config.yaml`)
-
-* **`data_category`**: 데이터셋 및 모델의 성격을 결정합니다.
-    * `"personal_data"`: 개인정보(이름, 전화번호 등) 탐지 모델
-    * `"confidential_data"`: 기업 기밀정보 탐지 모델
-* **`run_mode`**: 파이프라인 실행 방식을 결정합니다.
-    * `"train"`: 데이터셋으로 모델 학습(`process_1`) 수행 후 검증 및 규칙 기반 탐지 진행.
-    * `"test"`: 학습 과정을 건너뛰고, 지정된 Checkpoint를 로드하여 추론 및 하이브리드 검증 수행.
-* **`run_process_X`**: 각 프로세스(1~4)의 실행 여부를 제어합니다 (`true`/`false`).
+세부 설정 옵션은 각 `config.yaml`파일 내에 상세히 설명되어 있습니다.
+실험 진행에 따라 임의 수정 가능한 설정값은 ✅, 수정 불가능한 설정값은 ❌로 주석처리 되어 있습니다.
 
 <br>
 
 ## 🚀 Usage (Pipeline)
+첫 실행의 경우 파이프라인 실행을 위한 초기화를 꼭 진행해주세요.
+
+```bash
+python scripts/run_init_project.py
+```
+
+
+OpenAI API를 이용해 학습에 사용할 데이터셋을 생성해야하는 경우 `new_domain_generation_config.yaml`에 설정값을 설정 후 진행해주세요.
+
+```bash
+python scripts/run_new_domain_generation.py
+```
+
+
+존재하는 데이터셋들(전체 도메인 문서)을 바탕으로 Z-score를 계산하기 위해 실행해주세요.
+
+```bash
+python scripts/run_update_z_score.py
+```
+
+
+계산된 Z-score를 바탕으로 증폭 라벨을 달아주기 위해 실행해주세요.
+
+```bash
+python scripts/run_update_sub_annotations.py
+```
+
 
 전체 파이프라인을 실행합니다. 설정된 `run_mode`에 따라 학습 또는 추론이 자동으로 진행됩니다.
 
@@ -210,6 +230,12 @@ python scripts/run_experiment.py
     * **Double Check:** 규칙과 모델이 모두 탐지한 경우 (높은 신뢰도).
     * **Model Complement:** 규칙이 놓친 것을 모델이 탐지한 경우 (모델의 효용성 입증).
 
+
+실험 로그를 csv로 추출하기 위해 실행해주세요.
+
+```bash
+python scripts/run_export_table.py
+```
 <br>
 
 ## 📊 Outputs
@@ -218,7 +244,7 @@ python scripts/run_experiment.py
 
 | 파일 유형 | 파일명 | 설명 |
 | :--- | :--- | :--- |
-| **Report** | `{code}_all_process_results.txt` | 실험 설정, Epoch별 성능, 프로세스별 요약 통계가 담긴 **최종 성적표**. |
-| **Log** | `{code}_experiment_log.txt` | 파이프라인 실행 중 발생한 모든 시스템 로그 및 에러 메시지. |
-| **Graph** | `{code}_loss_graph.png` | 학습/검증 Loss 변화 추이를 시각화한 그래프. |
-| **Data** | `{code}_inference_sentences.csv` | 각 프로세스 및 Epoch별 **문장 단위 상세 추론 결과**. 정탐/오탐/미탐 분석 용도. |
+| **Report** | `{experiment_code}_all_process_results.txt` | 실험 설정, Epoch별 성능, 프로세스별 요약 통계가 담긴 **최종 성적표**. |
+| **Log** | `{experiment_code}_experiment_log.txt` | 파이프라인 실행 중 발생한 모든 시스템 로그 및 에러 메시지. |
+| **Graph** | `{experiment_code}_loss_graph.png` | 학습/검증 Loss 변화 추이를 시각화한 그래프. |
+| **Data** | `{experiment_code}_inference_sentences.csv` | 각 프로세스 및 Epoch별 **문장 단위 상세 추론 결과**. 정탐/오탐/미탐 분석 용도. |

@@ -4,35 +4,41 @@
 # [Experiment Config] 이번 실험을 위한 가변 설정
 # ============================================================
 
+### [필독] ###
+# 설정값 수정 전 주의사항 🚨
+# 1. 실험 진행에 따라 임의 수정 가능한 설정값은 ✅, 수정 불가능한 설정값은 ❌로 주석처리 되어 있습니다.
+# 2. 수정 불가능한 설정값(❌)을 수정할 경우 로그 저장경로 변동 등으로 인해 실험결과/진행이 어려울 수 있습니다.           
+# 3. 임의 수정 가능한 설정값(✅)의 경우 입력 가능한 경우가 정해져 있는 경우가 있으니 해당 항목의 주석을 참고하시기 바랍니다. 
+# ----------------------------------------------------------------------------------------------
+
 # 1. 실험 메타 정보
 experiment:
-  experiment_code: "experiment_081_100_4_personal_infer"   # 실험 고유 코드 (DB 키, 폴더명으로 사용됨)
-  previous_experiment_code: null       # 이전 실험을 잇는 경우 (옵션)
-  data_category: "personal_data"       # "personal_data" or "confidential_data" (전처리기 필터링용)
+  experiment_code: "experiment_081_100_4_personal_infer" # ✅ 실험 고유 코드 (DB 키, 폴더명으로 사용됨)
+  previous_experiment_code: null                         # ✅ 이전 실험을 잇는 경우 (옵션)
+  data_category: "personal_data"                         # ✅ "personal_data" or "confidential_data" (전처리기 필터링용)
   
-  # 실행 모드 ("train" 또는 "test")
+  # ✅ 실행 모드 ("train" 또는 "test")
   # - train: 학습 수행 (Process 1 실행)
   # - test: 학습 건너뜀, inference_checkpoint 로드
   run_mode: "train"
 
   # 프로세스 실행 여부 (On/Off Switch)
-  run_process_1: false  # 모델 학습 및 검증
-  run_process_2: false  # 사전 매칭 검증
-  run_process_3: false  # 정규식 매칭 검증
-  run_process_4: true  # 모델 보완(Hybrid) 추론
+  run_process_1: false  # ✅ 모델 학습 및 검증
+  run_process_2: false  # ✅ 사전 매칭 검증
+  run_process_3: false  # ✅ 정규식 매칭 검증
+  run_process_4: true   # ✅ 모델 보완(Hybrid) 추론
 
 # 2. 학습 하이퍼파라미터 (Base Config의 train 섹션을 덮어쓰거나 추가)
 train:
-  seed: 42                   # 재현성을 위한 랜덤 시드
-  epochs: 5                  # 학습 반복 횟수
-  batch_size: 32             # 배치 크기
-  learning_rate: 5e-5        # 학습률
-  validation_split: 0.2      # 전체 데이터 중 검증셋 비율 (0.2 = 20%)
-  use_focal: true            # Focal Loss 사용 여부
+  seed: 42                   # ✅ 재현성을 위한 랜덤 시드
+  epochs: 5                  # ✅ 학습 반복 횟수
+  batch_size: 32             # ✅ 배치 크기
+  learning_rate: 5e-5        # ✅ 학습률
+  validation_split: 0.2      # ✅ 전체 데이터 중 검증셋 비율 (0.2 = 20%)
+  use_focal: true            # ✅ Focal Loss 사용 여부
 
 # 3. 데이터 및 모델 경로 (실험별로 달라지는 경로)
-path:
-  # 학습에 사용할 데이터셋 폴더 "List" (JSON 파일들이 들어있는 곳)
+path: # ✅ 학습에 사용할 데이터셋 폴더 "List" (JSON 파일들이 들어있는 곳)
   data_dir: 
     # - "/home/student1/sensitive-info-detection/data/train_data/000_call_speech" 
     # - "/home/student1/sensitive-info-detection/data/train_data/001_virtual_company"
@@ -62,7 +68,7 @@ path:
     # - "/home/student1/sensitive-info-detection/data/train_data/025_public_safety_and_emergency_services"
     # - "/home/student1/sensitive-info-detection/data/train_data/026_blockchain_and_cryptocurrency"
     # - "/home/student1/sensitive-info-detection/data/train_data/027_fashion_and_apparel"
-    # # - "/home/student1/sensitive-info-detection/data/train_data/028_food_and_beverage"
+    # - "/home/student1/sensitive-info-detection/data/train_data/028_food_and_beverage"
     # - "/home/student1/sensitive-info-detection/data/train_data/029_internet_of_things"
     # - "/home/student1/sensitive-info-detection/data/train_data/030_urban_planning_and_smart_cities"
     # - "/home/student1/sensitive-info-detection/data/train_data/031_waste_management_and_recycling"
@@ -140,10 +146,10 @@ path:
     - "/home/student1/sensitive-info-detection/data/train_data/999_contract_sheet"
 
   
-  # [Train Mode용] 이어서 학습할 체크포인트 (없으면 null)
+  # ✅ [Train Mode용] 이어서 학습할 체크포인트 (없으면 null)
   resume_checkpoint: "/home/student1/sensitive-info-detection/outputs/checkpoints/experiment_061_080_4_personal/experiment_061_080_4_personal_epoch_3.pt"
   # 예: "outputs/checkpoints/EXP_PREV/epoch_5.pt"
   
-  # [Test Mode용] 추론에 사용할 학습된 모델 (run_mode: test일 때 필수)
+  # ✅ [Test Mode용] 추론에 사용할 학습된 모델 (run_mode: test일 때 필수)
   inference_checkpoint: null
   # 예: "outputs/checkpoints/EXP_2024_NER_V1/EXP_2024_NER_V1_best.pt"
